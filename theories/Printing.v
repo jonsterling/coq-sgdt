@@ -12,7 +12,9 @@ Module Effect (O : Printable).
   Import O.
 
   Definition 𝔼 A := O × ▷ A.
+
   Definition 𝔼_map {A B} (f : A → B) : 𝔼 A → 𝔼 B.
+  Proof.
     move=> x; split.
     - exact: x.1.
     - move: x.2.
