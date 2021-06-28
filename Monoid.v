@@ -66,14 +66,9 @@ Section Free.
   Proof.
     move=> f h0 h1 hom0 hom1 ext0 ext1.
     apply: funext; case=> u a.
-
-    rewrite (_ : (h0 (u, a)) = act u (h0 (η a))).
-    - have Q0 := hom0 u (η a).
-      by rewrite /η {1}/act /= /F_act /= addR in Q0.
-    - rewrite (_ : (h1 (u, a)) = act u (h1 (η a))).
-      + have Q1 := hom1 u (η a).
-        by rewrite /η {1}/act /= /F_act /= addR in Q1.
-      + by rewrite ext0 ext1.
+    have -> : (h0 (u, a)) = act u (h0 (η a)) by have Q := hom0 u (η a); rewrite /η {1}/act /= /F_act /= addR in Q.
+    have -> : (h1 (u, a)) = act u (h1 (η a)) by have Q := hom1 u (η a); rewrite /η {1}/act /= /F_act /= addR in Q.
+    by rewrite ext0 ext1.
   Qed.
 
 
