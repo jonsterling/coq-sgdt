@@ -193,9 +193,8 @@ Module Effect (O : Printable).
     ∀ (M : F A) (N : A → B → C),
       N ♯ M = λ y, (N^~ y)♯ M.
   Proof.
-    move=> M N.
-    apply: funext => z; move: M.
-    apply: unfunext; apply: extend_uniq.
+    move=> M N; apply: funext => O; move: M; apply: unfunext.
+    apply: extend_uniq.
     - by move=> ?; rewrite extend_is_hom {1}/push /FunAlg /𝔼_map Later.map_assoc /=.
     - by move=> ?; rewrite extend_extends.
   Qed.
