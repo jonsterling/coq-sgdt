@@ -161,8 +161,7 @@ Defined.
 
 Lemma seq_assoc {A B C : Type} `{W_alg C} :
   ∀ (M : F A) (N : A → F B) {P : B → C},
-    extend P (extend N M) =
-    extend (λ x, extend P (N x)) M.
+    P♯ (N♯ M) = (P♯ \o N)♯ M.
 Proof.
   move=> M N P; move: M.
   apply: unfunext; apply: extend_uniq.
@@ -170,16 +169,16 @@ Proof.
   - by move=> x; rewrite extend_extends.
 Qed.
 
-Lemma seq_ret {A : Type} : ∀ M : F A, extend η M = M.
+Lemma seq_ret {A : Type} : ∀ M : F A, η♯ M = M.
 Proof.
   move=> M.
-  rewrite (_ : extend η M = bind M η); first by [].
+  rewrite (_ : η♯ M = M >>= η); first by [].
   by rewrite bindr.
 Qed.
 
 Lemma seq_fun {A B C : Type} `{W_alg C}:
   ∀ (M : F A) (N : A → B → C),
-    extend (λ x, λ y, N x y) M = λ y, extend (λ x, N x y) M.
+    N ♯ M = λ y, (N^~ y)♯ M.
 Proof.
   move=> M N.
   apply: funext => z; move: M.
