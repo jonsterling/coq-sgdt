@@ -1,19 +1,19 @@
 opam-version: "2.0"
-synopsis: "A Coq library for synthetic guarded domain theory" # One-line description
+synopsis: "A Coq library for synthetic guarded domain theory"
 description: """
-  A Coq library for constructive domain theory
-""" # Longer description, can span several lines
+  A Coq library for synthetic guarded domain theory
+"""
 
-homepage: "https://github.com/jonsterling/coq-domains"
-dev-repo: "git+https://github.com/jonsterling/coq-domains.git"
-bug-reports: "https://github.com/jonsterling/coq-domains/issues"
-doc: "https://jonsterling.github.io/coq-domains/"
-maintainer: "your@email.address"
+homepage: "https://github.com/jonsterling/coq-sgdt"
+dev-repo: "git+https://github.com/jonsterling/coq-sgdt.git"
+bug-reports: "https://github.com/jonsterling/coq-sgdt/issues"
+doc: "https://jonsterling.github.io/coq-sgdt/"
+maintainer: "jon@jonmsterling.com"
 authors: [
   "Jonathan Sterling"
 ]
 
-# license: "MIT" # what should the license be ???
+license: "Apache License 2.0"
 
 depends: [
   "coq" {>= "8.13.2" & < "8.14~"}
