@@ -36,7 +36,6 @@ Module Effect (O : Printable).
   Qed.
 
 
-
   Inductive F' (A : Type) (R : ▷ Type) :=
   | now : A → F' A R
   | step : O → dlater R → F' A R.
@@ -44,7 +43,9 @@ Module Effect (O : Printable).
   Definition F (A : Type) : Type := Later.loeb (F' A).
 
   Definition F_def {A : Type} : F' A (next (F A)) ≅ F A.
-  Proof. apply: loeb_iso. Defined.
+  Proof. apply: loeb_iso. Qed.
+
+  Opaque F.
 
   Notation F_intro := (intro F_def).
   Notation F_elim := (elim F_def).
