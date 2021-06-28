@@ -28,3 +28,6 @@ Proof.
   rewrite -[x](eta α).
   by move: {x} (elim α x).
 Defined.
+
+
+Infix "×" := prod (at level 10).
