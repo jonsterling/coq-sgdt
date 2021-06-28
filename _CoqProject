@@ -4,3 +4,4 @@
 theories/Prelude.v
 theories/GuardedLF.v
 theories/Printing.v
+theories/Monoid.v
