@@ -169,7 +169,7 @@ Module Effect (O : Printable).
   Proof.
     move=> f x.
     apply: (bind x).
-      by move=> z; apply/η/f/z.
+    by move=> z; apply/η/f/z.
   Defined.
 
   Lemma seq_assoc {A B C : Type} `{𝔼_alg C} :
@@ -186,7 +186,7 @@ Module Effect (O : Printable).
   Proof.
     move=> M.
     rewrite (_ : η♯ M = M >>= η); first by [].
-      by rewrite bindr.
+    by rewrite bindr.
   Qed.
 
   Lemma seq_fun {A B C : Type} `{𝔼_alg C}:
