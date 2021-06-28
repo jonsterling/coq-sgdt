@@ -26,6 +26,17 @@ Module Effect (O : Printable).
   Definition 𝔼_alg_hom {A B} `{𝔼_alg A} `{𝔼_alg B} (f : A → B) : Prop :=
     ∀ x, f (push x) = push (𝔼_map f x).
 
+  Lemma 𝔼_alg_hom_cmp {A B C} `{𝔼_alg A} `{𝔼_alg B} `{𝔼_alg C} (f : A → B) (g : B → C) : 𝔼_alg_hom f → 𝔼_alg_hom g → 𝔼_alg_hom (g \o f).
+  Proof.
+    move=> fhom ghom x /=.
+    rewrite fhom /𝔼_map ghom; congr push.
+    rewrite /𝔼_map /=; congr (_,_).
+    move: {x} x.2 => x.
+    by rewrite Later.map_assoc.
+  Qed.
+
+
+
   Inductive F' (A : Type) (R : ▷ Type) :=
   | now : A → F' A R
   | step : O → dlater R → F' A R.
@@ -78,15 +89,6 @@ Module Effect (O : Printable).
 
     Lemma extend_extends {A B} `{𝔼_alg B} (f : A → B) : ∀ x, f ♯ (η x) = f x.
     Proof. by move=> x; rewrite /extend /η Later.loeb_unfold beta. Qed.
-
-    Lemma 𝔼_alg_hom_cmp {A B C} `{𝔼_alg A} `{𝔼_alg B} `{𝔼_alg C} (f : A → B) (g : B → C) : 𝔼_alg_hom f → 𝔼_alg_hom g → 𝔼_alg_hom (g \o f).
-    Proof.
-      move=> fhom ghom x /=.
-      rewrite fhom /𝔼_map ghom; congr push.
-      rewrite /𝔼_map /=; congr (_,_).
-      move: {x} x.2 => x.
-        by rewrite Later.map_assoc.
-    Qed.
 
     Lemma extend_is_hom {A B} {pushB : 𝔼_alg B} (f : A → B) : 𝔼_alg_hom f♯.
     Proof. by move=>?; rewrite {1}/extend Later.loeb_unfold /push /F_is_𝔼_alg ?beta. Qed.
