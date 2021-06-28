@@ -44,9 +44,18 @@ Section Free.
 
   HB.instance Definition F_LModule := IsLModule.Build M F F_act F_actI F_actA.
 
-  Context (Z : LModule.type M).
+  Definition η : A → F.
+  Proof.
+    move=> a; split.
+    - exact: ϵ.
+    - exact: a.
+  Defined.
 
-  Definition ext (f : A → Z) : F → Z.
+  Context (Z : LModule.type M) (f : A → Z).
+
+  Definition extends (h : F → Z) := ∀ x, h (η x) = f x.
+
+  Definition ext : F → Z.
   Proof.
     move=> m.
     apply: act.
@@ -55,29 +64,22 @@ Section Free.
       exact: m.2.
   Defined.
 
-  Definition η : A → F.
-  Proof.
-    move=> a; split.
-    - exact: ϵ.
-    - exact: a.
-  Defined.
+  Lemma ext_hom : is_lmod_hom ext.
+  Proof. by move=> ? /= [? ?]; rewrite /ext /= actA. Qed.
 
-  Lemma extends_uniq : ∀ f (h0 h1 : F → Z), is_lmod_hom h0 → is_lmod_hom h1 → (∀ x, h0 (η x) = f x) → (∀ x, h1 (η x) = f x) → h0 = h1.
+  Lemma ext_extends : extends ext.
+  Proof. by move=> ?; rewrite /η /ext actI. Qed.
+
+  Lemma yank_action : ∀ h : F → Z, is_lmod_hom h → extends h → ∀ u a, h (u, a) = act u (h (η a)).
+  Proof. by move=> h hhom hext u a; rewrite /η -hhom /act /= /F_act addR. Qed.
+
+  Lemma extends_uniq : ∀ (h0 h1 : F → Z), is_lmod_hom h0 → is_lmod_hom h1 → extends h0 → extends h1 → h0 = h1.
   Proof.
-    move=> f h0 h1 hom0 hom1 ext0 ext1.
+    move=> h0 h1 hom0 hom1 ext0 ext1.
     apply: funext; case=> u a.
-    have -> : (h0 (u, a)) = act u (h0 (η a)) by have Q := hom0 u (η a); rewrite /η {1}/act /= /F_act /= addR in Q.
-    have -> : (h1 (u, a)) = act u (h1 (η a)) by have Q := hom1 u (η a); rewrite /η {1}/act /= /F_act /= addR in Q.
-    by rewrite ext0 ext1.
+    by rewrite (yank_action h0); last rewrite (yank_action h1); last rewrite ext0 ext1.
   Qed.
 
-
-  Lemma ext_extends : ∀ f x, ext f (η x) = f x.
-  Proof. by move=> f x; rewrite /η /ext actI. Qed.
-
-  Lemma ext_hom : ∀ f, is_lmod_hom (ext f).
-  Proof. by move=> f u /= [v a]; rewrite /ext /= actA. Qed.
-
-  Lemma ext_universal : ∀ f (h : F → Z), is_lmod_hom h → (∀ x, h (η x) = f x) → h = ext f.
-  Proof. by move=> f h hom hf; apply/extends_uniq/ext_extends/hf/ext_hom/hom. Qed.
+  Lemma ext_universal : ∀ (h : F → Z), is_lmod_hom h → (∀ x, h (η x) = f x) → h = ext.
+  Proof. by move=> h hom hf; apply/extends_uniq/ext_extends/hf/ext_hom/hom. Qed.
 End Free.
