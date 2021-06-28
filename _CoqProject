@@ -1,0 +1,6 @@
+-R theories/ SGDT
+-arg -w
+-arg all
+theories/Prelude.v
+theories/GuardedLF.v
+theories/Printing.v
