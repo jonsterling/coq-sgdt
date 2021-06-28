@@ -8,7 +8,7 @@ Module Type Printable.
 End Printable.
 
 
-Module PrintEffect (O : Printable).
+Module Effect (O : Printable).
   Import O.
 
   Definition 𝔼 A := O × ▷ A.
@@ -60,53 +60,57 @@ Module PrintEffect (O : Printable).
   Definition η {A : Type} : A → F A.
   Proof. move=> x; apply/F_intro/now/x. Defined.
 
-  Definition extend {A B} `{𝔼_alg B} (f : A → B) : F A → B.
-  Proof.
-    apply: Later.loeb => f'.
-    case/F_elim.
-    - exact: f.
-    - move=> o /(elim dlater_next) x.
-      apply: push; split.
-      + exact: o.
-      + exact: (f' ⊛ x).
-  Defined.
+  Module UniversalProperty.
+    Definition extend {A B} `{𝔼_alg B} (f : A → B) : F A → B.
+    Proof.
+      apply: Later.loeb => f'.
+      case/F_elim.
+      - exact: f.
+      - move=> o /(elim dlater_next) x.
+        apply: push; split.
+        + exact: o.
+        + exact: (f' ⊛ x).
+    Defined.
 
-  Notation "f ♯" := (extend f) (at level 0).
+    Notation "f ♯" := (extend f) (at level 0).
 
-  Lemma extend_extends {A B} `{𝔼_alg B} (f : A → B) : ∀ x, f ♯ (η x) = f x.
-  Proof. by move=> x; rewrite /extend /η Later.loeb_unfold beta. Qed.
+    Lemma extend_extends {A B} `{𝔼_alg B} (f : A → B) : ∀ x, f ♯ (η x) = f x.
+    Proof. by move=> x; rewrite /extend /η Later.loeb_unfold beta. Qed.
 
-  Lemma 𝔼_alg_hom_cmp {A B C} `{𝔼_alg A} `{𝔼_alg B} `{𝔼_alg C} (f : A → B) (g : B → C) : 𝔼_alg_hom f → 𝔼_alg_hom g → 𝔼_alg_hom (g \o f).
-  Proof.
-    move=> fhom ghom x /=.
-    rewrite fhom /𝔼_map ghom; congr push.
-    rewrite /𝔼_map /=; congr (_,_).
-    move: {x} x.2 => x.
-      by rewrite Later.map_assoc.
-  Qed.
+    Lemma 𝔼_alg_hom_cmp {A B C} `{𝔼_alg A} `{𝔼_alg B} `{𝔼_alg C} (f : A → B) (g : B → C) : 𝔼_alg_hom f → 𝔼_alg_hom g → 𝔼_alg_hom (g \o f).
+    Proof.
+      move=> fhom ghom x /=.
+      rewrite fhom /𝔼_map ghom; congr push.
+      rewrite /𝔼_map /=; congr (_,_).
+      move: {x} x.2 => x.
+        by rewrite Later.map_assoc.
+    Qed.
 
-  Lemma extend_is_hom {A B} {pushB : 𝔼_alg B} (f : A → B) : 𝔼_alg_hom f♯.
-  Proof. by move=>?; rewrite {1}/extend Later.loeb_unfold /push /F_is_𝔼_alg ?beta. Qed.
+    Lemma extend_is_hom {A B} {pushB : 𝔼_alg B} (f : A → B) : 𝔼_alg_hom f♯.
+    Proof. by move=>?; rewrite {1}/extend Later.loeb_unfold /push /F_is_𝔼_alg ?beta. Qed.
 
 
-  Lemma extend_uniq {A B} {pushB : 𝔼_alg B} (f : A → B) : ∀ h : F A → B, 𝔼_alg_hom h → (∀ x, h (η x) = f x) → h = extend f.
-  Proof.
-    move=> h h_hom H.
-    apply: funext.
-    apply: (push_iso F_def).
-    apply: Later.loeb => ih.
-    elim.
-    - by move=> ?; rewrite H /extend Later.loeb_unfold beta.
-    - move=> o.
-      apply: (push_iso dlater_next) => l.
-      rewrite /𝔼_alg_hom /push /F_is_𝔼_alg in h_hom.
-      rewrite (h_hom (o, l)) /extend Later.loeb_unfold beta /push /𝔼_map.
-      congr pushB; congr (_,_); rewrite beta /Later.map; congr (_⊛_).
-      apply: Later.from_eq.
-      move: ih; apply: Later.map => ih.
+    Lemma extend_uniq {A B} {pushB : 𝔼_alg B} (f : A → B) : ∀ h : F A → B, 𝔼_alg_hom h → (∀ x, h (η x) = f x) → h = extend f.
+    Proof.
+      move=> h h_hom H.
       apply: funext.
-        by apply: (push_iso F_def).
-  Qed.
+      apply: (push_iso F_def).
+      apply: Later.loeb => ih.
+      elim.
+      - by move=> ?; rewrite H /extend Later.loeb_unfold beta.
+      - move=> o.
+        apply: (push_iso dlater_next) => l.
+        rewrite /𝔼_alg_hom /push /F_is_𝔼_alg in h_hom.
+        rewrite (h_hom (o, l)) /extend Later.loeb_unfold beta /push /𝔼_map.
+        congr pushB; congr (_,_); rewrite beta /Later.map; congr (_⊛_).
+        apply: Later.from_eq.
+        move: ih; apply: Later.map => ih.
+        apply: funext.
+          by apply: (push_iso F_def).
+    Qed.
+  End UniversalProperty.
+
+  Import UniversalProperty.
 
   Definition bind {A B : Type} : F A → (A → F B) → F B.
   Proof. by move/[swap]; apply: extend. Defined.
@@ -114,29 +118,33 @@ Module PrintEffect (O : Printable).
   Infix ">>=" := bind (at level 10).
 
 
-  Lemma bindr {A : Type} : ∀ (m : F A), m >>= η = m.
-  Proof.
-    apply: unfunext; symmetry.
-    apply: extend_uniq; last by [].
-    move=> [o m].
-    rewrite /𝔼_map /=.
-    congr (push (_,_)).
-    move: m; apply: Later.loeb => ih m.
-      by rewrite /Later.map Later.ap_id.
-  Qed.
 
-  Lemma bindl {A B : Type} : ∀ (x : A) (k : A → F B), η x >>= k = k x.
-  Proof. by move=>??; rewrite /η /bind /extend Later.loeb_unfold beta. Qed.
+  Module MonadLaws.
+    Lemma bindr {A : Type} : ∀ (m : F A), m >>= η = m.
+    Proof.
+      apply: unfunext; symmetry.
+      apply: extend_uniq; last by [].
+      move=> [o m].
+      rewrite /𝔼_map /=.
+      congr (push (_,_)).
+      move: m; apply: Later.loeb => ih m.
+        by rewrite /Later.map Later.ap_id.
+    Qed.
+
+    Lemma bindl {A B : Type} : ∀ (x : A) (k : A → F B), η x >>= k = k x.
+    Proof. by move=>??; rewrite /η /bind /extend Later.loeb_unfold beta. Qed.
 
 
-  Lemma binda {A B C : Type} : ∀ (m : F A) (g : A → F B) (h : B → F C), (m >>= g) >>= h = m >>= (λ x, g x >>= h).
-  Proof.
-    move=> m g h; move: m.
-    apply: unfunext; apply: extend_uniq.
-    - by rewrite /bind; apply: 𝔼_alg_hom_cmp; apply: extend_is_hom.
-    - by move=> ?; rewrite bindl.
-  Qed.
+    Lemma binda {A B C : Type} : ∀ (m : F A) (g : A → F B) (h : B → F C), (m >>= g) >>= h = m >>= (λ x, g x >>= h).
+    Proof.
+      move=> m g h; move: m.
+      apply: unfunext; apply: extend_uniq.
+      - by rewrite /bind; apply: 𝔼_alg_hom_cmp; apply: extend_is_hom.
+      - by move=> ?; rewrite bindl.
+    Qed.
+  End MonadLaws.
 
+  Import MonadLaws.
 
   Definition ltr_alg_from_𝔼_alg {A : Type} {pushA : 𝔼_alg A} : ▷ A → A.
   Proof.
@@ -187,4 +195,4 @@ Module PrintEffect (O : Printable).
     - by move=> ?; rewrite extend_extends.
   Qed.
 
-End PrintEffect.
+End Effect.
