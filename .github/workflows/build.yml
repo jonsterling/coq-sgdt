@@ -1,0 +1,31 @@
+name: build
+
+# Controls when the action will run.
+on: [push,pull_request]
+
+
+jobs:
+  build:
+    runs-on: ubuntu-latest  # container actions require GNU/Linux
+    strategy:
+      matrix:
+        coq_version:
+          - '8.13'
+        ocaml_version:
+          - '4.11-flambda'
+      fail-fast: false  # don't stop jobs if one fails
+    steps:
+      - uses: actions/checkout@v2
+      - uses: coq-community/docker-coq-action@v1
+        with:
+          opam_file: 'coq-domains.opam'
+          coq_version: ${{ matrix.coq_version }}
+          ocaml_version: ${{ matrix.ocaml_version }}
+          before_script: |
+            startGroup "Workaround permission issue"
+              sudo chown -R coq:coq .
+            endGroup
+          script: |
+            startGroup "Build project"
+              make
+            endGroup

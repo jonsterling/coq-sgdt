@@ -1,0 +1,46 @@
+name: deploy
+
+# Controls when the action will run.
+on:
+  # Triggers the workflow on push or pull request events but only for the main branch
+  push:
+    branches: [ main ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+
+jobs:
+  build:
+    runs-on: ubuntu-latest  # container actions require GNU/Linux
+    strategy:
+      matrix:
+        coq_version:
+          - '8.13'
+        ocaml_version:
+          - '4.11-flambda'
+      fail-fast: false  # don't stop jobs if one fails
+    steps:
+      - uses: actions/checkout@v2
+      - uses: coq-community/docker-coq-action@v1
+        with:
+          opam_file: 'coq-domains.opam'
+          coq_version: ${{ matrix.coq_version }}
+          ocaml_version: ${{ matrix.ocaml_version }}
+          before_script: |
+            startGroup "Workaround permission issue"
+              sudo chown -R coq:coq .
+            endGroup
+          script: |
+            startGroup "Build project"
+              make
+            endGroup
+
+      - uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          force_orphan: false
+          keep_files: true
+          publish_dir: ./html
+
+
