@@ -29,10 +29,7 @@ Module Effect (O : Printable).
   Lemma 𝔼_alg_hom_cmp {A B C} `{𝔼_alg A} `{𝔼_alg B} `{𝔼_alg C} (f : A → B) (g : B → C) : 𝔼_alg_hom f → 𝔼_alg_hom g → 𝔼_alg_hom (g \o f).
   Proof.
     move=> fhom ghom x /=.
-    rewrite fhom /𝔼_map ghom; congr push.
-    rewrite /𝔼_map /=; congr (_,_).
-    move: {x} x.2 => x.
-    by rewrite Later.map_assoc.
+    by rewrite fhom /𝔼_map ghom /𝔼_map /= Later.map_assoc.
   Qed.
 
 
@@ -55,11 +52,10 @@ Module Effect (O : Printable).
   Instance F_is_𝔼_alg {A} : 𝔼_alg (F A).
   Proof.
     move=> x.
-    apply: F_intro.
-    apply: step.
-    - exact: (fst x).
+    apply/F_intro/step.
+    - exact: x.1.
     - apply: (intro dlater_next).
-      exact: (snd x).
+      exact: x.2.
   Defined.
 
   Instance FunAlg {A B} `{𝔼_alg B} : 𝔼_alg (A → B).
@@ -111,7 +107,7 @@ Module Effect (O : Printable).
         apply: Later.from_eq.
         move: ih; apply: Later.map => ih.
         apply: funext.
-          by apply: (push_iso F_def).
+        by apply: (push_iso F_def).
     Qed.
   End UniversalProperty.
 
@@ -127,24 +123,19 @@ Module Effect (O : Printable).
   Module MonadLaws.
     Lemma bindr {A : Type} : ∀ (m : F A), m >>= η = m.
     Proof.
-      apply: unfunext; symmetry.
-      apply: extend_uniq; last by [].
-      move=> [o m].
-      rewrite /𝔼_map /=.
-      congr (push (_,_)).
-      move: m; apply: Later.loeb => ih m.
-        by rewrite /Later.map Later.ap_id.
+      apply: unfunext.
+      rewrite [id](extend_uniq η) // => [[o m]].
+      by rewrite /𝔼_map /= map_id.
     Qed.
 
     Lemma bindl {A B : Type} : ∀ (x : A) (k : A → F B), η x >>= k = k x.
     Proof. by move=>??; rewrite /η /bind /extend Later.loeb_unfold beta. Qed.
 
-
     Lemma binda {A B C : Type} : ∀ (m : F A) (g : A → F B) (h : B → F C), (m >>= g) >>= h = m >>= (λ x, g x >>= h).
     Proof.
-      move=> m g h; move: m.
-      apply: unfunext; apply: extend_uniq.
-      - by rewrite /bind; apply: 𝔼_alg_hom_cmp; apply: extend_is_hom.
+      move=> + g h.
+      apply/unfunext/extend_uniq.
+      - by rewrite /bind; apply: 𝔼_alg_hom_cmp; exact: extend_is_hom.
       - by move=> ?; rewrite bindl.
     Qed.
   End MonadLaws.
@@ -177,24 +168,22 @@ Module Effect (O : Printable).
       P♯ (N♯ M) = (P♯ \o N)♯ M.
   Proof.
     move=> M N P; move: M.
-    apply: unfunext; apply: extend_uniq.
-    - by apply: 𝔼_alg_hom_cmp; apply: extend_is_hom.
-    - by move=> x; rewrite extend_extends.
+    apply/unfunext/extend_uniq.
+    - by apply: 𝔼_alg_hom_cmp; exact: extend_is_hom.
+    - by move=> ?; rewrite extend_extends.
   Qed.
 
   Lemma seq_ret {A : Type} : ∀ M : F A, η♯ M = M.
   Proof.
     move=> M.
-    rewrite (_ : η♯ M = M >>= η); first by [].
-    by rewrite bindr.
+    by rewrite (_ : η♯ M = M >>= η) // bindr.
   Qed.
 
   Lemma seq_fun {A B C : Type} `{𝔼_alg C}:
     ∀ (M : F A) (N : A → B → C),
       N ♯ M = λ y, (N^~ y)♯ M.
   Proof.
-    move=> M N; apply: funext => O; move: M; apply: unfunext.
-    apply: extend_uniq.
+    move=> M N; apply: funext => O; move: M; apply/unfunext/extend_uniq.
     - by move=> ?; rewrite extend_is_hom {1}/push /FunAlg /𝔼_map Later.map_assoc /=.
     - by move=> ?; rewrite extend_extends.
   Qed.

@@ -25,9 +25,7 @@ Notation "◻" := Type.
 Lemma push_iso {A B C} (α : A ≅ B) : (∀ x : A, C (intro α x)) → ∀ x : B, C x.
 Proof.
   move=> H x.
-  rewrite -[x](eta α).
-  by move: {x} (elim α x).
+  by rewrite -[x](eta α).
 Defined.
-
 
 Infix "×" := prod (at level 10).

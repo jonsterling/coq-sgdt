@@ -20,8 +20,8 @@ Module Later.
   Axiom ap_compute : ∀ {A B} (f : A → B) (x : A), next f ⊛ next x = next (f x).
   Axiom ap_id : ∀ {A} (x : ▷ A), next id ⊛ x = x.
 
-  Definition map {A B} : (A → B) → later A → later B :=
-    fun f x => next f ⊛ x.
+  Definition map {A B} (f : A → B) (x : later A) : later B :=
+    next f ⊛ x.
 
   Axiom loeb : ∀ {A} (f : ▷ A → A), A.
   Axiom map_assoc : ∀ {A B C} (f : A → B) (g : B → C) x, map g (map f x) = map (g \o f) x.
@@ -46,3 +46,8 @@ Qed.
 
 Export Later.ApNotation.
 Infix "<$>" := Later.map (at level 50).
+
+Theorem map_id {A} (x : ▷ A) : id <$> x = x.
+Proof.
+  by rewrite /Later.map Later.ap_id.
+Qed.
