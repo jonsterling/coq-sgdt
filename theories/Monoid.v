@@ -77,7 +77,7 @@ Section Free.
   Proof.
     move=> h0 h1 hom0 hom1 ext0 ext1.
     apply: funext; case=> u a.
-    by rewrite (yank_action h0); last rewrite (yank_action h1); last rewrite ext0 ext1.
+    by rewrite (yank_action h0) // (yank_action h1) // ext0 ext1.
   Qed.
 
   Lemma ext_universal : ∀ (h : F → Z), is_lmod_hom h → (∀ x, h (η x) = f x) → h = ext.
