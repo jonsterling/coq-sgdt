@@ -59,3 +59,10 @@ Definition intro {A A'} `{Connective A A'} : A' → A := fwd conn_def.
 Definition elim {A A'} `{Connective A A'} : A → A' := bwd conn_def.
 Definition beta {A A'} `{Connective A A'} : ∀ x, elim (intro x) = x := bwd_fwd conn_def.
 Definition eta {A A'} `{Connective A A'} : ∀ x, intro (elim x) = x := fwd_bwd conn_def.
+
+
+Lemma push_conn {A B C} `{Connective B A} : (∀ x : A, C (intro x)) → ∀ x : B, C x.
+Proof.
+  move=> K x.
+  by rewrite -[x](@eta B A).
+Defined.

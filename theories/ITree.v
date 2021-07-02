@@ -70,18 +70,32 @@ Proof.
 Defined.
 
 Class Alg E (A : Type) :=
-  {do : Action E A → A}.
+  {do_action : Action E A → A}.
+
+Definition do {E : Thy} {A : Type} `{Alg E A} (e : E) (k : bdry e → ▷ A) : A.
+Proof.
+  apply: do_action.
+  esplit; apply: k.
+Defined.
 
 Instance ITree_Alg {E} {R} : Alg E (ITree E R).
 Proof. by split; move=> α; apply/intro/Do/kont/α. Defined.
 
 Class alg_hom {E} {A B} `{Alg E A} `{Alg E B} (f : A → B) : Prop :=
-  {pres_do : ∀ α, f (do α) = do (Action_map f α)}.
+  {pres_do_action : ∀ α, f (do_action α) = do_action (Action_map f α)}.
+
+Lemma pres_do {E} {A B} {f : A → B} `{alg_hom E A B f} :
+  ∀ e (k : bdry e → ▷ A), f (do e k) = do e (Later.map f \o k).
+Proof.
+  move=> e k.
+  rewrite /do.
+  apply: pres_do_action.
+Qed.
 
 Instance FunAlg {E} {A B} `{Alg E B} : Alg E (A → B).
 Proof.
   split=> f x.
-  apply: do.
+  apply: do_action.
   move: f; apply: Action_map.
   apply; exact: x.
 Defined.
@@ -99,26 +113,21 @@ Module UniversalProperty.
     Lemma extends_unique (f : A → B) (h h' : ITree E A → B) {hhom : alg_hom h} {h'hom : alg_hom h'} : extends f h → extends f h' → h = h'.
     Proof.
       move=> hext h'ext.
-      apply: funext.
-      apply: (push_iso conn_def).
+      apply: funext; apply: push_conn.
       apply: Later.loeb=>ih.
       case.
       - by move=>?; rewrite hext h'ext.
       - move=> e k.
-        case: hhom => hhom.
-        case: h'hom => h'hom.
-        rewrite (hhom {| eff := e; kont := k |}).
-        rewrite (h'hom {| eff := e; kont := k |}).
+        have -> : (intro (Do e k) = do e k) by [].
+        rewrite ? pres_do.
         congr do.
-        rewrite /Action_map.
-        congr Build_Action.
-        apply: funext => /= i.
+        apply: funext=>/=i.
         congr Later.ap.
         apply: Later.from_eq.
         move: ih.
         apply: Later.map => H'.
         apply: funext.
-        by apply: (push_iso conn_def).
+        by apply: push_conn.
     Qed.
 
     Definition ext (f : A → B) : ITree E A → B.
@@ -127,7 +136,7 @@ Module UniversalProperty.
       case/elim.
       - exact: f.
       - move=> e k.
-        apply: do; exists e; move/k.
+        apply: (do e); move/k.
         move: f'.
         apply: Later.ap.
     Defined.
