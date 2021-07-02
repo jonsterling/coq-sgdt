@@ -1,0 +1,132 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<link href="coqdoc.css" rel="stylesheet" type="text/css" />
+<link href="coqdocjs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="config.js"></script>
+<script type="text/javascript" src="coqdocjs.js"></script>
+</head>
+
+<body onload="document.getElementById('content').focus()">
+  <div id="header">
+    <span class="left">
+      <span class="modulename"> <script> document.write(document.title) </script> </span>
+    </span>
+
+    <span class="button" id="toggle-proofs"></span>
+
+    <span class="right">
+      <a href="../">Project Page</a>
+      <a href="./indexpage.html"> Index </a>
+      <a href="./toc.html"> Table of Contents </a>
+    </span>
+</div>
+    <div id="content" tabindex="-1" onblur="document.getElementById('content').focus()">
+    <div id="main">
+<h1 class="libtitle">SGDT.ITree</h1>
+
+<div class="code">
+<span class="id" title="keyword">From</span> <span class="id" title="var">SGDT</span> <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <a class="idref" href="SGDT.Prelude.html#"><span class="id" title="library">Prelude</span></a> <a class="idref" href="SGDT.GuardedLF.html#"><span class="id" title="library">GuardedLF</span></a>.<br/>
+
+<br/>
+<span class="id" title="keyword">Set</span> <span class="id" title="var">Universe</span> <span class="id" title="var">Polymorphism</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Record</span> <a id="Thy" class="idref" href="#Thy"><span class="id" title="record">Thy</span></a> :=<br/>
+&nbsp;&nbsp;{<a id="op" class="idref" href="#op"><span class="id" title="projection">op</span></a> :&gt; <span class="id" title="keyword">Type</span>;<br/>
+&nbsp;&nbsp;&nbsp;<a id="bdry" class="idref" href="#bdry"><span class="id" title="projection">bdry</span></a> : <a class="idref" href="SGDT.ITree.html#op:2"><span class="id" title="method">op</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.13.2/stdlib//Coq.Unicode.Utf8_core.html#c41c566ddac4c1298b9e7dd2bae1c794"><span class="id" title="notation">→</span></a> <span class="id" title="keyword">Type</span>}.<br/>
+
+<br/>
+<span class="id" title="var">Arguments</span> <a class="idref" href="SGDT.ITree.html#bdry"><span class="id" title="projection">bdry</span></a> [<span class="id" title="var">_</span>] <span class="id" title="var">_</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Section</span> <a id="ITree" class="idref" href="#ITree"><span class="id" title="section">ITree</span></a>.<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Context</span> (<a id="E:4" class="idref" href="#E:4"><span class="id" title="binder">E</span></a> : <a class="idref" href="SGDT.ITree.html#Thy"><span class="id" title="record">Thy</span></a>) (<a id="R:5" class="idref" href="#R:5"><span class="id" title="binder">R</span></a> : <span class="id" title="keyword">Type</span>).<br/>
+
+<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Inductive</span> <a id="ITree_F" class="idref" href="#ITree_F"><span class="id" title="inductive">ITree_F</span></a> (<a id="T:6" class="idref" href="#T:6"><span class="id" title="binder">T</span></a> : <span class="id" title="keyword">Type</span>) : <span class="id" title="keyword">Type</span> :=<br/>
+&nbsp;&nbsp;| <a id="Ret" class="idref" href="#Ret"><span class="id" title="constructor">Ret</span></a> (<a id="r:9" class="idref" href="#r:9"><span class="id" title="binder">r</span></a> : <a class="idref" href="SGDT.ITree.html#ITree.R"><span class="id" title="variable">R</span></a>)<br/>
+&nbsp;&nbsp;| <a id="Do" class="idref" href="#Do"><span class="id" title="constructor">Do</span></a> (<a id="e:10" class="idref" href="#e:10"><span class="id" title="binder">e</span></a> : <a class="idref" href="SGDT.ITree.html#ITree.E"><span class="id" title="variable">E</span></a>) (<a id="k:11" class="idref" href="#k:11"><span class="id" title="binder">k</span></a> : <a class="idref" href="SGDT.ITree.html#bdry"><span class="id" title="projection">bdry</span></a> <a class="idref" href="SGDT.ITree.html#e:10"><span class="id" title="variable">e</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.13.2/stdlib//Coq.Unicode.Utf8_core.html#c41c566ddac4c1298b9e7dd2bae1c794"><span class="id" title="notation">→</span></a> <a class="idref" href="SGDT.ITree.html#T:6"><span class="id" title="variable">T</span></a>).<br/>
+
+<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Definition</span> <a id="ITree_F_map" class="idref" href="#ITree_F_map"><span class="id" title="definition">ITree_F_map</span></a> {<a id="S:12" class="idref" href="#S:12"><span class="id" title="binder">S</span></a> <a id="T:13" class="idref" href="#T:13"><span class="id" title="binder">T</span></a> : <span class="id" title="keyword">Type</span>} : <a class="idref" href="http://coq.inria.fr/distrib/V8.13.2/stdlib//Coq.Unicode.Utf8_core.html#c41c566ddac4c1298b9e7dd2bae1c794"><span class="id" title="notation">(</span></a><a class="idref" href="SGDT.ITree.html#S:12"><span class="id" title="variable">S</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.13.2/stdlib//Coq.Unicode.Utf8_core.html#c41c566ddac4c1298b9e7dd2bae1c794"><span class="id" title="notation">→</span></a> <a class="idref" href="SGDT.ITree.html#T:13"><span class="id" title="variable">T</span></a><a class="idref" href="http://coq.inria.fr/distrib/V8.13.2/stdlib//Coq.Unicode.Utf8_core.html#c41c566ddac4c1298b9e7dd2bae1c794"><span class="id" title="notation">)</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.13.2/stdlib//Coq.Unicode.Utf8_core.html#c41c566ddac4c1298b9e7dd2bae1c794"><span class="id" title="notation">→</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.13.2/stdlib//Coq.Unicode.Utf8_core.html#c41c566ddac4c1298b9e7dd2bae1c794"><span class="id" title="notation">(</span></a><a class="idref" href="SGDT.ITree.html#ITree_F"><span class="id" title="inductive">ITree_F</span></a> <a class="idref" href="SGDT.ITree.html#S:12"><span class="id" title="variable">S</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.13.2/stdlib//Coq.Unicode.Utf8_core.html#c41c566ddac4c1298b9e7dd2bae1c794"><span class="id" title="notation">→</span></a> <a class="idref" href="SGDT.ITree.html#ITree_F"><span class="id" title="inductive">ITree_F</span></a> <a class="idref" href="SGDT.ITree.html#T:13"><span class="id" title="variable">T</span></a><a class="idref" href="http://coq.inria.fr/distrib/V8.13.2/stdlib//Coq.Unicode.Utf8_core.html#c41c566ddac4c1298b9e7dd2bae1c794"><span class="id" title="notation">)</span></a>.<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">move</span>=&gt; <span class="id" title="var">α</span>; <span class="id" title="tactic">case</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;- <span class="id" title="tactic">apply</span>: <a class="idref" href="SGDT.ITree.html#Ret"><span class="id" title="constructor">Ret</span></a>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;- <span class="id" title="tactic">move</span>=&gt; <span class="id" title="var">e</span> <span class="id" title="var">f</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">apply</span>: <a class="idref" href="SGDT.ITree.html#Do"><span class="id" title="constructor">Do</span></a>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">by</span> <span class="id" title="tactic">move</span>/<span class="id" title="var">f</span>/<span class="id" title="var">α</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Defined</span>.<br/>
+
+<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Definition</span> <a id="ITree_F_iso" class="idref" href="#ITree_F_iso"><span class="id" title="definition">ITree_F_iso</span></a> {<a id="S:14" class="idref" href="#S:14"><span class="id" title="binder">S</span></a> <a id="T:15" class="idref" href="#T:15"><span class="id" title="binder">T</span></a> : <span class="id" title="keyword">Type</span>} : <a class="idref" href="http://coq.inria.fr/distrib/V8.13.2/stdlib//Coq.Unicode.Utf8_core.html#c41c566ddac4c1298b9e7dd2bae1c794"><span class="id" title="notation">(</span></a><a class="idref" href="SGDT.ITree.html#S:14"><span class="id" title="variable">S</span></a> <a class="idref" href="SGDT.Prelude.html#60c42238b744dea737e9468b1aa7882e"><span class="id" title="notation">≅</span></a> <a class="idref" href="SGDT.ITree.html#T:15"><span class="id" title="variable">T</span></a><a class="idref" href="http://coq.inria.fr/distrib/V8.13.2/stdlib//Coq.Unicode.Utf8_core.html#c41c566ddac4c1298b9e7dd2bae1c794"><span class="id" title="notation">)</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.13.2/stdlib//Coq.Unicode.Utf8_core.html#c41c566ddac4c1298b9e7dd2bae1c794"><span class="id" title="notation">→</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.13.2/stdlib//Coq.Unicode.Utf8_core.html#c41c566ddac4c1298b9e7dd2bae1c794"><span class="id" title="notation">(</span></a><a class="idref" href="SGDT.ITree.html#ITree_F"><span class="id" title="inductive">ITree_F</span></a> <a class="idref" href="SGDT.ITree.html#S:14"><span class="id" title="variable">S</span></a> <a class="idref" href="SGDT.Prelude.html#60c42238b744dea737e9468b1aa7882e"><span class="id" title="notation">≅</span></a> <a class="idref" href="SGDT.ITree.html#ITree_F"><span class="id" title="inductive">ITree_F</span></a> <a class="idref" href="SGDT.ITree.html#T:15"><span class="id" title="variable">T</span></a><a class="idref" href="http://coq.inria.fr/distrib/V8.13.2/stdlib//Coq.Unicode.Utf8_core.html#c41c566ddac4c1298b9e7dd2bae1c794"><span class="id" title="notation">)</span></a>.<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">move</span>=&gt; <span class="id" title="var">α</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">unshelve</span> <span class="id" title="var">esplit</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;- <span class="id" title="tactic">apply</span>/<a class="idref" href="SGDT.ITree.html#ITree_F_map"><span class="id" title="definition">ITree_F_map</span></a>/(<a class="idref" href="SGDT.Prelude.html#fwd"><span class="id" title="projection">fwd</span></a> <span class="id" title="var">α</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;- <span class="id" title="tactic">apply</span>/<a class="idref" href="SGDT.ITree.html#ITree_F_map"><span class="id" title="definition">ITree_F_map</span></a>/(<a class="idref" href="SGDT.Prelude.html#bwd"><span class="id" title="projection">bwd</span></a> <span class="id" title="var">α</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;- <span class="id" title="tactic">case</span>=&gt;//=.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">by</span> <span class="id" title="tactic">move</span>=&gt; ??; <span class="id" title="var">congr</span> <a class="idref" href="SGDT.ITree.html#Do"><span class="id" title="constructor">Do</span></a>; <span class="id" title="tactic">apply</span>: <a class="idref" href="SGDT.Prelude.html#funext"><span class="id" title="abbreviation">funext</span></a>=&gt;?; <span class="id" title="tactic">rewrite</span> <a class="idref" href="SGDT.Prelude.html#fwd_bwd"><span class="id" title="projection">fwd_bwd</span></a>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;- <span class="id" title="tactic">case</span>=&gt;//=.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">by</span> <span class="id" title="tactic">move</span>=&gt; ??; <span class="id" title="var">congr</span> <a class="idref" href="SGDT.ITree.html#Do"><span class="id" title="constructor">Do</span></a>; <span class="id" title="tactic">apply</span>: <a class="idref" href="SGDT.Prelude.html#funext"><span class="id" title="abbreviation">funext</span></a>=&gt;?; <span class="id" title="tactic">rewrite</span> <a class="idref" href="SGDT.Prelude.html#bwd_fwd"><span class="id" title="projection">bwd_fwd</span></a>.<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Defined</span>.<br/>
+
+<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Definition</span> <a id="ITree" class="idref" href="#ITree"><span class="id" title="definition">ITree</span></a> : <span class="id" title="keyword">Type</span> := <a class="idref" href="SGDT.GuardedLF.html#Later.loeb"><span class="id" title="axiom">Later.loeb</span></a> (<a class="idref" href="http://coq.inria.fr/distrib/V8.13.2/stdlib//Coq.Unicode.Utf8_core.html#bc1ad27deabe143d39d35abe6be2c1a4"><span class="id" title="notation">λ</span></a> <a id="T:16" class="idref" href="#T:16"><span class="id" title="binder">T</span></a><a class="idref" href="http://coq.inria.fr/distrib/V8.13.2/stdlib//Coq.Unicode.Utf8_core.html#bc1ad27deabe143d39d35abe6be2c1a4"><span class="id" title="notation">,</span></a> <a class="idref" href="SGDT.ITree.html#ITree_F"><span class="id" title="inductive">ITree_F</span></a> (<a class="idref" href="SGDT.GuardedLF.html#dlater"><span class="id" title="axiom">dlater</span></a> <a class="idref" href="SGDT.ITree.html#T:16"><span class="id" title="variable">T</span></a>)).<br/>
+
+<br/>
+&nbsp;&nbsp;#[<span class="id" title="var">global</span>]<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Instance</span> <a id="ITree_conn" class="idref" href="#ITree_conn"><span class="id" title="instance">ITree_conn</span></a> : <a class="idref" href="SGDT.Prelude.html#Connective"><span class="id" title="class">Connective</span></a> <a class="idref" href="SGDT.ITree.html#ITree"><span class="id" title="definition">ITree</span></a> (<a class="idref" href="SGDT.ITree.html#ITree_F"><span class="id" title="inductive">ITree_F</span></a> (<a class="idref" href="SGDT.GuardedLF.html#e091621b63af03ac2f4b95988bf1c15b"><span class="id" title="notation">▷</span></a> <a class="idref" href="SGDT.ITree.html#ITree"><span class="id" title="definition">ITree</span></a>)).<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Proof</span>. <span class="id" title="tactic">by</span> <span class="id" title="tactic">split</span>; <span class="id" title="tactic">apply</span>/<a class="idref" href="SGDT.Prelude.html#iso_trans"><span class="id" title="definition">iso_trans</span></a>/<a class="idref" href="SGDT.GuardedLF.html#loeb_iso"><span class="id" title="lemma">loeb_iso</span></a>/<a class="idref" href="SGDT.ITree.html#ITree_F_iso"><span class="id" title="definition">ITree_F_iso</span></a>/<a class="idref" href="SGDT.GuardedLF.html#dlater_next"><span class="id" title="axiom">dlater_next</span></a>. <span class="id" title="keyword">Defined</span>.<br/>
+<span class="id" title="keyword">End</span> <a class="idref" href="SGDT.ITree.html#ITree"><span class="id" title="section">ITree</span></a>.<br/>
+
+<br/>
+<span class="id" title="var">Arguments</span> <a class="idref" href="SGDT.ITree.html#Ret"><span class="id" title="constructor">Ret</span></a> [<span class="id" title="var">E</span>] [<span class="id" title="var">R</span>] [<span class="id" title="var">T</span>].<br/>
+<span class="id" title="var">Arguments</span> <a class="idref" href="SGDT.ITree.html#Do"><span class="id" title="constructor">Do</span></a> [<span class="id" title="var">E</span>] [<span class="id" title="var">R</span>] [<span class="id" title="var">T</span>].<br/>
+
+<br/>
+<span class="id" title="keyword">Section</span> <a id="Alg" class="idref" href="#Alg"><span class="id" title="section">Alg</span></a>.<br/>
+
+<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Context</span> (<a id="E:17" class="idref" href="#E:17"><span class="id" title="binder">E</span></a> : <a class="idref" href="SGDT.ITree.html#Thy"><span class="id" title="record">Thy</span></a>).<br/>
+
+<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Record</span> <a id="Action" class="idref" href="#Action"><span class="id" title="record">Action</span></a> (<a id="A:18" class="idref" href="#A:18"><span class="id" title="binder">A</span></a> : <span class="id" title="keyword">Type</span>) :=<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;{<a id="eff" class="idref" href="#eff"><span class="id" title="projection">eff</span></a> : <a class="idref" href="SGDT.ITree.html#Alg.E"><span class="id" title="variable">E</span></a>; <a id="kont" class="idref" href="#kont"><span class="id" title="projection">kont</span></a> : <a class="idref" href="SGDT.ITree.html#bdry"><span class="id" title="projection">bdry</span></a> <a class="idref" href="SGDT.ITree.html#eff:20"><span class="id" title="method">eff</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.13.2/stdlib//Coq.Unicode.Utf8_core.html#c41c566ddac4c1298b9e7dd2bae1c794"><span class="id" title="notation">→</span></a> <a class="idref" href="SGDT.GuardedLF.html#e091621b63af03ac2f4b95988bf1c15b"><span class="id" title="notation">▷</span></a> <a class="idref" href="SGDT.ITree.html#A:18"><span class="id" title="variable">A</span></a>}.<br/>
+
+<br/>
+&nbsp;&nbsp;<span class="id" title="var">Arguments</span> <a class="idref" href="SGDT.ITree.html#eff"><span class="id" title="projection">eff</span></a> [<span class="id" title="var">_</span>].<br/>
+&nbsp;&nbsp;<span class="id" title="var">Arguments</span> <a class="idref" href="SGDT.ITree.html#kont"><span class="id" title="projection">kont</span></a> [<span class="id" title="var">_</span>].<br/>
+
+<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Definition</span> <a id="Action_map" class="idref" href="#Action_map"><span class="id" title="definition">Action_map</span></a> {<a id="A:22" class="idref" href="#A:22"><span class="id" title="binder">A</span></a> <a id="B:23" class="idref" href="#B:23"><span class="id" title="binder">B</span></a> : <span class="id" title="keyword">Type</span>} (<a id="f:24" class="idref" href="#f:24"><span class="id" title="binder">f</span></a> : <a class="idref" href="SGDT.ITree.html#A:22"><span class="id" title="variable">A</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.13.2/stdlib//Coq.Unicode.Utf8_core.html#c41c566ddac4c1298b9e7dd2bae1c794"><span class="id" title="notation">→</span></a> <a class="idref" href="SGDT.ITree.html#B:23"><span class="id" title="variable">B</span></a>) : <a class="idref" href="SGDT.ITree.html#Action"><span class="id" title="record">Action</span></a> <a class="idref" href="SGDT.ITree.html#A:22"><span class="id" title="variable">A</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.13.2/stdlib//Coq.Unicode.Utf8_core.html#c41c566ddac4c1298b9e7dd2bae1c794"><span class="id" title="notation">→</span></a> <a class="idref" href="SGDT.ITree.html#Action"><span class="id" title="record">Action</span></a> <a class="idref" href="SGDT.ITree.html#B:23"><span class="id" title="variable">B</span></a>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">move</span>=&gt; <span class="id" title="var">α</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">unshelve</span> <span class="id" title="var">esplit</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;- <span class="id" title="tactic">exact</span>: <a class="idref" href="SGDT.ITree.html#eff"><span class="id" title="projection">eff</span></a> <span class="id" title="var">α</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;- <span class="id" title="tactic">move</span>=&gt; /(<a class="idref" href="SGDT.ITree.html#kont"><span class="id" title="projection">kont</span></a> <span class="id" title="var">α</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">apply</span>/<a class="idref" href="SGDT.GuardedLF.html#Later.map"><span class="id" title="definition">Later.map</span></a>/<span class="id" title="var">f</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Defined</span>.<br/>
+
+<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Class</span> <a id="Alg" class="idref" href="#Alg"><span class="id" title="record">Alg</span></a> (<a id="A:25" class="idref" href="#A:25"><span class="id" title="binder">A</span></a> : <span class="id" title="keyword">Type</span>) :=<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;{<a id="do" class="idref" href="#do"><span class="id" title="projection">do</span></a> : <a class="idref" href="SGDT.ITree.html#Action"><span class="id" title="record">Action</span></a> <a class="idref" href="SGDT.ITree.html#A:25"><span class="id" title="variable">A</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.13.2/stdlib//Coq.Unicode.Utf8_core.html#c41c566ddac4c1298b9e7dd2bae1c794"><span class="id" title="notation">→</span></a> <a class="idref" href="SGDT.ITree.html#A:25"><span class="id" title="variable">A</span></a>}.<br/>
+
+<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Instance</span> <a id="ITree_Alg" class="idref" href="#ITree_Alg"><span class="id" title="instance">ITree_Alg</span></a> {<a id="R:28" class="idref" href="#R:28"><span class="id" title="binder">R</span></a>} : <a class="idref" href="SGDT.ITree.html#Alg"><span class="id" title="class">Alg</span></a> (<a class="idref" href="SGDT.ITree.html#ITree"><span class="id" title="definition">ITree</span></a> <a class="idref" href="SGDT.ITree.html#Alg.E"><span class="id" title="variable">E</span></a> <a class="idref" href="SGDT.ITree.html#R:28"><span class="id" title="variable">R</span></a>).<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Proof</span>. <span class="id" title="tactic">by</span> <span class="id" title="tactic">split</span>; <span class="id" title="tactic">move</span>=&gt; <span class="id" title="var">α</span>; <span class="id" title="tactic">apply</span>/<a class="idref" href="SGDT.Prelude.html#intro"><span class="id" title="definition">intro</span></a>/<a class="idref" href="SGDT.ITree.html#Do"><span class="id" title="constructor">Do</span></a>/<a class="idref" href="SGDT.ITree.html#kont"><span class="id" title="projection">kont</span></a>/<span class="id" title="var">α</span>. <span class="id" title="keyword">Defined</span>.<br/>
+
+<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Class</span> <a id="alg_hom" class="idref" href="#alg_hom"><span class="id" title="record">alg_hom</span></a> {<a id="A:29" class="idref" href="#A:29"><span class="id" title="binder">A</span></a> <a id="B:30" class="idref" href="#B:30"><span class="id" title="binder">B</span></a>} `{<a id="H:31" class="idref" href="#H:31"><span class="id" title="binder">Alg</span></a> <a id="H:31" class="idref" href="#H:31"><span class="id" title="binder">A</span></a>} `{<a id="H0:32" class="idref" href="#H0:32"><span class="id" title="binder">Alg</span></a> <a id="H0:32" class="idref" href="#H0:32"><span class="id" title="binder">B</span></a>} (<a id="f:33" class="idref" href="#f:33"><span class="id" title="binder">f</span></a> : <a class="idref" href="SGDT.ITree.html#A:29"><span class="id" title="variable">A</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.13.2/stdlib//Coq.Unicode.Utf8_core.html#c41c566ddac4c1298b9e7dd2bae1c794"><span class="id" title="notation">→</span></a> <a class="idref" href="SGDT.ITree.html#B:30"><span class="id" title="variable">B</span></a>) : <span class="id" title="keyword">Prop</span> :=<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;{<a id="pres_do" class="idref" href="#pres_do"><span class="id" title="projection">pres_do</span></a> : <a class="idref" href="http://coq.inria.fr/distrib/V8.13.2/stdlib//Coq.Unicode.Utf8_core.html#e15f3fa8414cf45e36c73a91b3f5f2c2"><span class="id" title="notation">∀</span></a> <a id="4a188f136a9674abe8e1f3015e01f0ea" class="idref" href="#4a188f136a9674abe8e1f3015e01f0ea"><span class="id" title="binder">α</span></a><a class="idref" href="http://coq.inria.fr/distrib/V8.13.2/stdlib//Coq.Unicode.Utf8_core.html#e15f3fa8414cf45e36c73a91b3f5f2c2"><span class="id" title="notation">,</span></a> <a class="idref" href="SGDT.ITree.html#f:33"><span class="id" title="variable">f</span></a> (<a class="idref" href="SGDT.ITree.html#do"><span class="id" title="method">do</span></a> <a class="idref" href="SGDT.ITree.html#4a188f136a9674abe8e1f3015e01f0ea"><span class="id" title="variable">α</span></a>) <a class="idref" href="http://coq.inria.fr/distrib/V8.13.2/stdlib//Coq.Init.Logic.html#6cd0f7b28b6092304087c7049437bb1a"><span class="id" title="notation">=</span></a> <a class="idref" href="SGDT.ITree.html#do"><span class="id" title="method">do</span></a> (<a class="idref" href="SGDT.ITree.html#Action_map"><span class="id" title="definition">Action_map</span></a> <a class="idref" href="SGDT.ITree.html#f:33"><span class="id" title="variable">f</span></a> <a class="idref" href="SGDT.ITree.html#4a188f136a9674abe8e1f3015e01f0ea"><span class="id" title="variable">α</span></a>)}.<br/>
+<span class="id" title="keyword">End</span> <a class="idref" href="SGDT.ITree.html#Alg"><span class="id" title="section">Alg</span></a>.<br/>
+</div>
+</div>
+<div id="footer">
+  Generated by <a href="http://coq.inria.fr/">coqdoc</a> and improved with <a href="https://github.com/tebbi/coqdocjs">CoqdocJS</a>
+</div>
+</div>
+</body>
+
+</html>
