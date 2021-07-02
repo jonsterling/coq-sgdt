@@ -29,3 +29,23 @@ Proof.
 Defined.
 
 Infix "×" := prod (at level 10).
+
+
+Definition iso_fun {A A' B B'} (α : A ≅ A') (β : B ≅ B') : (A → B) ≅ (A' → B').
+Proof.
+  unshelve esplit.
+  - by move=> f x; apply/(intro β)/f/(elim α)/x.
+  - by move=> f x; apply/(elim β)/f/(intro α)/x.
+  - abstract (by move=> f; apply: funext => ?; rewrite ? eta).
+  - abstract (by move=> f; apply: funext=> ?; rewrite ? beta).
+Defined.
+
+
+Definition iso_trans {A B C} (α : A ≅ B) (β : B ≅ C) : A ≅ C.
+Proof.
+  unshelve esplit.
+  - move=> x; apply/(intro β)/(intro α)/x.
+  - move=> x; apply/(elim α)/(elim β)/x.
+  - abstract (by move=> f /=; rewrite ? eta).
+  - abstract (by move=> f /=; rewrite ? beta).
+Defined.
