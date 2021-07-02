@@ -39,22 +39,17 @@ Module Effect (O : Printable).
 
   Definition F (A : Type) : Type := Later.loeb (F' A).
 
-  Definition F_def {A : Type} : F' A (next (F A)) ≅ F A.
-  Proof. apply: loeb_iso. Qed.
+  Instance F_conn {A : Type} : Connective (F A) (F' A (next (F A))).
+  Proof. by split; apply: loeb_iso. Defined.
 
   Opaque F.
-
-  Notation F_intro := (intro F_def).
-  Notation F_elim := (elim F_def).
-  Notation F_beta := (beta F_def).
-  Notation F_eta := (eta F_def).
 
   Instance F_is_𝔼_alg {A} : 𝔼_alg (F A).
   Proof.
     move=> x.
-    apply/F_intro/step.
+    apply/intro/step.
     - exact: x.1.
-    - apply: (intro dlater_next).
+    - apply: intro.
       exact: x.2.
   Defined.
 
@@ -68,15 +63,15 @@ Module Effect (O : Printable).
   Defined.
 
   Definition η {A : Type} : A → F A.
-  Proof. move=> x; apply/F_intro/now/x. Defined.
+  Proof. move=> x; apply/intro/now/x. Defined.
 
   Module UniversalProperty.
     Definition extend {A B} `{𝔼_alg B} (f : A → B) : F A → B.
     Proof.
       apply: Later.loeb => f'.
-      case/F_elim.
+      case/elim.
       - exact: f.
-      - move=> o /(elim dlater_next) x.
+      - move=> o /elim x.
         apply: push; split.
         + exact: o.
         + exact: (f' ⊛ x).
@@ -95,7 +90,7 @@ Module Effect (O : Printable).
     Proof.
       move=> h h_hom H.
       apply: funext.
-      apply: (push_iso F_def).
+      apply: (push_iso conn_def).
       apply: Later.loeb => ih.
       elim.
       - by move=> ?; rewrite H /extend Later.loeb_unfold beta.
@@ -107,7 +102,7 @@ Module Effect (O : Printable).
         apply: Later.from_eq.
         move: ih; apply: Later.map => ih.
         apply: funext.
-        by apply: (push_iso F_def).
+        by apply: (push_iso conn_def).
     Qed.
   End UniversalProperty.
 

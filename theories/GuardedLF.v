@@ -33,6 +33,9 @@ Axiom dlater : ▷ Type → Type.
 Axiom dlater_next : ∀ A, iso (▷ A) (dlater (next A)).
 Arguments dlater_next {_}.
 
+Instance dlater_next_conn {A : Type} : Connective (dlater (next A)) (▷ A).
+Proof. by split; apply: dlater_next. Defined.
+
 
 Lemma loeb_iso {F : ▷ Type → Type} : iso (F (next (Later.loeb F))) (Later.loeb F).
 Proof.
@@ -43,11 +46,8 @@ Proof.
   - abstract (move=> ? //=; by rewrite rew_opp_r).
 Qed.
 
-
 Export Later.ApNotation.
 Infix "<$>" := Later.map (at level 50).
 
 Theorem map_id {A} (x : ▷ A) : id <$> x = x.
-Proof.
-  by rewrite /Later.map Later.ap_id.
-Qed.
+Proof. by rewrite /Later.map Later.ap_id. Qed.
