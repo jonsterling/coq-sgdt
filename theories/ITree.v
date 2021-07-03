@@ -101,53 +101,62 @@ Proof.
 Defined.
 
 
-Hint Mode Alg + +.
+#[export]
+Hint Mode Alg + + : core.
 
-Module UniversalProperty.
-  Section UniversalProperty.
-    Context {A B : Type} {E : Thy} `{Alg E B}.
+Section Ext.
+  Context {A B : Type} {E : Thy} `{Alg E B}.
 
-    Definition extends (f : A → B) (h : ITree E A → B) : Prop :=
-      ∀ x, h (η x) = f x.
+  Definition extends (f : A → B) (h : ITree E A → B) : Prop :=
+    ∀ x, h (η x) = f x.
 
-    Lemma extends_unique (f : A → B) (h h' : ITree E A → B) {hhom : alg_hom h} {h'hom : alg_hom h'} : extends f h → extends f h' → h = h'.
-    Proof.
-      move=> hext h'ext.
-      apply: funext; apply: push_conn.
-      apply: Later.loeb=>ih.
-      case.
-      - by move=>?; rewrite hext h'ext.
-      - move=> e k.
-        have -> : (intro (Do e k) = do e k) by [].
-        rewrite ? pres_do.
-        congr do.
-        apply: funext=>/=i.
-        congr Later.ap.
-        apply: Later.from_eq.
-        move: ih.
-        apply: Later.map => H'.
-        apply: funext.
-        by apply: push_conn.
-    Qed.
+  Lemma extends_unique (f : A → B) (h h' : ITree E A → B) {hhom : alg_hom h} {h'hom : alg_hom h'} : extends f h → extends f h' → h = h'.
+  Proof.
+    move=> hext h'ext.
+    apply: funext; apply: push_conn.
+    apply: Later.loeb=>ih.
+    case.
+    - by move=>?; rewrite hext h'ext.
+    - move=> e k.
+      have -> : (intro (Do e k) = do e k) by [].
+      rewrite ? pres_do.
+      congr do.
+      apply: funext=>/=i.
+      congr Later.ap.
+      apply: Later.from_eq.
+      move: ih.
+      apply: Later.map => H'.
+      apply: funext.
+      by apply: push_conn.
+  Qed.
 
-    Definition ext (f : A → B) : ITree E A → B.
-    Proof.
-      apply: Later.loeb=>f'.
-      case/elim.
-      - exact: f.
-      - move=> e k.
-        apply: (do e); move/k.
-        move: f'.
-        apply: Later.ap.
-    Defined.
+  Definition ext (f : A → B) : ITree E A → B.
+  Proof.
+    apply: Later.loeb=>f'.
+    case/elim.
+    - exact: f.
+    - move=> e k.
+      apply: (do e); move/k.
+      move: f'.
+      apply: Later.ap.
+  Defined.
+End Ext.
 
-    Notation "f ♯" := (ext f) (at level 0).
 
-    Lemma ext_extends : ∀ f, extends f f♯.
-    Proof. by move=>??; rewrite /ext Later.loeb_unfold /η beta. Qed.
+Notation "f ♯" := (ext f) (at level 0).
 
-    #[global]
-    Instance ext_hom {f} : alg_hom f♯.
-    Proof. by split; case=>??; rewrite {1}/ext Later.loeb_unfold /ITree_Alg beta. Qed.
-  End UniversalProperty.
-End UniversalProperty.
+Section ExtLaws.
+  Context {A B : Type} {E : Thy} `{Alg E B}.
+  Lemma ext_extends : ∀ f : A → B, extends f f♯.
+  Proof. by move=>??; rewrite /ext Later.loeb_unfold /η beta. Qed.
+
+  #[global]
+  Instance ext_hom {f : A → B} : alg_hom f♯.
+  Proof. by split; case=>??; rewrite {1}/ext Later.loeb_unfold /ITree_Alg beta. Qed.
+End ExtLaws.
+
+Section Bind.
+  Context {E : Thy}.
+
+  Definition bind {A B} (f : A → ITree E B) : ITree E A → ITree E B := f♯.
+End Bind.
