@@ -1,4 +1,5 @@
 From SGDT Require Import Prelude.
+From HB Require Import structures.
 
 Axiom later : Type → Type.
 Notation "▷ A" := (later A) (at level 60).
@@ -51,3 +52,6 @@ Infix "<$>" := Later.map (at level 50).
 
 Theorem map_id {A} (x : ▷ A) : id <$> x = x.
 Proof. by rewrite /Later.map Later.ap_id. Qed.
+
+HB.mixin Record IsLtrAlg A := {step : ▷ A → A}.
+HB.structure Definition LtrAlg := {A of IsLtrAlg A}.

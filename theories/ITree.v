@@ -1,8 +1,8 @@
 From SGDT Require Import Prelude GuardedLF.
+From HB Require Import structures.
 
 (** Guarded Interaction Trees. *)
 
-Set Universe Polymorphism.
 Set Primitive Projections.
 
 Record Thy :=
@@ -69,22 +69,21 @@ Proof.
     apply/Later.map/f.
 Defined.
 
-Class Alg E (A : Type) :=
-  {do_action : Action E A → A}.
+HB.mixin Record IsAlg (E : Thy) (A : Type) := {do_action : Action E A → A}.
+HB.structure Definition Alg E := {A of IsAlg E A}.
 
-Definition do {E : Thy} {A : Type} `{Alg E A} (e : E) (k : bdry e → ▷ A) : A.
-Proof.
-  apply: do_action.
-  esplit; apply: k.
-Defined.
+Definition do {E : Thy} {A : Alg.type E} (e : E) (k : bdry e → ▷ A) : A.
+Proof. apply: do_action; esplit; apply: k. Defined.
 
-Instance ITree_Alg {E} {R} : Alg E (ITree E R).
-Proof. by split; move=> α; apply/intro/Do/kont/α. Defined.
+Definition ITree_do_action {E} {R} : Action E (ITree E R) → ITree E R.
+Proof. by move=> α; apply/intro/Do/kont/α. Defined.
 
-Class alg_hom {E} {A B} `{Alg E A} `{Alg E B} (f : A → B) : Prop :=
+HB.instance Definition ITree_IsAlg E R := IsAlg.Build E (ITree E R) ITree_do_action.
+
+Class is_alg_hom {E} {A B : Alg.type E} (f : A → B) : Prop :=
   {pres_do_action : ∀ α, f (do_action α) = do_action (Action_map f α)}.
 
-Lemma pres_do {E} {A B} {f : A → B} `{alg_hom E A B f} :
+Lemma pres_do {E} {A B : Alg.type E} {f : A → B} {_ : is_alg_hom f} :
   ∀ e (k : bdry e → ▷ A), f (do e k) = do e (Later.map f \o k).
 Proof.
   move=> e k.
@@ -92,25 +91,25 @@ Proof.
   apply: pres_do_action.
 Qed.
 
-Instance FunAlg {E} {A B} `{Alg E B} : Alg E (A → B).
+Definition Fun {E} (A : Type) (B : Alg.type E) := A → B.
+
+Definition fun_do_action {E} {A} {B : Alg.type E} : Action E (A → B) → A → B.
 Proof.
-  split=> f x.
+  move=> f x.
   apply: do_action.
   move: f; apply: Action_map.
   apply; exact: x.
 Defined.
 
-
-#[export]
-Hint Mode Alg + + : core.
+HB.instance Definition fun_IsAlg E A (B : Alg.type E) := IsAlg.Build E (Fun A B) (@fun_do_action E A B).
 
 Section Ext.
-  Context {A B : Type} {E : Thy} `{Alg E B}.
+  Context {E : Thy} {A : Type} {B : Alg.type E}.
 
   Definition extends (f : A → B) (h : ITree E A → B) : Prop :=
     ∀ x, h (η x) = f x.
 
-  Lemma extends_unique (f : A → B) (h h' : ITree E A → B) {hhom : alg_hom h} {h'hom : alg_hom h'} : extends f h → extends f h' → h = h'.
+  Lemma extends_unique (f : A → B) (h h' : ITree E A → B) {_ : is_alg_hom h} {_ : is_alg_hom h'} : extends f h → extends f h' → h = h'.
   Proof.
     move=> hext h'ext.
     apply: funext; apply: push_conn.
@@ -119,8 +118,7 @@ Section Ext.
     - by move=>?; rewrite hext h'ext.
     - move=> e k.
       have -> : (intro (Do e k) = do e k) by [].
-      rewrite ? pres_do.
-      congr do.
+      rewrite ? pres_do; congr do.
       apply: funext=>/=i.
       congr Later.ap.
       apply: Later.from_eq.
@@ -146,13 +144,13 @@ End Ext.
 Notation "f ♯" := (ext f) (at level 0).
 
 Section ExtLaws.
-  Context {A B : Type} {E : Thy} `{Alg E B}.
+  Context {E : Thy} {A : Type} {B : Alg.type E}.
   Lemma ext_extends : ∀ f : A → B, extends f f♯.
   Proof. by move=>??; rewrite /ext Later.loeb_unfold /η beta. Qed.
 
   #[global]
-  Instance ext_hom {f : A → B} : alg_hom f♯.
-  Proof. by split; case=>??; rewrite {1}/ext Later.loeb_unfold /ITree_Alg beta. Qed.
+  Instance ext_hom {f : A → B} : is_alg_hom f♯.
+  Proof. by split; case=>??; rewrite {1}/ext Later.loeb_unfold beta. Qed.
 End ExtLaws.
 
 Section Bind.
