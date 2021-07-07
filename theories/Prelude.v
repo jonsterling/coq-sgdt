@@ -1,9 +1,10 @@
-Require Export Unicode.Utf8 ssreflect ssrfun Program.Equality Logic.FunctionalExtensionality.
+Require Export Unicode.Utf8 ssreflect ssrfun Program.Equality Logic.FunctionalExtensionality Logic.ProofIrrelevance.
 
 Set Primitive Projections.
 Set Universe Polymorphism.
 
 Notation funext := functional_extensionality.
+Notation propirr := proof_irrelevance.
 
 Lemma unfunext {A B : Type} (f g : A → B) : f = g → ∀ x, f x = g x.
 Proof. by move=> ->. Qed.
