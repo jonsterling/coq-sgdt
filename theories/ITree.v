@@ -69,6 +69,22 @@ Proof.
     apply/Later.map/f.
 Defined.
 
+Lemma Action_map_cmp {E : Thy} {A B C : Type} {f : A → B} {g : B → C} (x : Action E A) : Action_map (g \o f) x = Action_map g (Action_map f x).
+Proof.
+  rewrite /Action_map.
+  f_equal.
+  apply: funext => ?.
+  by rewrite Later.map_assoc.
+Qed.
+
+Lemma Action_map_id {E : Thy} {A : Type} {x : Action E A} : Action_map id x = x.
+Proof.
+  case: x => ? ?.
+  rewrite /Action_map; f_equal.
+  apply: funext => ?.
+  by rewrite Later.map_id.
+Qed.
+
 HB.mixin Record IsAlg (E : Thy) (A : Type) := {do_action : Action E A → A}.
 HB.structure Definition Alg E := {A of IsAlg E A}.
 
@@ -158,3 +174,26 @@ Section Bind.
 
   Definition bind {A B} (f : A → ITree E B) : ITree E A → ITree E B := f♯.
 End Bind.
+
+
+Definition is_injective {A B} (f : A → B) := ∀ x y, f x = f y → x = y.
+
+Lemma U_conservative {E} : ∀ (A B : Alg.type E) (f : A → B), is_alg_hom f → ∀ g : B → A, (∀ x, f (g x) = x) → (∀ x, g (f x) = x) → is_alg_hom g.
+Proof.
+  move=> A B f fhom g fg gf.
+  split=> α.
+  have: is_injective f.
+  - move=> x y h.
+    rewrite -[x]gf -[y]gf /=.
+    by congr g.
+  - move=> finj.
+    rewrite /=; rewrite Action_map_cmp Action_map_cmp.
+    apply: finj.
+    rewrite ? pres_do_action.
+    rewrite fg.
+    congr do_action.
+    rewrite -?Action_map_cmp.
+    rewrite (_ : ((f \o g) \o id) \o id = id).
+    + by apply: funext => ? //=.
+    + by rewrite Action_map_id.
+Qed.

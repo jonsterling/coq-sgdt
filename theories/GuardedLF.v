@@ -26,6 +26,7 @@ Module Later.
 
   Axiom loeb : ∀ {A} (f : ▷ A → A), A.
   Axiom map_assoc : ∀ {A B C} (f : A → B) (g : B → C) x, map g (map f x) = map (g \o f) x.
+  Axiom map_id : ∀ {A} (x : ▷ A), map id x = x.
 
   Axiom loeb_unfold : ∀ {A} (f : ▷ A → A), loeb f = f (next (loeb f)).
 End Later.
