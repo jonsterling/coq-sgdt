@@ -1,0 +1,48 @@
+opam-version: "2.0"
+name: "coq-sgdt"
+version: "~dev"
+synopsis: "A Coq library for synthetic guarded domain theory"
+description: "A Coq library for synthetic guarded domain theory"
+maintainer: "jon@jonmsterling.com"
+authors: "Jonathan Sterling"
+license: "Apache-2.0"
+homepage: "https://github.com/jonsterling/coq-sgdt"
+doc: "https://jonsterling.github.io/coq-sgdt/"
+bug-reports: "https://github.com/jonsterling/coq-sgdt/issues"
+depends: [
+  "base-bigarray" {= "base"}
+  "base-threads" {= "base"}
+  "base-unix" {= "base"}
+  "camlp-streams" {= "5.0"}
+  "camlp5" {= "8.00.03"}
+  "conf-findutils" {= "1"}
+  "conf-gmp" {= "4"}
+  "conf-perl" {= "2"}
+  "conf-perl-ipc-system-simple" {= "3"}
+  "conf-perl-string-shellquote" {= "3"}
+  "coq" {= "8.15.1"}
+  "coq-elpi" {= "1.13.0"}
+  "coq-hierarchy-builder" {= "1.2.1"}
+  "coq-mathcomp-ssreflect" {= "1.13.0"}
+  "cppo" {= "1.6.8"}
+  "dune" {= "3.1.1"}
+  "elpi" {= "1.14.3"}
+  "ocaml" {= "4.13.1"}
+  "ocaml-base-compiler" {= "4.13.1"}
+  "ocaml-compiler-libs" {= "v0.12.4"}
+  "ocaml-config" {= "2"}
+  "ocaml-options-vanilla" {= "1"}
+  "ocamlfind" {= "1.9.2"}
+  "ppx_derivers" {= "1.2.1"}
+  "ppx_deriving" {= "5.2.1"}
+  "ppxlib" {= "0.26.0"}
+  "re" {= "1.10.3"}
+  "result" {= "1.5"}
+  "seq" {= "base"}
+  "sexplib0" {= "v0.14.0"}
+  "stdlib-shims" {= "0.3.0"}
+  "zarith" {= "1.12"}
+]
+build: make
+install: [make "install"]
+dev-repo: "git+https://github.com/jonsterling/coq-sgdt.git"
