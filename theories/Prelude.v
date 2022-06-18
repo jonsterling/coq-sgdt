@@ -98,10 +98,13 @@ Class Connective (A A' : Type) :=
 
 #[export] Hint Mode Connective + - : core.
 
-Definition intro {A A'} `{Connective A A'} : A' -> A := fwd conn_def.
-Definition elim {A A'} `{Connective A A'} : A -> A' := bwd conn_def.
-Definition beta {A A'} `{Connective A A'} : forall x, elim (intro x) = x := bwd_fwd conn_def.
-Definition eta {A A'} `{Connective A A'} : forall x, intro (elim x) = x := fwd_bwd conn_def.
+Section Rules.
+  Context {A A'} `{Connective A A'}.
+  Definition intro : A' -> A := fwd conn_def.
+  Definition elim : A -> A' := bwd conn_def.
+  Definition beta : forall x, elim (intro x) = x := bwd_fwd conn_def.
+  Definition eta : forall x, intro (elim x) = x := fwd_bwd conn_def.
+End Rules.
 
 
 Lemma push_conn {A B C} `{Connective B A} : (forall x : A, C (intro x)) -> forall x : B, C x.
