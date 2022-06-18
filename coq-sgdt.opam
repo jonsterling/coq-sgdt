@@ -13,7 +13,7 @@ authors: [
   "Jonathan Sterling"
 ]
 
-license: "Apache License 2.0"
+license: "Apache-2.0"
 
 depends: [
   "coq" {>= "8.15" & < "8.16~"}
