@@ -1,5 +1,3 @@
-Require Import ssreflect ssrfun.
-
 Require Export ssreflect ssrfun.
 Require Import Logic.ProofIrrelevance Logic.FunctionalExtensionality Logic.PropExtensionality.
 Export EqNotations.
