@@ -2,6 +2,7 @@
 -arg -w
 -arg all
 theories/Prelude.v
+theories/Impredicative.v
 theories/GuardedLF.v
 theories/Printing.v
 theories/Monoid.v
