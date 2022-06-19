@@ -52,10 +52,11 @@ Guarded Interaction Trees.
 
 <br/>
 <span class="id" title="keyword">Section</span> <a id="ITree" class="idref" href="#ITree"><span class="id" title="section">ITree</span></a>.<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Universe</span> <span class="id" title="var">u</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="keyword">Context</span> (<a id="E:4" class="idref" href="#E:4"><span class="id" title="binder">E</span></a> : <a class="idref" href="SGDT.ITree.html#Thy"><span class="id" title="record">Thy</span></a>) (<a id="R:5" class="idref" href="#R:5"><span class="id" title="binder">R</span></a> : <span class="id" title="keyword">Type</span>).<br/>
 
 <br/>
-&nbsp;&nbsp;<span class="id" title="keyword">Inductive</span> <a id="ITree_F" class="idref" href="#ITree_F"><span class="id" title="inductive">ITree_F</span></a> (<a id="T:6" class="idref" href="#T:6"><span class="id" title="binder">T</span></a> : <span class="id" title="keyword">Type</span>) : <span class="id" title="keyword">Type</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Inductive</span> <a id="ITree_F" class="idref" href="#ITree_F"><span class="id" title="inductive">ITree_F</span></a> (<a id="T:6" class="idref" href="#T:6"><span class="id" title="binder">T</span></a> : <span class="id" title="var">Type@</span>{<span class="id" title="var">u</span>}) : <span class="id" title="var">Type@</span>{<span class="id" title="var">u</span>} :=<br/>
 &nbsp;&nbsp;| <a id="Ret" class="idref" href="#Ret"><span class="id" title="constructor">Ret</span></a> (<a id="r:9" class="idref" href="#r:9"><span class="id" title="binder">r</span></a> : <a class="idref" href="SGDT.ITree.html#ITree.R"><span class="id" title="variable">R</span></a>)<br/>
 &nbsp;&nbsp;| <a id="Do" class="idref" href="#Do"><span class="id" title="constructor">Do</span></a> (<a id="e:10" class="idref" href="#e:10"><span class="id" title="binder">e</span></a> : <a class="idref" href="SGDT.ITree.html#ITree.E"><span class="id" title="variable">E</span></a>) (<a id="k:11" class="idref" href="#k:11"><span class="id" title="binder">k</span></a> : <a class="idref" href="SGDT.ITree.html#bdry"><span class="id" title="projection">bdry</span></a> <a class="idref" href="SGDT.ITree.html#e:10"><span class="id" title="variable">e</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.15.2/stdlib//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">-&gt;</span></a> <a class="idref" href="SGDT.ITree.html#T:6"><span class="id" title="variable">T</span></a>).<br/>
 
