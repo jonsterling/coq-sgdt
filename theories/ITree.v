@@ -175,9 +175,14 @@ Section Bind.
   Definition bind {A B} (f : A -> ITree E B) : ITree E A -> ITree E B := f♯.
 End Bind.
 
-Lemma U_conservative {E} : forall (A B : Alg.type E) (f : A -> B), is_alg_hom f -> forall g : B -> A, (forall x, f (g x) = x) -> (forall x, g (f x) = x) -> is_alg_hom g.
+Lemma U_conservative {E} (A B : Alg.type E) (f : A -> B) :
+  is_alg_hom f
+  -> forall g : B -> A,
+      (forall x, f (g x) = x)
+      -> (forall x, g (f x) = x)
+      -> is_alg_hom g.
 Proof.
-  move=> A B f fhom g fg gf.
+  move=> fhom g fg gf.
   split=> α.
   have: injective f.
   - move=> x y h.
