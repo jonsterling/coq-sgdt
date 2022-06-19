@@ -16,10 +16,9 @@ authors: [
 license: "Apache-2.0"
 
 depends: [
-  "coq" {>= "8.15.2" }
-  "coq-elpi" {>= "1.13.0"}
-  "coq-mathcomp-ssreflect" {>= "1.14.0"}
-  "coq-hierarchy-builder" {>= "1.2.1"}
+  "coq" {}
+  "coq-elpi" {}
+  "coq-hierarchy-builder" {}
 ]
 
 build: [
