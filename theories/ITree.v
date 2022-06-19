@@ -1,4 +1,4 @@
-From SGDT Require Import Prelude GuardedLF.
+From SGDT Require Import Prelude Guarded.
 From HB Require Import structures.
 
 (** Guarded Interaction Trees. *)

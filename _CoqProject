@@ -3,6 +3,6 @@
 -arg all
 theories/Prelude.v
 theories/Impredicative.v
-theories/GuardedLF.v
+theories/Guarded.v
 theories/Monoid.v
 theories/ITree.v
