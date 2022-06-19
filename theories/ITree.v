@@ -194,18 +194,13 @@ Section Bind.
   Proof.
     move: u; rewrite /bind.
     apply: unfunE.
-    unshelve apply: extends_unique.
-    - move=> x.
-      exact: (h♯ (g x)).
-    - build=> α.
-      rewrite ? pres_do_action.
-      congr do_action.
-      rewrite /Action_map //=.
-      congr Build_Action.
-      apply: funE=> ?.
-      by rewrite Later.map_assoc.
-    - by move=>?; rewrite ext_extends.
-    - by move=> ?; rewrite ext_extends.
+    apply: extends_unique; try by [move=>?; rewrite ext_extends].
+    build=> α.
+    rewrite ? pres_do_action.
+    congr do_action.
+    congr Build_Action.
+    apply: funE=> ?.
+    by rewrite Later.map_assoc.
   Qed.
 End Bind.
 
