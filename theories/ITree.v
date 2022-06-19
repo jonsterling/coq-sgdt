@@ -172,7 +172,41 @@ End ExtLaws.
 Section Bind.
   Context {E : Thy}.
 
-  Definition bind {A B} (f : A -> ITree E B) : ITree E A -> ITree E B := f♯.
+  Definition bind {A B} (u : ITree E A) (f : A -> ITree E B) : ITree E B := f♯ u.
+
+  Lemma bind_idL {A B} (x : A) (f : A -> ITree E B) : bind (η x) f = f x.
+  Proof. by apply: ext_extends. Qed.
+
+  Lemma bind_idR {A} (u : ITree E A) : bind u (@η _ _) = u.
+    move: u.
+    rewrite /bind.
+    apply: unfunE.
+    unshelve apply: extends_unique.
+    - by apply: η.
+    - by build=> ?; rewrite Action_map_id.
+    - by move=> ?; apply: ext_extends.
+    - by [].
+  Qed.
+
+  Lemma bind_idA {A B C} (u : ITree E A) (g : A -> ITree E B) (h : B -> ITree E C) :
+    bind (bind u g) h = bind u (fun x => bind (g x) h).
+  Proof.
+    move: u; rewrite /bind.
+    apply: unfunE.
+    unshelve apply: extends_unique.
+    - move=> x.
+      exact: (h♯ (g x)).
+    - build=> α.
+      rewrite ? pres_do_action.
+      congr do_action.
+      rewrite /Action_map //=.
+      congr Build_Action.
+      apply: funE=> x.
+      rewrite Later.map_assoc.
+      congr (_ <$> _).
+    - by move=>?; rewrite ext_extends.
+    - by move=> ?; rewrite ext_extends.
+  Qed.
 End Bind.
 
 (** The forgetful functor from algebras to types is conservative. *)
