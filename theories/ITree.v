@@ -12,9 +12,10 @@ Record Thy :=
 Arguments bdry [_] _.
 
 Section ITree.
+  Universe u.
   Context (E : Thy) (R : Type).
 
-  Inductive ITree_F (T : Type) : Type :=
+  Inductive ITree_F (T : Type@{u}) : Type@{u} :=
   | Ret (r : R)
   | Do (e : E) (k : bdry e -> T).
 
