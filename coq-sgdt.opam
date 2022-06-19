@@ -17,8 +17,7 @@ license: "Apache-2.0"
 
 depends: [
   "coq" {}
-  "coq-elpi" {}
-  "coq-hierarchy-builder" {}
+  "coq-hierarchy-builder" {>= "1.2.1"}
 ]
 
 build: [
