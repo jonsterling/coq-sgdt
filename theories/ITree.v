@@ -201,9 +201,8 @@ Section Bind.
       congr do_action.
       rewrite /Action_map //=.
       congr Build_Action.
-      apply: funE=> x.
-      rewrite Later.map_assoc.
-      congr (_ <$> _).
+      apply: funE=> ?.
+      by rewrite Later.map_assoc.
     - by move=>?; rewrite ext_extends.
     - by move=> ?; rewrite ext_extends.
   Qed.
