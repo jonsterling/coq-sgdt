@@ -175,6 +175,7 @@ Section Bind.
   Definition bind {A B} (f : A -> ITree E B) : ITree E A -> ITree E B := f♯.
 End Bind.
 
+(** The forgetful functor from algebras to types is conservative. *)
 Lemma U_conservative {E} (A B : Alg.type E) (f : A -> B) :
   is_alg_hom f
   -> forall g : B -> A,
