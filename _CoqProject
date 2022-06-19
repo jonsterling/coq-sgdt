@@ -4,5 +4,4 @@
 theories/Prelude.v
 theories/Impredicative.v
 theories/Guarded.v
-theories/Monoid.v
 theories/ITree.v
