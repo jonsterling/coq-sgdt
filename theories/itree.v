@@ -1,4 +1,4 @@
-From sgdt Require Import preamble guarded.
+From sgdt Require Import preamble guarded category.
 From HB Require Import structures.
 
 (** Guarded Interaction Trees. *)
@@ -221,6 +221,43 @@ Section Map.
     by rewrite bind_idL.
   Qed.
 End Map.
+
+Module ALG.
+  Section ALG.
+    Context (E : Thy).
+
+    Definition hom_mixin : Hom.mixin_of (Alg.type E).
+    Proof.
+      build=> X Y.
+      exact ({f : X -> Y | is_alg_hom f}).
+    Defined.
+
+    Canonical hom : Hom.type.
+    Proof. esplit; apply: hom_mixin. Defined.
+
+    Definition precat_mixin : Precategory.mixin_of hom.
+    Proof.
+      build.
+      - move=> X Y Z f g.
+        build.
+        + by exact: (pi1 g \o pi1 f).
+        + abstract by build=> α; case: f=> f hf; case: g=> g hg; rewrite Action_map_cmp -?pres_do_action.
+      - move=> X.
+        build.
+        + by exact: id.
+        + abstract by build=> α; rewrite Action_map_id.
+    Defined.
+
+    Canonical precat : Precategory.type.
+    Proof. esplit; apply: precat_mixin. Defined.
+
+    Definition cat_mixin : Category.mixin_of precat.
+    Proof. by build; move=>*; apply: subE. Qed.
+
+    Canonical cat : Category.type.
+    Proof. esplit; apply: cat_mixin. Defined.
+  End ALG.
+End ALG.
 
 
 (** The forgetful functor from algebras to types is conservative. *)
