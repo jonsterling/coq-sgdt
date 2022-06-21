@@ -100,6 +100,35 @@ Export Alg.Exports.
 
 Definition do_action {E : Thy} {X : Alg.type E} := Alg.do_action _ _ (Alg.class E X).
 
+Module AlgHom.
+  Record mixin_of {E : Thy} (A B : Alg.type E) (f : A -> B) : Prop :=
+    {pres_do_action : forall α, f (do_action α) = do_action (Action_map f α) }.
+
+  Structure type {E} (A B : Alg.type E) := Pack {map; class : mixin_of A B map}.
+
+  Module Exports.
+    Coercion map : type >-> Funclass.
+  End Exports.
+
+  Lemma ext {E} {A B : Alg.type E} : forall f g : type A B, map _ _ f = map _ _ g -> f = g.
+  Proof.
+    case=> f hf; case=> g hg //= fg.
+    move: g fg hg.
+    apply: eq_ind=> ?.
+    by congr Pack.
+  Qed.
+End AlgHom.
+
+Export AlgHom.Exports.
+
+
+Definition pres_do_action {E : Thy} {X Y : Alg.type E} (f : AlgHom.type X Y) :
+  forall α, f (do_action α) = do_action (Action_map f α).
+Proof.
+  apply: AlgHom.pres_do_action.
+  apply: AlgHom.class.
+Defined.
+
 Definition do {E : Thy} {A : Alg.type E} (e : E) (k : bdry e -> ▷ A) : A.
 Proof. apply: do_action; esplit; apply: k. Defined.
 
@@ -112,18 +141,13 @@ Proof. by build; apply: ITree_do_action. Defined.
 Canonical ITree_alg (E : Thy) (R : Set) : Alg.type E.
 Proof. by esplit; apply: ITree_alg_mixin. Defined.
 
-Class is_alg_hom {E} {A B : Alg.type E} (f : A -> B) : Prop :=
-  {pres_do_action : forall α, f (do_action α) = do_action (Action_map f α)}.
-
-Lemma pres_do {E} {A B : Alg.type E} {f : A -> B} {_ : is_alg_hom f} :
+Lemma pres_do {E} {A B : Alg.type E} {f : AlgHom.type A  B} :
   forall e (k : bdry e -> ▷ A), f (do e k) = do e (Later.map f \o k).
 Proof.
   move=> e k.
   rewrite /do.
   apply: pres_do_action.
 Qed.
-
-Definition Fun {E} (A : Set) (B : Alg.type E) := A -> B.
 
 Definition fun_do_action {E} {A : Set} {B : Alg.type E} : Action E (A -> B) -> A -> B.
 Proof.
@@ -139,10 +163,12 @@ Section Ext.
   Definition extends (f : A -> B) (h : ITree E A -> B) : Prop :=
     forall x, h (η x) = f x.
 
-  Lemma extends_unique (f : A -> B) (h h' : ITree E A -> B) {_ : is_alg_hom h} {_ : is_alg_hom h'} : extends f h -> extends f h' -> h = h'.
+  Lemma extends_unique (f : A -> B) (h h' : AlgHom.type (ITree_alg E A) B) : extends f h -> extends f h' -> h = h'.
   Proof.
     move=> hext h'ext.
-    apply: funE; apply: push_conn.
+    apply: AlgHom.ext.
+    apply: funE.
+    apply: push_conn.
     apply: Later.loeb=>ih.
     case.
     - by move=>?; rewrite hext h'ext.
@@ -178,15 +204,36 @@ Section ExtLaws.
   Lemma ext_extends : forall f : A -> B, extends f f♯.
   Proof. by move=>??; rewrite /ext Later.loeb_unfold /η beta. Qed.
 
-  #[global]
-  Instance ext_hom {f : A -> B} : is_alg_hom f♯.
-  Proof. by split; case=>??; rewrite {1}/ext Later.loeb_unfold beta. Qed.
+  Definition ext_hom_mixin (f : A -> B) : AlgHom.mixin_of _ _ f♯.
+  Proof. by build; case=> ??; rewrite {1}/ext Later.loeb_unfold beta. Qed.
+
+  Canonical ext_hom (f : A -> B) : AlgHom.type (ITree_alg E A) B.
+  Proof. by esplit; apply: ext_hom_mixin. Defined.
 End ExtLaws.
+
+Section IdHom.
+  Context {E : Thy} {A : Alg.type E}.
+  Definition id_hom_mixin : AlgHom.mixin_of A A id.
+  Proof. by build=> ?; rewrite Action_map_id. Qed.
+
+  Canonical id_hom : AlgHom.type A A.
+  Proof. by esplit; apply: id_hom_mixin. Defined.
+End IdHom.
+
+Section CmpHom.
+  Context {E : Thy} {A B C : Alg.type E} (f : AlgHom.type A B) (g : AlgHom.type B C).
+
+  Definition cmp_hom_mixin : AlgHom.mixin_of A C (fun x => g (f x)).
+  Proof. by build=> ?; rewrite Action_map_cmp -?pres_do_action. Qed.
+
+  Canonical cmp_hom : AlgHom.type A C.
+  Proof. by esplit; apply: cmp_hom_mixin. Defined.
+End CmpHom.
 
 Section Bind.
   Context {E : Thy}.
 
-  Definition bind {A B : Set} (u : ITree E A) (f : A -> ITree E B) : ITree E B := f♯ u.
+  Definition bind {A B : Set} (u : ITree E A) (f : A -> ITree E B) : ITree E B := ext_hom f u.
 
   Lemma bind_idL {A B : Set} (x : A) (f : A -> ITree E B) : bind (η x) f = f x.
   Proof. by apply: ext_extends. Qed.
@@ -195,11 +242,11 @@ Section Bind.
     move: u.
     rewrite /bind.
     apply: unfunE.
+    congr AlgHom.map.
     unshelve apply: extends_unique.
     - by apply: η.
-    - by build=> ?; rewrite Action_map_id.
     - by move=> ?; apply: ext_extends.
-    - by [].
+    - by build=> ?; rewrite Action_map_id.
   Qed.
 
   Lemma bind_idA {A B C} (u : ITree E A) (g : A -> ITree E B) (h : B -> ITree E C) :
@@ -207,13 +254,15 @@ Section Bind.
   Proof.
     move: u; rewrite /bind.
     apply: unfunE.
-    apply: extends_unique; try by [move=>?; rewrite ext_extends].
-    build=> α.
-    rewrite ? pres_do_action.
-    congr do_action.
-    congr Build_Action.
-    apply: funE=> ?.
-    by rewrite Later.map_assoc.
+    rewrite (_ :  (fun x : ITree E A => (h) ♯ ((g) ♯ x)) = (cmp_hom (ext_hom g) (ext_hom h))); first by [].
+    congr AlgHom.map.
+    unshelve apply: extends_unique.
+    - move=> x.
+      exact: (h♯ (g x)).
+    - move=> x //=.
+      by rewrite ext_extends.
+    - move=> x //=.
+      by rewrite ext_extends.
   Qed.
 End Bind.
 
@@ -221,19 +270,37 @@ End Bind.
 Section Map.
   Context {E : Thy}.
 
-  Definition map {A B : Set} (f : A -> B) (u : ITree E A) : ITree E B :=
-    bind u (fun x => η (f x)).
+  Definition map {A B : Set} (f : A -> B) : AlgHom.type (ITree_alg E A) (ITree_alg E B).
+    apply: ext_hom.
+    move=> x.
+    apply: η (f x).
+  Defined.
 
-  Lemma map_id {A : Set} : map (id : A -> A) = id.
-  Proof. by apply: funE=> ?; rewrite /map bind_idR. Qed.
-
-  Lemma map_cmp {A B C : Set} (f : A -> B) (g : B -> C) : map (fun x => g (f x)) = map g \o map f.
+  Lemma map_id {A : Set} : map (id : A -> A) = id_hom.
   Proof.
+    apply: AlgHom.ext; apply: funE=> u; rewrite /map.
+    congr AlgHom.map.
+    unshelve apply: extends_unique.
+    - by exact: η.
+    - by move=> ?; apply: ext_extends.
+    - by [].
+  Qed.
+
+  Lemma map_cmp {A B C : Set} (f : A -> B) (g : B -> C) : map (fun x => g (f x)) = cmp_hom (map f) (map g).
+  Proof.
+    apply: AlgHom.ext.
     apply: funE=> u.
-    rewrite /map //= bind_idA.
-    congr (bind u).
-    apply: funE=> x.
-    by rewrite bind_idL.
+    congr AlgHom.map.
+    unshelve apply: extends_unique.
+    - move=> a.
+      apply: (ext_hom (@η _ _ \o g)).
+      apply: (ext_hom (@η _ _ \o f)).
+      apply: η.
+      apply: a.
+    - move=> x.
+      by rewrite //= ?ext_extends.
+    - move=> x.
+      by rewrite //= ?ext_extends.
   Qed.
 End Map.
 
@@ -242,10 +309,7 @@ Module ALG.
     Context (E : Thy).
 
     Definition hom_mixin : Hom.mixin_of (Alg.type E).
-    Proof.
-      build=> X Y.
-      exact ({f : X -> Y | is_alg_hom f}).
-    Defined.
+    Proof. build; apply AlgHom.type. Defined.
 
     Canonical hom : Hom.type.
     Proof. esplit; apply: hom_mixin. Defined.
@@ -255,7 +319,7 @@ Module ALG.
       build.
       - move=> X Y Z f g.
         build.
-        + by exact: (pi1 g \o pi1 f).
+        + by exact: (g \o f).
         + abstract by build=> α; case: f=> f hf; case: g=> g hg; rewrite Action_map_cmp -?pres_do_action.
       - move=> X.
         build.
@@ -267,7 +331,7 @@ Module ALG.
     Proof. esplit; apply: precat_mixin. Defined.
 
     Definition cat_mixin : Category.mixin_of precat.
-    Proof. by build; move=>*; apply: subE. Qed.
+    Proof. by build; move=>*; apply: AlgHom.ext. Qed.
 
     Canonical cat : Category.type.
     Proof. esplit; apply: cat_mixin. Defined.
@@ -276,14 +340,13 @@ End ALG.
 
 
 (** The forgetful functor from algebras to types is conservative. *)
-Lemma U_conservative {E} (A B : Alg.type E) (f : A -> B) :
-  is_alg_hom f
-  -> forall g : B -> A,
+Lemma U_conservative {E} (A B : Alg.type E) (f : AlgHom.type A B) :
+  forall g : B -> A,
       (forall x, f (g x) = x)
       -> (forall x, g (f x) = x)
-      -> is_alg_hom g.
+      -> AlgHom.mixin_of _ _ g.
 Proof.
-  move=> fhom g fg gf.
+  move=> g fg gf.
   split=> α.
   have: injective f.
   - move=> x y h.

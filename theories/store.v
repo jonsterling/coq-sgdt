@@ -114,27 +114,86 @@ Definition heaplet (w w' : 𝒲) : Set :=
 
 Definition heap (w : 𝒲) := heaplet w w.
 
-(*
+(* TODO: factor all this through some smaller functors. *)
 Module LeftAdjunctive.
   Section LeftAdjunctive.
     Context (A : 𝒞+) (E : itree.Thy).
 
-    (* TODO: Get this working *)
-    Definition ob (w : 𝒲) : Set :=
-      itree.ITree E (⋁ w' : 𝒲, @hom 𝒲 w w' × (heap w' × A w')).
+    Definition ob_inner (w : 𝒲) : Set :=
+      ⋁ w' : 𝒲, @hom 𝒲 w w' × (heap w' × A w').
 
+    Definition ob (w : 𝒲) : itree.Alg.type E :=
+      itree.ITree_alg E (ob_inner w).
 
-    Definition rst (w1 w2 : 𝒲) (w12 : @hom 𝒲 w1 w2) : ob w2 -> ob w1.
+    Definition rst_inner (w1 w2 : 𝒲) (w12 : @hom 𝒲 w1 w2) : ob_inner w2 -> ob_inner w1.
     Proof.
-      apply: Reflection.map; case=> w2' [w2w2' [h u]].
+      apply: Reflection.map.
+      case=> w2' [w2w2' [h u]].
       exists w2'; do ? split.
       - exact: (w12 >> w2w2').
       - exact: h.
       - exact: u.
     Defined.
 
+    Definition rst (w1 w2 : 𝒲) (w12 : @hom 𝒲 w1 w2) : itree.AlgHom.type (ob w2) (ob w1).
+    Proof. by apply/itree.map/rst_inner/w12. Defined.
+
     Definition prefunctor_mixin : Prefunctor.mixin_of (𝒲^op) (itree.ALG.cat E) ob.
-    Proof. by build=> x y; apply: rst. Defined.
+    Proof. by build=> w1 w2 w12; apply: rst. Defined.
+
+    Canonical prefunctor : Prefunctor.type (𝒲^op) (itree.ALG.cat E).
+    Proof. by esplit; apply: prefunctor_mixin. Defined.
+
+    Lemma functor_mixin : Functor.mixin_of _ _ prefunctor.
+    Proof.
+      build.
+      - move=> w.
+        unshelve apply: itree.extends_unique.
+        + apply: itree.η.
+        + move=> p.
+          rewrite //= itree.ext_extends.
+          congr itree.η.
+          move: p.
+          apply: unfunE.
+          rewrite -Reflection.map_id.
+          congr Reflection.map.
+          apply: funE=> ?.
+          apply: sigE=> //=.
+          apply: prodE=> //=.
+          by rewrite (@seqL 𝒲).
+        + move=> p.
+          by rewrite //= itree.ext_extends.
+      - move=> w1 w2 w3 w12 w23.
+        unshelve apply: itree.extends_unique.
+        + move=> p.
+          apply: itree.η.
+          apply: rst_inner p.
+          by exact: (w12 >> w23).
+        + move=> p.
+          rewrite //= itree.ext_extends.
+          congr itree.η.
+        + move=> p.
+          rewrite //= ?itree.ext_extends.
+          congr itree.η.
+          move: p.
+          apply: unfunE.
+          rewrite (_ : (fun x : ob_inner w1 => rst_inner w3 w2 w23 (rst_inner w2 w1 w12 x)) = (rst_inner w3 w2 w23 \o rst_inner w2 w1 w12)); last by [].
+          rewrite -Reflection.map_cmp.
+          congr Reflection.map.
+          apply: funE=> p.
+          apply: sigE=>//=.
+          apply: prodE=>//=.
+          by rewrite (@seqA 𝒲).
+    Qed.
+
+
+  End LeftAdjunctive.
+End LeftAdjunctive.
+
+
+(*
+
+
 
     Canonical prefunctor : Prefunctor.type (𝒲^op) SET.cat.
     Proof. by esplit; apply: prefunctor_mixin. Defined.
