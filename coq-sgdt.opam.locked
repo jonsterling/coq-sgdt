@@ -21,8 +21,11 @@ depends: [
   "conf-perl-ipc-system-simple" {= "3"}
   "conf-perl-string-shellquote" {= "3"}
   "coq" {= "8.15.2"}
+  "coq-deriving" {= "0.1.0"}
   "coq-elpi" {= "1.13.0"}
+  "coq-extructures" {= "0.3.1"}
   "coq-hierarchy-builder" {= "1.2.1"}
+  "coq-mathcomp-ssreflect" {= "1.14.0"}
   "cppo" {= "1.6.9"}
   "dune" {= "3.3.0"}
   "elpi" {= "1.14.3"}
