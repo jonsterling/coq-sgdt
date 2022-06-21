@@ -117,9 +117,9 @@ Module LeftAdjunctive.
     Context (A : 𝒞+) (E : itree.Thy).
 
     Definition ob (w : 𝒲) : Set :=
-      ⋁ w' : 𝒲, (w ~> w') × (heap w' × itree.ITree E (A w')).
+      ⋁ w' : 𝒲, @hom 𝒲 w w' × (heap w' × itree.ITree E (A w')).
 
-    Definition rst (w1 w2 : 𝒲) (w12 : w1 ~> w2) : ob w2 -> ob w1.
+    Definition rst (w1 w2 : 𝒲) (w12 : @hom 𝒲 w1 w2) : ob w2 -> ob w1.
     Proof.
       apply: Reflection.map; case=> w2' [w2w2' [h u]].
       exists w2'; do ? split.
@@ -159,6 +159,53 @@ Module LeftAdjunctive.
     Definition T : 𝒞- := functor.
   End LeftAdjunctive.
 End LeftAdjunctive.
+
+Module RightAdjunctive.
+  Section RightAdjunctive.
+    Context (X : 𝒞-) (E : itree.Thy).
+
+    Definition ob (w : 𝒲^op) : Set :=
+      ⋀ w' : 𝒲, @hom 𝒲 w w' -> heap w' -> itree.ITree E (X w').
+
+    Definition rst (w1 w2 : 𝒲^op) (w12 : @hom (𝒲^op) w1 w2) : ob w2 -> ob w1.
+    Proof.
+      move=> p w2' w2w2' h.
+      apply: p.
+      - by exact: (@seq 𝒲 _ _ _ w12 w2w2').
+      - by exact: h.
+    Defined.
+
+    Definition prefunctor_mixin : Prefunctor.mixin_of 𝒲 SET.cat ob.
+    Proof. by build=> w1 w2 w12; apply: rst. Defined.
+
+    Canonical prefunctor : Prefunctor.type 𝒲 SET.cat.
+    Proof. by esplit; apply: prefunctor_mixin. Defined.
+
+    Definition functor_mixin : Functor.mixin_of _ _ prefunctor.
+    Proof.
+      build.
+      - move=> w.
+        apply: funE=> //= p; cbn.
+        apply: dfunE=> w'.
+        apply: funE=> ww'.
+        apply: funE=> h.
+        by rewrite /rst seqL.
+      - move=> w1 w2 w3 w12 w23.
+        apply: funE=> //= p; cbn.
+        apply: dfunE=> w3'.
+        apply: funE=> w3w3'.
+        apply: funE=> h.
+        by rewrite /rst (@seqA 𝒲 _ _ _ _ w12 w23 w3w3').
+    Qed.
+
+    Canonical functor : Functor.type 𝒲 SET.cat.
+    Proof. esplit; apply: functor_mixin. Defined.
+
+    Definition T : 𝒞+ := functor.
+  End RightAdjunctive.
+End RightAdjunctive.
+
+
 
 Module LeftAdjoint.
   Section LeftAdjoint.
