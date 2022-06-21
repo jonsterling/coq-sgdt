@@ -84,8 +84,21 @@ Proof.
   by rewrite Later.map_id.
 Qed.
 
-HB.mixin Record IsAlg (E : Thy) (A : Set) := {do_action : Action E A -> A}.
-HB.structure Definition Alg E := {A of IsAlg E A}.
+
+Module Alg.
+  Record mixin_of (E : Thy) (A : Set) :=
+    {do_action : Action E A -> A}.
+
+  Structure type E : Type := Pack {sort; class : mixin_of E sort}.
+
+  Module Exports.
+    Coercion sort : type >-> Sortclass.
+  End Exports.
+End Alg.
+
+Export Alg.Exports.
+
+Definition do_action {E : Thy} {X : Alg.type E} := Alg.do_action _ _ (Alg.class E X).
 
 Definition do {E : Thy} {A : Alg.type E} (e : E) (k : bdry e -> ▷ A) : A.
 Proof. apply: do_action; esplit; apply: k. Defined.
@@ -93,7 +106,11 @@ Proof. apply: do_action; esplit; apply: k. Defined.
 Definition ITree_do_action {E : Thy} {R : Set} : Action E (ITree E R) -> ITree E R.
 Proof. by move=> α; apply/intro/Do/kont/α. Defined.
 
-HB.instance Definition ITree_IsAlg E R := IsAlg.Build E (ITree E R) ITree_do_action.
+Definition ITree_alg_mixin {E : Thy} {R : Set} : Alg.mixin_of E (ITree E R).
+Proof. by build; apply: ITree_do_action. Defined.
+
+Canonical ITree_alg (E : Thy) (R : Set) : Alg.type E.
+Proof. by esplit; apply: ITree_alg_mixin. Defined.
 
 Class is_alg_hom {E} {A B : Alg.type E} (f : A -> B) : Prop :=
   {pres_do_action : forall α, f (do_action α) = do_action (Action_map f α)}.
@@ -115,8 +132,6 @@ Proof.
   move: f; apply: Action_map.
   apply; exact: x.
 Defined.
-
-HB.instance Definition fun_IsAlg E (A : Set) (B : Alg.type E) := IsAlg.Build E (Fun A B) (@fun_do_action E A B).
 
 Section Ext.
   Context {E : Thy} {A : Set} {B : Alg.type E}.
