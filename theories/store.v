@@ -1,6 +1,6 @@
 Require Import ssrbool.
 From extructures Require Import ord fmap fset.
-From sgdt Require Import preamble impredicative guarded category functor.
+From sgdt Require Import preamble impredicative guarded category functor itree.
 
 Set Bullet Behavior "Strict Subproofs".
 Set Universe Polymorphism.
@@ -110,3 +110,13 @@ Definition heaplet (w w' : 𝒲) : Set :=
     end.
 
 Definition heap (w : 𝒲) := heaplet w w.
+
+
+Module LeftAdjoint.
+
+  Section LeftAdjunctive.
+    Context (X : 𝒞-) (E : Thy).
+
+    Definition ob (w : 𝒲) : Set :=
+      ⋁ w' : 𝒲,
+          {ww' : w ~> w' & heap w' × ITree E True }.
