@@ -59,6 +59,7 @@ Module Reflection.
     Proof. by move=> ?; apply: subE. Qed.
   End Map.
 
+
   Section Alg.
     Context {A : Set}.
 
@@ -122,7 +123,34 @@ Module Reflection.
       by rewrite hh1 hh2.
     Qed.
   End ExtEta.
+
+  Definition ind {A : Type} (C : T A -> Set) (H : forall x : A, C (unit x)) : forall x : T A, C x.
+  Proof.
+    suff Q: {f : T A -> {x : T A & C x} | forall x : T A, pi1 (f x) = x}.
+    - move=> x.
+      rewrite (_ : x = pi1 (pi1 Q x)).
+      + by rewrite (pi2 Q x).
+      + by apply: (pi2 (pi1 Q x)).
+    - build.
+      + apply: ext=> x.
+        by [exists (unit x); apply: H].
+      + abstract by apply: unfunE; unshelve apply: univ_map_uniq; first by apply: unit.
+  Defined.
+
+
+  Lemma map_id {A : Type} : map (id : A -> A) = id.
+  Proof.
+    apply: funE; apply: ind=> x.
+    by rewrite map_beta.
+  Qed.
+
+  Lemma map_cmp {A B C : Type} (f : A -> B) (g : B -> C) : map (fun x => g (f x)) = map g \o map f.
+  Proof.
+    apply: funE; apply: ind=> x //=.
+    by rewrite ? map_beta.
+  Qed.
 End Reflection.
+
 
 Definition Ex {A : Type} (B : A -> Set) : Set :=
   Reflection.T {x : A & B x}.

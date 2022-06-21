@@ -6,20 +6,19 @@ From HB Require Import structures.
 Set Primitive Projections.
 
 Record Thy :=
-  {op :> Type;
-   bdry : op -> Type}.
+  {op :> Set;
+   bdry : op -> Set}.
 
 Arguments bdry [_] _.
 
 Section ITree.
-  Universe u.
-  Context (E : Thy) (R : Type).
+  Context (E : Thy) (R : Set).
 
-  Inductive ITree_F (T : Type@{u}) : Type@{u} :=
+  Inductive ITree_F (T : Set) : Set :=
   | Ret (r : R)
   | Do (e : E) (k : bdry e -> T).
 
-  Definition ITree_F_map {S T : Type} : (S -> T) -> (ITree_F S -> ITree_F T).
+  Definition ITree_F_map {S T : Set} : (S -> T) -> (ITree_F S -> ITree_F T).
   Proof.
     move=> α; case.
     - apply: Ret.
@@ -28,7 +27,7 @@ Section ITree.
       by move/f/α.
   Defined.
 
-  Definition ITree_F_iso {S T : Type} : (S ≅ T) -> (ITree_F S ≅ ITree_F T).
+  Definition ITree_F_iso {S T : Set} : (S ≅ T) -> (ITree_F S ≅ ITree_F T).
   Proof.
     move=> α.
     unshelve esplit.
@@ -40,10 +39,9 @@ Section ITree.
       by move=> ??; congr Do; apply: funE=>?; rewrite bwd_fwd.
   Defined.
 
-  Definition ITree : Type := Later.loeb (fun T => ITree_F (dlater T)).
+  Definition ITree : Set := Later.loeb (fun T => ITree_F (dlater T)).
 
-  #[global]
-  Instance ITree_conn : Connective ITree (ITree_F (▷ ITree)).
+  Global Instance ITree_conn : Connective ITree (ITree_F (▷ ITree)).
   Proof. by split; apply/iso_trans/Later.loeb_iso/ITree_F_iso/dlater_next_iso. Defined.
 
   Definition η : R -> ITree.
@@ -55,13 +53,13 @@ Arguments Do [E] [R] [T].
 Arguments η [E] [R].
 
 
-Record Action (E : Thy) (A : Type) :=
+Record Action (E : Thy) (A : Set) :=
   {eff : E; kont : bdry eff -> ▷ A}.
 
 Arguments eff [_] [_].
 Arguments kont [_] [_].
 
-Definition Action_map {E} {A B : Type} (f : A -> B) : Action E A -> Action E B.
+Definition Action_map {E} {A B : Set} (f : A -> B) : Action E A -> Action E B.
 Proof.
   move=> α.
   unshelve esplit.
@@ -70,7 +68,7 @@ Proof.
     apply/Later.map/f.
 Defined.
 
-Lemma Action_map_cmp {E : Thy} {A B C : Type} {f : A -> B} {g : B -> C} (x : Action E A) : Action_map (g \o f) x = Action_map g (Action_map f x).
+Lemma Action_map_cmp {E : Thy} {A B C : Set} {f : A -> B} {g : B -> C} (x : Action E A) : Action_map (g \o f) x = Action_map g (Action_map f x).
 Proof.
   rewrite /Action_map.
   f_equal.
@@ -78,7 +76,7 @@ Proof.
   by rewrite Later.map_assoc.
 Qed.
 
-Lemma Action_map_id {E : Thy} {A : Type} {x : Action E A} : Action_map id x = x.
+Lemma Action_map_id {E : Thy} {A : Set} {x : Action E A} : Action_map id x = x.
 Proof.
   case: x => ? ?.
   rewrite /Action_map; f_equal.
@@ -86,13 +84,13 @@ Proof.
   by rewrite Later.map_id.
 Qed.
 
-HB.mixin Record IsAlg (E : Thy) (A : Type) := {do_action : Action E A -> A}.
+HB.mixin Record IsAlg (E : Thy) (A : Set) := {do_action : Action E A -> A}.
 HB.structure Definition Alg E := {A of IsAlg E A}.
 
 Definition do {E : Thy} {A : Alg.type E} (e : E) (k : bdry e -> ▷ A) : A.
 Proof. apply: do_action; esplit; apply: k. Defined.
 
-Definition ITree_do_action {E} {R} : Action E (ITree E R) -> ITree E R.
+Definition ITree_do_action {E : Thy} {R : Set} : Action E (ITree E R) -> ITree E R.
 Proof. by move=> α; apply/intro/Do/kont/α. Defined.
 
 HB.instance Definition ITree_IsAlg E R := IsAlg.Build E (ITree E R) ITree_do_action.
@@ -108,9 +106,9 @@ Proof.
   apply: pres_do_action.
 Qed.
 
-Definition Fun {E} (A : Type) (B : Alg.type E) := A -> B.
+Definition Fun {E} (A : Set) (B : Alg.type E) := A -> B.
 
-Definition fun_do_action {E} {A} {B : Alg.type E} : Action E (A -> B) -> A -> B.
+Definition fun_do_action {E} {A : Set} {B : Alg.type E} : Action E (A -> B) -> A -> B.
 Proof.
   move=> f x.
   apply: do_action.
@@ -118,10 +116,10 @@ Proof.
   apply; exact: x.
 Defined.
 
-HB.instance Definition fun_IsAlg E A (B : Alg.type E) := IsAlg.Build E (Fun A B) (@fun_do_action E A B).
+HB.instance Definition fun_IsAlg E (A : Set) (B : Alg.type E) := IsAlg.Build E (Fun A B) (@fun_do_action E A B).
 
 Section Ext.
-  Context {E : Thy} {A : Type} {B : Alg.type E}.
+  Context {E : Thy} {A : Set} {B : Alg.type E}.
 
   Definition extends (f : A -> B) (h : ITree E A -> B) : Prop :=
     forall x, h (η x) = f x.
@@ -161,7 +159,7 @@ End Ext.
 Notation "f ♯" := (ext f) (at level 0).
 
 Section ExtLaws.
-  Context {E : Thy} {A : Type} {B : Alg.type E}.
+  Context {E : Thy} {A : Set} {B : Alg.type E}.
   Lemma ext_extends : forall f : A -> B, extends f f♯.
   Proof. by move=>??; rewrite /ext Later.loeb_unfold /η beta. Qed.
 
@@ -173,12 +171,12 @@ End ExtLaws.
 Section Bind.
   Context {E : Thy}.
 
-  Definition bind {A B} (u : ITree E A) (f : A -> ITree E B) : ITree E B := f♯ u.
+  Definition bind {A B : Set} (u : ITree E A) (f : A -> ITree E B) : ITree E B := f♯ u.
 
-  Lemma bind_idL {A B} (x : A) (f : A -> ITree E B) : bind (η x) f = f x.
+  Lemma bind_idL {A B : Set} (x : A) (f : A -> ITree E B) : bind (η x) f = f x.
   Proof. by apply: ext_extends. Qed.
 
-  Lemma bind_idR {A} (u : ITree E A) : bind u (@η _ _) = u.
+  Lemma bind_idR {A : Set} (u : ITree E A) : bind u (@η _ _) = u.
     move: u.
     rewrite /bind.
     apply: unfunE.
@@ -203,6 +201,27 @@ Section Bind.
     by rewrite Later.map_assoc.
   Qed.
 End Bind.
+
+
+Section Map.
+  Context {E : Thy}.
+
+  Definition map {A B : Set} (f : A -> B) (u : ITree E A) : ITree E B :=
+    bind u (fun x => η (f x)).
+
+  Lemma map_id {A : Set} : map (id : A -> A) = id.
+  Proof. by apply: funE=> ?; rewrite /map bind_idR. Qed.
+
+  Lemma map_cmp {A B C : Set} (f : A -> B) (g : B -> C) : map (fun x => g (f x)) = map g \o map f.
+  Proof.
+    apply: funE=> u.
+    rewrite /map //= bind_idA.
+    congr (bind u).
+    apply: funE=> x.
+    by rewrite bind_idL.
+  Qed.
+End Map.
+
 
 (** The forgetful functor from algebras to types is conservative. *)
 Lemma U_conservative {E} (A B : Alg.type E) (f : A -> B) :

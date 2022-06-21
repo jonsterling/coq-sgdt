@@ -1,6 +1,7 @@
 Require Import ssrbool.
 From extructures Require Import ord fmap fset.
-From sgdt Require Import preamble impredicative guarded category functor itree.
+From sgdt Require Import preamble impredicative guarded category functor.
+From sgdt Require itree.
 
 Set Bullet Behavior "Strict Subproofs".
 Set Universe Polymorphism.
@@ -111,12 +112,106 @@ Definition heaplet (w w' : 𝒲) : Set :=
 
 Definition heap (w : 𝒲) := heaplet w w.
 
-
-Module LeftAdjoint.
-
+Module LeftAdjunctive.
   Section LeftAdjunctive.
-    Context (X : 𝒞-) (E : Thy).
+    Context (A : 𝒞+) (E : itree.Thy).
 
     Definition ob (w : 𝒲) : Set :=
-      ⋁ w' : 𝒲,
-          {ww' : w ~> w' & heap w' × ITree E True }.
+      ⋁ w' : 𝒲, (w ~> w') × (heap w' × itree.ITree E (A w')).
+
+    Definition rst (w1 w2 : 𝒲) (w12 : w1 ~> w2) : ob w2 -> ob w1.
+    Proof.
+      apply: Reflection.map; case=> w2' [w2w2' [h u]].
+      exists w2'; do ? split.
+      - exact: (w12 >> w2w2').
+      - exact: h.
+      - exact: u.
+    Defined.
+
+    Definition prefunctor_mixin : Prefunctor.mixin_of (𝒲^op) SET.cat ob.
+    Proof. by build=> x y; apply: rst. Defined.
+
+    Canonical prefunctor : Prefunctor.type (𝒲^op) SET.cat.
+    Proof. by esplit; apply: prefunctor_mixin. Defined.
+
+    Lemma functor_mixin : Functor.mixin_of _ _ prefunctor.
+    Proof.
+      build.
+      - move=> w; cbn.
+        rewrite -Reflection.map_id.
+        congr Reflection.map.
+        apply: funE=> p.
+        apply: sigE=> //=.
+        apply: prodE=> //=.
+        apply: (@seqR (𝒲^op)).
+      - move=> w1 w2 w3 w12 w23; cbn.
+        rewrite -Reflection.map_cmp.
+        congr Reflection.map.
+        apply: funE=> p.
+        apply: sigE=> //=.
+        apply: prodE=> //=.
+        apply: (@seqA (𝒲^op)).
+    Qed.
+
+    Canonical functor : Functor.type (𝒲^op) SET.cat.
+    Proof. esplit; apply: functor_mixin. Defined.
+
+    Definition T : 𝒞- := functor.
+  End LeftAdjunctive.
+End LeftAdjunctive.
+
+Module LeftAdjoint.
+  Section LeftAdjoint.
+    Context (E : itree.Thy).
+
+    Definition ob (A : 𝒞+) : 𝒞- :=
+      LeftAdjunctive.T A E.
+
+    Definition map_el (A B: 𝒞+) (f : A ~> B) : forall w, ob A w -> ob B w.
+    Proof.
+      move=> w.
+      apply: Reflection.map.
+      case=> w' [ww' [h u]].
+      exists w', ww', h; move: u.
+      by apply/itree.map/f.
+    Defined.
+
+    Definition map (A B : 𝒞+) (f : A ~> B) : ob A ~> ob B.
+    Proof.
+      build.
+      - by apply: map_el.
+      - abstract by
+          build=> w w' ww';
+          cbn; rewrite -?Reflection.map_cmp;
+          congr Reflection.map.
+    Defined.
+
+    Definition prefunctor_mixin : Prefunctor.mixin_of 𝒞+ 𝒞- ob.
+    Proof. by build; apply: map. Defined.
+
+    Canonical prefunctor : Prefunctor.type 𝒞+ 𝒞-.
+    Proof. by esplit; apply: prefunctor_mixin. Defined.
+
+    Definition functor_mixin : Functor.mixin_of _ _ prefunctor.
+    Proof.
+      build.
+      - move=> A.
+        apply: NatTrans.ext.
+        apply: dfunE=> w.
+        cbn; rewrite -Reflection.map_id.
+        congr Reflection.map.
+        apply: funE=> //= ?.
+        by rewrite itree.map_id.
+      - move=> A B C f g.
+        apply: NatTrans.ext.
+        apply: dfunE=> w.
+        cbn; rewrite -Reflection.map_cmp.
+        congr Reflection.map.
+        apply: funE=> //= ?.
+        by rewrite itree.map_cmp.
+    Qed.
+
+    Canonical functor : Functor.type 𝒞+ 𝒞-.
+    Proof. by esplit; apply: functor_mixin. Defined.
+  End LeftAdjoint.
+End LeftAdjoint.

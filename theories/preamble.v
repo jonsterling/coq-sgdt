@@ -52,6 +52,12 @@ Qed.
 Lemma subE {A} {P : A -> Prop} : forall (p q : {x : A | P x}), pi1 p = pi1 q -> p = q.
 Proof. by move=>???; apply: sigE. Qed.
 
+Lemma prodE {A B} : forall (p q : A × B), pi1 p = pi1 q -> pi2 p = pi2 q -> p = q.
+Proof.
+  move=> [a1 +] [a2 +] //= h; move: a2 h.
+  by apply: eq_ind=> b1 b2 ->.
+Qed.
+
 
 
 Record iso (A B : Type) :=
