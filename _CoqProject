@@ -1,7 +1,10 @@
--R theories/ SGDT
+-R theories/ sgdt
 -arg -w
 -arg all
-theories/Prelude.v
-theories/Impredicative.v
-theories/Guarded.v
-theories/ITree.v
+theories/preamble.v
+theories/category.v
+theories/functor.v
+theories/impredicative.v
+theories/guarded.v
+theories/itree.v
+theories/store.v

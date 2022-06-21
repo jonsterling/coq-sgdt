@@ -1,4 +1,4 @@
-From SGDT Require Import Prelude Guarded.
+From sgdt Require Import preamble guarded.
 From HB Require Import structures.
 
 (** Guarded Interaction Trees. *)
@@ -44,10 +44,10 @@ Section ITree.
 
   #[global]
   Instance ITree_conn : Connective ITree (ITree_F (▷ ITree)).
-  Proof. by split; apply/iso_trans/loeb_iso/ITree_F_iso/dlater_next. Defined.
+  Proof. by split; apply/iso_trans/Later.loeb_iso/ITree_F_iso/dlater_next_iso. Defined.
 
   Definition η : R -> ITree.
-  Proof. move=> x; apply/intro/Ret/x. Defined.
+  Proof. by move=> x; apply/intro/Ret/x. Defined.
 End ITree.
 
 Arguments Ret [E] [R] [T].

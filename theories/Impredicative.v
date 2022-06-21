@@ -1,4 +1,4 @@
-From SGDT Require Import Prelude.
+From sgdt Require Import preamble.
 
 (** Easier than activating -impredicative-set. *)
 #[bypass_check(universes = yes)]

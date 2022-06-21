@@ -1,7 +1,13 @@
-From SGDT Require Import Prelude.
+From sgdt Require Import preamble.
 From HB Require Import structures.
 
-Axiom later : Type -> Type.
+Set Universe Polymorphism.
+
+Section Later.
+  Universe u.
+  Axiom later : Type@{u} -> Type@{u}.
+End Later.
+
 Notation "▷ A" := (later A) (at level 60).
 
 Axiom next : forall {A}, A -> ▷ A.
@@ -29,30 +35,33 @@ Module Later.
   Axiom map_id : forall {A} (x : ▷ A), map id x = x.
 
   Axiom loeb_unfold : forall {A} (f : ▷ A -> A), loeb f = f (next (loeb f)).
+
+  Lemma loeb_iso {F : ▷ Type -> Type} : iso (F (next (Later.loeb F))) (Later.loeb F).
+  Proof.
+    unshelve esplit.
+    - move=> ?; by rewrite Later.loeb_unfold.
+    - move=> ?; by rewrite -Later.loeb_unfold.
+    - abstract (move=> ? //=; by rewrite rew_opp_l).
+    - abstract (move=> ? //=; by rewrite rew_opp_r).
+  Qed.
 End Later.
 
-Axiom dlater : ▷ Type -> Type.
-Axiom dlater_next : forall A, iso (▷ A) (dlater (next A)).
-Arguments dlater_next {_}.
+Section DLater.
+  Universe v.
+  Axiom dlater : ▷ (Type@{v}) -> Type@{v}.
+End DLater.
 
-Instance dlater_next_conn {A : Type} : Connective (dlater (next A)) (▷ A).
-Proof. by split; apply: dlater_next. Defined.
+Axiom dlater_next_eq : forall A, ▷ A = dlater (next A).
+Arguments dlater_next_eq {_}.
 
+Lemma dlater_next_iso {A} : iso (▷ A) (dlater (next A)).
+Proof. by rewrite dlater_next_eq; apply: iso_id. Defined.
 
-Lemma loeb_iso {F : ▷ Type -> Type} : iso (F (next (Later.loeb F))) (Later.loeb F).
-Proof.
-  unshelve esplit.
-  - move=> ?; by rewrite Later.loeb_unfold.
-  - move=> ?; by rewrite -Later.loeb_unfold.
-  - abstract (move=> ? //=; by rewrite rew_opp_l).
-  - abstract (move=> ? //=; by rewrite rew_opp_r).
-Qed.
+Global Instance dlater_next_conn {A : Type} : Connective (dlater (next A)) (▷ A).
+Proof. by split; apply: dlater_next_iso. Defined.
 
 Export Later.ApNotation.
 Infix "<$>" := Later.map (at level 50).
 
 Theorem map_id {A} (x : ▷ A) : id <$> x = x.
 Proof. by rewrite /Later.map Later.ap_id. Qed.
-
-HB.mixin Record IsLtrAlg A := {step : ▷ A -> A}.
-HB.structure Definition LtrAlg := {A of IsLtrAlg A}.

@@ -3,6 +3,7 @@ Require Import Logic.ProofIrrelevance Logic.FunctionalExtensionality Logic.PropE
 
 Export EqNotations.
 
+Set Bullet Behavior "Strict Subproofs".
 Set Primitive Projections.
 Set Universe Polymorphism.
 
@@ -65,7 +66,6 @@ Arguments bwd_fwd [_] [_] _.
 Arguments fwd_bwd [_] [_] _.
 
 Infix "≅" := iso (at level 100).
-Notation "◻" := Type.
 
 Lemma push_iso {A B C} (α : A ≅ B) : (forall x : A, C (fwd α x)) -> forall x : B, C x.
 Proof.
@@ -85,12 +85,15 @@ Defined.
 
 Definition iso_trans {A B C} (α : A ≅ B) (β : B ≅ C) : A ≅ C.
 Proof.
-  unshelve esplit.
+  build.
   - move=> x; apply/(fwd β)/(fwd α)/x.
   - move=> x; apply/(bwd α)/(bwd β)/x.
   - abstract (by move=> f /=; rewrite ? fwd_bwd).
   - abstract (by move=> f /=; rewrite ? bwd_fwd).
 Defined.
+
+Definition iso_id {A} : A ≅ A.
+Proof. build; by []. Defined.
 
 Class Connective (A A' : Type) :=
   {conn_def : A' ≅ A}.
