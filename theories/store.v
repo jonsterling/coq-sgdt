@@ -69,6 +69,8 @@ Opaque 𝒯_conn.
 
 Notation 𝒲 := (World.cat (▷ 𝒯)).
 Notation "𝒞+" := Cat[𝒲, SET.cat].
+
+(* TODO: need to value this in algebras. *)
 Notation "𝒞-" := Cat[𝒲^op, SET.cat].
 
 
@@ -214,7 +216,7 @@ Module LeftAdjoint.
     Definition ob (A : 𝒞+) : 𝒞- :=
       LeftAdjunctive.T A E.
 
-    Definition map_el (A B: 𝒞+) (f : A ~> B) : forall w, ob A w -> ob B w.
+    Definition map_el (A B : 𝒞+) (f : A ~> B) : forall w, ob A w -> ob B w.
     Proof.
       move=> w.
       apply: Reflection.map.
@@ -262,3 +264,49 @@ Module LeftAdjoint.
     Proof. by esplit; apply: functor_mixin. Defined.
   End LeftAdjoint.
 End LeftAdjoint.
+
+
+(*
+
+Module RightAdjoint.
+  Section RightAdjoint.
+    Context (E : itree.Thy).
+
+    Definition ob (X : 𝒞-) : 𝒞+ :=
+      RightAdjunctive.T X E.
+
+    Definition map_el (X Y : 𝒞-) (f : X ~> Y) : forall w, ob X w -> ob Y w.
+    Proof.
+      move=> w p w' ww' h.
+      move: (p w' ww' h).
+      by apply/itree.map/f.
+    Defined.
+
+    Definition map (X Y : 𝒞-) (f : X ~> Y) : ob X ~> ob Y.
+    Proof.
+      build.
+      - by apply: map_el.
+      - abstract by [].
+    Defined.
+
+
+    Definition prefunctor_mixin : Prefunctor.mixin_of 𝒞- 𝒞+ ob.
+    Proof. by build; apply: map. Defined.
+
+    Canonical prefunctor : Prefunctor.type 𝒞- 𝒞+.
+    Proof. by esplit; apply: prefunctor_mixin. Defined.
+
+    Definition functor_mixin : Functor.mixin_of _ _ prefunctor.
+    Proof.
+      build.
+      - move=> X.
+        apply: NatTrans.ext.
+        apply: dfunE=> w; cbn.
+        apply: funE=> p.
+        apply: dfunE=> w'.
+        apply: funE=> ww'.
+        apply: funE=> h.
+        by rewrite /map_el itree.map_id.
+      - move=> X Y Z f g.
+
+*)
