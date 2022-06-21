@@ -71,7 +71,7 @@ Notation 𝒲 := (World.cat (▷ 𝒯)).
 Notation "𝒞+" := Cat[𝒲, SET.cat].
 
 (* TODO: need to value this in algebras. *)
-Notation "𝒞-" := Cat[𝒲^op, SET.cat].
+Notation "𝒞-[ E ]" := Cat[𝒲^op, itree.ALG.cat E].
 
 
 Module Ref.
@@ -114,12 +114,15 @@ Definition heaplet (w w' : 𝒲) : Set :=
 
 Definition heap (w : 𝒲) := heaplet w w.
 
+(*
 Module LeftAdjunctive.
   Section LeftAdjunctive.
     Context (A : 𝒞+) (E : itree.Thy).
 
+    (* TODO: Get this working *)
     Definition ob (w : 𝒲) : Set :=
-      ⋁ w' : 𝒲, @hom 𝒲 w w' × (heap w' × itree.ITree E (A w')).
+      itree.ITree E (⋁ w' : 𝒲, @hom 𝒲 w w' × (heap w' × A w')).
+
 
     Definition rst (w1 w2 : 𝒲) (w12 : @hom 𝒲 w1 w2) : ob w2 -> ob w1.
     Proof.
@@ -130,7 +133,7 @@ Module LeftAdjunctive.
       - exact: u.
     Defined.
 
-    Definition prefunctor_mixin : Prefunctor.mixin_of (𝒲^op) SET.cat ob.
+    Definition prefunctor_mixin : Prefunctor.mixin_of (𝒲^op) (itree.ALG.cat E) ob.
     Proof. by build=> x y; apply: rst. Defined.
 
     Canonical prefunctor : Prefunctor.type (𝒲^op) SET.cat.
@@ -158,7 +161,7 @@ Module LeftAdjunctive.
     Canonical functor : Functor.type (𝒲^op) SET.cat.
     Proof. esplit; apply: functor_mixin. Defined.
 
-    Definition T : 𝒞- := functor.
+    Definition T : 𝒞-[E] := functor.
   End LeftAdjunctive.
 End LeftAdjunctive.
 
@@ -264,6 +267,8 @@ Module LeftAdjoint.
     Proof. by esplit; apply: functor_mixin. Defined.
   End LeftAdjoint.
 End LeftAdjoint.
+
+*)
 
 
 (*
