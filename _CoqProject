@@ -4,6 +4,7 @@
 theories/preamble.v
 theories/category.v
 theories/functor.v
+theories/adjunction.v
 theories/impredicative.v
 theories/guarded.v
 theories/itree.v

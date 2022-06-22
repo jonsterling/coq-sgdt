@@ -185,8 +185,8 @@ Canonical FullSubcategory.precat.
 Canonical FullSubcategory.cat.
 
 
-Module SET.
-  Definition hom_mixin : Hom.mixin_of Set.
+Module TYPE.
+  Definition hom_mixin : Hom.mixin_of Type.
   Proof. constructor=> A B; exact: (A -> B). Defined.
 
   Canonical hom : Hom.type.
@@ -208,4 +208,4 @@ Module SET.
 
   Canonical cat : Category.type.
   Proof. by esplit; apply: cat_mixin. Defined.
-End SET.
+End TYPE.

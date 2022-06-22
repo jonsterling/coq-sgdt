@@ -53,7 +53,7 @@ End World.
 Local Open Scope category_scope.
 
 Definition ℱ (T : Type) : Type :=
-  World.cat T ~> SET.cat.
+  World.cat T ~> TYPE.cat@{_ Set}.
 
 Definition 𝒯 : Type.
 Proof. by apply: Later.loeb=> /dlater; apply: ℱ. Defined.
@@ -68,7 +68,7 @@ Opaque 𝒯_conn.
 
 
 Notation 𝒲 := (World.cat (▷ 𝒯)).
-Notation "𝒞+" := Cat[𝒲, SET.cat].
+Notation "𝒞+" := Cat[𝒲, TYPE.cat@{_ Set}].
 Notation "𝒞-[ E ]" := Cat[𝒲^op, itree.ALG.cat E].
 
 
@@ -85,16 +85,16 @@ Module Ref.
       abstract by rewrite -(w12 i) //=; apply/dommP; eauto.
     Defined.
 
-    Definition prefunctor_mixin : Prefunctor.mixin_of 𝒲 SET.cat ob.
+    Definition prefunctor_mixin : Prefunctor.mixin_of 𝒲 (TYPE.cat@{_ Set}) ob.
     Proof. by build; apply: rst. Defined.
 
-    Canonical prefunctor : Prefunctor.type 𝒲 SET.cat.
+    Canonical prefunctor : Prefunctor.type 𝒲 (TYPE.cat@{_ Set}).
     Proof. by esplit; apply: prefunctor_mixin. Defined.
 
     Lemma functor_mixin : Functor.mixin_of _ _ prefunctor.
     Proof. by build; move=> *; apply: funE=> //=; case=> *; apply: subE. Qed.
 
-    Canonical functor : Functor.type 𝒲 SET.cat.
+    Canonical functor : Functor.type 𝒲 (TYPE.cat@{_ Set}).
     Proof. by esplit; apply: functor_mixin. Defined.
 
     Definition T : 𝒞+ := functor.
