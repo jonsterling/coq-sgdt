@@ -261,16 +261,16 @@
 <span class="id" title="keyword">Canonical</span> <a class="idref" href="sgdt.category.html#cat"><span class="id" title="definition">FullSubcategory.cat</span></a>.<br/>
 
 <br/>
-<span class="id" title="keyword">Module</span> <a id="SET" class="idref" href="#SET"><span class="id" title="module">SET</span></a>.<br/>
-&nbsp;&nbsp;<span class="id" title="keyword">Definition</span> <a id="SET.hom_mixin" class="idref" href="#SET.hom_mixin"><span class="id" title="definition">hom_mixin</span></a> : <a class="idref" href="sgdt.category.html#Hom.mixin_of"><span class="id" title="record">Hom.mixin_of</span></a> <span class="id" title="keyword">Set</span>.<br/>
+<span class="id" title="keyword">Module</span> <a id="TYPE" class="idref" href="#TYPE"><span class="id" title="module">TYPE</span></a>.<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Definition</span> <a id="TYPE.hom_mixin" class="idref" href="#TYPE.hom_mixin"><span class="id" title="definition">hom_mixin</span></a> : <a class="idref" href="sgdt.category.html#Hom.mixin_of"><span class="id" title="record">Hom.mixin_of</span></a> <span class="id" title="keyword">Type</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="keyword">Proof</span>. <span class="id" title="tactic">constructor</span>=&gt; <span class="id" title="var">A</span> <span class="id" title="var">B</span>; <span class="id" title="tactic">exact</span>: (<span class="id" title="var">A</span> <a class="idref" href="http://coq.inria.fr/distrib/V8.15.2/stdlib//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">-&gt;</span></a> <span class="id" title="var">B</span>). <span class="id" title="keyword">Defined</span>.<br/>
 
 <br/>
-&nbsp;&nbsp;<span class="id" title="keyword">Canonical</span> <a id="SET.hom" class="idref" href="#SET.hom"><span class="id" title="definition">hom</span></a> : <a class="idref" href="sgdt.category.html#Hom.type"><span class="id" title="record">Hom.type</span></a>.<br/>
-&nbsp;&nbsp;<span class="id" title="keyword">Proof</span>. <span class="id" title="tactic">by</span> <span class="id" title="var">esplit</span>; <span class="id" title="tactic">apply</span>: <a class="idref" href="sgdt.category.html#SET.hom_mixin"><span class="id" title="definition">hom_mixin</span></a>. <span class="id" title="keyword">Defined</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Canonical</span> <a id="TYPE.hom" class="idref" href="#TYPE.hom"><span class="id" title="definition">hom</span></a> : <a class="idref" href="sgdt.category.html#Hom.type"><span class="id" title="record">Hom.type</span></a>.<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Proof</span>. <span class="id" title="tactic">by</span> <span class="id" title="var">esplit</span>; <span class="id" title="tactic">apply</span>: <a class="idref" href="sgdt.category.html#TYPE.hom_mixin"><span class="id" title="definition">hom_mixin</span></a>. <span class="id" title="keyword">Defined</span>.<br/>
 
 <br/>
-&nbsp;&nbsp;<span class="id" title="keyword">Definition</span> <a id="SET.precat_mixin" class="idref" href="#SET.precat_mixin"><span class="id" title="definition">precat_mixin</span></a> : <a class="idref" href="sgdt.category.html#Precategory.mixin_of"><span class="id" title="record">Precategory.mixin_of</span></a> <a class="idref" href="sgdt.category.html#SET.hom"><span class="id" title="definition">hom</span></a>.<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Definition</span> <a id="TYPE.precat_mixin" class="idref" href="#TYPE.precat_mixin"><span class="id" title="definition">precat_mixin</span></a> : <a class="idref" href="sgdt.category.html#Precategory.mixin_of"><span class="id" title="record">Precategory.mixin_of</span></a> <a class="idref" href="sgdt.category.html#TYPE.hom"><span class="id" title="definition">hom</span></a>.<br/>
 &nbsp;&nbsp;<span class="id" title="keyword">Proof</span>.<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">build</span>.<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;- <span class="id" title="tactic">by</span> <span class="id" title="tactic">move</span>=&gt; <span class="id" title="var">A</span> <span class="id" title="var">B</span> <span class="id" title="var">C</span> <span class="id" title="var">f</span> <span class="id" title="var">g</span>; <span class="id" title="tactic">exact</span>: (<span class="id" title="var">g</span> <a class="idref" href="http://coq.inria.fr/distrib/V8.15.2/stdlib//Coq.ssr.ssrfun.html#8b4742e3f67816503ce4ab2f3b81c27e"><span class="id" title="notation">\</span></a><a class="idref" href="http://coq.inria.fr/distrib/V8.15.2/stdlib//Coq.ssr.ssrfun.html#8b4742e3f67816503ce4ab2f3b81c27e"><span class="id" title="notation">o</span></a> <span class="id" title="var">f</span>).<br/>
@@ -278,17 +278,17 @@
 &nbsp;&nbsp;<span class="id" title="keyword">Defined</span>.<br/>
 
 <br/>
-&nbsp;&nbsp;<span class="id" title="keyword">Canonical</span> <a id="SET.precat" class="idref" href="#SET.precat"><span class="id" title="definition">precat</span></a> : <a class="idref" href="sgdt.category.html#Precategory.type"><span class="id" title="record">Precategory.type</span></a>.<br/>
-&nbsp;&nbsp;<span class="id" title="keyword">Proof</span>. <span class="id" title="tactic">by</span> <span class="id" title="var">esplit</span>; <span class="id" title="tactic">apply</span>: <a class="idref" href="sgdt.category.html#SET.precat_mixin"><span class="id" title="definition">precat_mixin</span></a>. <span class="id" title="keyword">Defined</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Canonical</span> <a id="TYPE.precat" class="idref" href="#TYPE.precat"><span class="id" title="definition">precat</span></a> : <a class="idref" href="sgdt.category.html#Precategory.type"><span class="id" title="record">Precategory.type</span></a>.<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Proof</span>. <span class="id" title="tactic">by</span> <span class="id" title="var">esplit</span>; <span class="id" title="tactic">apply</span>: <a class="idref" href="sgdt.category.html#TYPE.precat_mixin"><span class="id" title="definition">precat_mixin</span></a>. <span class="id" title="keyword">Defined</span>.<br/>
 
 <br/>
-&nbsp;&nbsp;<span class="id" title="keyword">Definition</span> <a id="SET.cat_mixin" class="idref" href="#SET.cat_mixin"><span class="id" title="definition">cat_mixin</span></a> : <a class="idref" href="sgdt.category.html#Category.mixin_of"><span class="id" title="record">Category.mixin_of</span></a> <a class="idref" href="sgdt.category.html#SET.precat"><span class="id" title="definition">precat</span></a>.<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Definition</span> <a id="TYPE.cat_mixin" class="idref" href="#TYPE.cat_mixin"><span class="id" title="definition">cat_mixin</span></a> : <a class="idref" href="sgdt.category.html#Category.mixin_of"><span class="id" title="record">Category.mixin_of</span></a> <a class="idref" href="sgdt.category.html#TYPE.precat"><span class="id" title="definition">precat</span></a>.<br/>
 &nbsp;&nbsp;<span class="id" title="keyword">Proof</span>. <span class="id" title="tactic">by</span> []. <span class="id" title="keyword">Defined</span>.<br/>
 
 <br/>
-&nbsp;&nbsp;<span class="id" title="keyword">Canonical</span> <a id="SET.cat" class="idref" href="#SET.cat"><span class="id" title="definition">cat</span></a> : <a class="idref" href="sgdt.category.html#Category.type"><span class="id" title="record">Category.type</span></a>.<br/>
-&nbsp;&nbsp;<span class="id" title="keyword">Proof</span>. <span class="id" title="tactic">by</span> <span class="id" title="var">esplit</span>; <span class="id" title="tactic">apply</span>: <a class="idref" href="sgdt.category.html#SET.cat_mixin"><span class="id" title="definition">cat_mixin</span></a>. <span class="id" title="keyword">Defined</span>.<br/>
-<span class="id" title="keyword">End</span> <a class="idref" href="sgdt.category.html#SET"><span class="id" title="module">SET</span></a>.<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Canonical</span> <a id="TYPE.cat" class="idref" href="#TYPE.cat"><span class="id" title="definition">cat</span></a> : <a class="idref" href="sgdt.category.html#Category.type"><span class="id" title="record">Category.type</span></a>.<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Proof</span>. <span class="id" title="tactic">by</span> <span class="id" title="var">esplit</span>; <span class="id" title="tactic">apply</span>: <a class="idref" href="sgdt.category.html#TYPE.cat_mixin"><span class="id" title="definition">cat_mixin</span></a>. <span class="id" title="keyword">Defined</span>.<br/>
+<span class="id" title="keyword">End</span> <a class="idref" href="sgdt.category.html#TYPE"><span class="id" title="module">TYPE</span></a>.<br/>
 </div>
 </div>
 <div id="footer">
