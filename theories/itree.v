@@ -237,8 +237,7 @@ Module Free.
           apply: funE=>/=i.
           congr Later.ap.
           apply: Later.from_eq.
-          move: ih.
-          apply: Later.map => H'.
+          apply: Later.map ih => H'.
           apply: funE.
           by apply: push_conn.
       Qed.
@@ -250,8 +249,7 @@ Module Free.
         - exact: f.
         - move=> e k.
           apply: (do e); move/k.
-          move: f'.
-          apply: Later.ap.
+          apply: Later.ap f'.
       Defined.
 
 
