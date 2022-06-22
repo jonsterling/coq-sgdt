@@ -343,8 +343,7 @@ Module TranspBwd.
     Lemma transf_mixin : NatTrans.mixin_of _ _ transf_fam.
     Proof.
       build; case=> A X; case=> B Y; case=> f g.
-      apply: funE; cbn.
-      move=> h.
+      apply: funE=> h.
       rewrite /transf_fam.
       apply: Free.extends_unique.
       - by move=> ?; apply: Free.ext_extends.
