@@ -107,7 +107,7 @@ End RightNerve.
 
 Module Preadjunction.
   Section Defs.
-    Context (𝒞 : Category.type) (𝒟 : Category.type) (F : 𝒞 ~> 𝒟) (U : 𝒟 ~> 𝒞).
+    Context {𝒞 𝒟 : Category.type} (F : 𝒞 ~> 𝒟) (U : 𝒟 ~> 𝒞).
 
     Record type :=
       { fwd : LeftNerve.functor F ~> RightNerve.functor U;
@@ -120,9 +120,9 @@ End Preadjunction.
 
 Module Adjunction.
   Section Defs.
-    Context (𝒞 : Category.type) (𝒟 : Category.type) (F : 𝒞 ~> 𝒟) (U : 𝒟 ~> 𝒞).
+    Context {𝒞 𝒟 : Category.type} (F : 𝒞 ~> 𝒟) (U : 𝒟 ~> 𝒞).
 
-    Record mixin_of (T : Preadjunction.type _ _ F U) :=
+    Record mixin_of (T : Preadjunction.type F U) :=
       { bwd_fwd : Preadjunction.fwd T >> Preadjunction.bwd T = idn _;
         fwd_bwd : Preadjunction.bwd T >> Preadjunction.fwd T = idn _ }.
 
@@ -132,3 +132,15 @@ Module Adjunction.
   Arguments bwd_fwd [𝒞] [𝒟] [F] [U].
   Arguments fwd_bwd [𝒞] [𝒟] [F] [U].
 End Adjunction.
+
+Section Facts.
+
+  Context {𝒞 𝒟 : Category.type} {F : 𝒞 ~> 𝒟} {U : 𝒟 ~> 𝒞} (T : Adjunction.type F U).
+
+  Definition transpose : LeftNerve.functor F ~> RightNerve.functor U :=
+    Preadjunction.fwd (Adjunction.transp _ _ T).
+
+  Definition untranspose : RightNerve.functor U ~> LeftNerve.functor F :=
+    Preadjunction.bwd (Adjunction.transp _ _ T).
+
+End Facts.
