@@ -1,40 +1,7 @@
 From sgdt Require Import preamble category functor.
 
 Local Open Scope category_scope.
-
 Set Universe Polymorphism.
-Module Product.
-  Section Defs.
-    Context (𝒞 𝒟 : Category.type).
-
-    Definition hom_mixin : Hom.mixin_of (𝒞 × 𝒟).
-    Proof.
-      build; case=> c1 d1; case=> c2 d2.
-      exact ((c1 ~> c2) × (d1 ~> d2)).
-    Defined.
-
-    Canonical hom : Hom.type.
-    Proof. esplit; apply: hom_mixin. Defined.
-
-    Definition precat_mixin : Precategory.mixin_of hom.
-    Proof.
-      build.
-      - move=> u v w f g; split.
-        + by exact: (pi1 f >> pi1 g).
-        + by exact: (pi2 f >> pi2 g).
-      - move=> u; split; by exact: idn.
-    Defined.
-
-    Canonical precat : Precategory.type.
-    Proof. esplit; apply: precat_mixin. Defined.
-
-    Definition cat_mixin : Category.mixin_of precat.
-    Proof. by build; move=>*; apply: prodE=> //=; apply: seqA + apply: seqL + apply: seqR. Qed.
-
-    Definition cat : Category.type.
-    Proof. esplit; apply: cat_mixin. Defined.
-  End Defs.
-End Product.
 
 Module LeftNerve.
   Section Defs.
