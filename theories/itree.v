@@ -1,9 +1,11 @@
-From sgdt Require Import preamble guarded category.
+From sgdt Require Import preamble guarded category functor adjunction.
 From HB Require Import structures.
 
 (** Guarded Interaction Trees. *)
 
+Local Open Scope category_scope.
 Set Primitive Projections.
+Set Universe Polymorphism.
 
 Record Thy :=
   {op :> Set;
@@ -53,41 +55,43 @@ Arguments Do [E] [R] [T].
 Arguments η [E] [R].
 
 
-Record Action (E : Thy) (A : Set) :=
-  {eff : E; kont : bdry eff -> ▷ A}.
+Module Action.
+  Record type (E : Thy) (A : Set) :=
+    {eff : E; kont : bdry eff -> ▷ A}.
 
-Arguments eff [_] [_].
-Arguments kont [_] [_].
+  Arguments eff [_] [_].
+  Arguments kont [_] [_].
 
-Definition Action_map {E} {A B : Set} (f : A -> B) : Action E A -> Action E B.
-Proof.
-  move=> α.
-  unshelve esplit.
-  - exact: eff α.
-  - move=> /(kont α).
-    apply/Later.map/f.
-Defined.
+  Definition map {E} {A B : Set} (f : A -> B) : type E A -> type E B.
+  Proof.
+    move=> α.
+    unshelve esplit.
+    - exact: eff α.
+    - move=> /(kont α).
+      apply/Later.map/f.
+  Defined.
 
-Lemma Action_map_cmp {E : Thy} {A B C : Set} {f : A -> B} {g : B -> C} (x : Action E A) : Action_map (g \o f) x = Action_map g (Action_map f x).
-Proof.
-  rewrite /Action_map.
-  f_equal.
-  apply: funE => ?.
-  by rewrite Later.map_assoc.
-Qed.
+  Lemma map_cmp {E : Thy} {A B C : Set} {f : A -> B} {g : B -> C} (x : type E A) : map (g \o f) x = map g (map f x).
+  Proof.
+    rewrite /map.
+    congr Build_type.
+    apply: funE => ?.
+    by rewrite Later.map_assoc.
+  Qed.
 
-Lemma Action_map_id {E : Thy} {A : Set} {x : Action E A} : Action_map id x = x.
-Proof.
-  case: x => ? ?.
-  rewrite /Action_map; f_equal.
-  apply: funE => ?.
-  by rewrite Later.map_id.
-Qed.
+  Lemma map_id {E : Thy} {A : Set} {x : type E A} : map id x = x.
+  Proof.
+    case: x => ? ?.
+    rewrite /map; congr Build_type.
+    apply: funE => ?.
+    by rewrite Later.map_id.
+  Qed.
+End Action.
 
 
 Module Alg.
-  Record mixin_of (E : Thy) (A : Set) :=
-    {do_action : Action E A -> A}.
+  Record mixin_of (E : Thy) (A : Set) : Set :=
+    {do_action : Action.type E A -> A}.
 
   Structure type E : Type := Pack {sort; class : mixin_of E sort}.
 
@@ -98,11 +102,12 @@ End Alg.
 
 Export Alg.Exports.
 
-Definition do_action {E : Thy} {X : Alg.type E} := Alg.do_action _ _ (Alg.class E X).
+Definition do_action {E : Thy} {X : Alg.type E} :=
+  Alg.do_action _ _ (Alg.class E X).
 
 Module AlgHom.
   Record mixin_of {E : Thy} (A B : Alg.type E) (f : A -> B) : Prop :=
-    {pres_do_action : forall α, f (do_action α) = do_action (Action_map f α) }.
+    {pres_do_action : forall α, f (do_action α) = do_action (Action.map f α) }.
 
   Structure type {E} (A B : Alg.type E) := Pack {map; class : mixin_of A B map}.
 
@@ -121,9 +126,8 @@ End AlgHom.
 
 Export AlgHom.Exports.
 
-
 Definition pres_do_action {E : Thy} {X Y : Alg.type E} (f : AlgHom.type X Y) :
-  forall α, f (do_action α) = do_action (Action_map f α).
+  forall α, f (do_action α) = do_action (Action.map f α).
 Proof.
   apply: AlgHom.pres_do_action.
   apply: AlgHom.class.
@@ -132,177 +136,6 @@ Defined.
 Definition do {E : Thy} {A : Alg.type E} (e : E) (k : bdry e -> ▷ A) : A.
 Proof. apply: do_action; esplit; apply: k. Defined.
 
-Definition ITree_do_action {E : Thy} {R : Set} : Action E (ITree E R) -> ITree E R.
-Proof. by move=> α; apply/intro/Do/kont/α. Defined.
-
-Definition ITree_alg_mixin {E : Thy} {R : Set} : Alg.mixin_of E (ITree E R).
-Proof. by build; apply: ITree_do_action. Defined.
-
-Canonical ITree_alg (E : Thy) (R : Set) : Alg.type E.
-Proof. by esplit; apply: ITree_alg_mixin. Defined.
-
-Lemma pres_do {E} {A B : Alg.type E} {f : AlgHom.type A  B} :
-  forall e (k : bdry e -> ▷ A), f (do e k) = do e (Later.map f \o k).
-Proof.
-  move=> e k.
-  rewrite /do.
-  apply: pres_do_action.
-Qed.
-
-Definition fun_do_action {E} {A : Set} {B : Alg.type E} : Action E (A -> B) -> A -> B.
-Proof.
-  move=> f x.
-  apply: do_action.
-  move: f; apply: Action_map.
-  apply; exact: x.
-Defined.
-
-Section Ext.
-  Context {E : Thy} {A : Set} {B : Alg.type E}.
-
-  Definition extends (f : A -> B) (h : ITree E A -> B) : Prop :=
-    forall x, h (η x) = f x.
-
-  Lemma extends_unique (f : A -> B) (h h' : AlgHom.type (ITree_alg E A) B) : extends f h -> extends f h' -> h = h'.
-  Proof.
-    move=> hext h'ext.
-    apply: AlgHom.ext.
-    apply: funE.
-    apply: push_conn.
-    apply: Later.loeb=>ih.
-    case.
-    - by move=>?; rewrite hext h'ext.
-    - move=> e k.
-      have -> : (intro (Do e k) = do e k) by [].
-      rewrite ? pres_do; congr do.
-      apply: funE=>/=i.
-      congr Later.ap.
-      apply: Later.from_eq.
-      move: ih.
-      apply: Later.map => H'.
-      apply: funE.
-      by apply: push_conn.
-  Qed.
-
-  Definition ext (f : A -> B) : ITree E A -> B.
-  Proof.
-    apply: Later.loeb=>f'.
-    case/elim.
-    - exact: f.
-    - move=> e k.
-      apply: (do e); move/k.
-      move: f'.
-      apply: Later.ap.
-  Defined.
-End Ext.
-
-
-Notation "f ♯" := (ext f) (at level 0).
-
-Section ExtLaws.
-  Context {E : Thy} {A : Set} {B : Alg.type E}.
-  Lemma ext_extends : forall f : A -> B, extends f f♯.
-  Proof. by move=>??; rewrite /ext Later.loeb_unfold /η beta. Qed.
-
-  Definition ext_hom_mixin (f : A -> B) : AlgHom.mixin_of _ _ f♯.
-  Proof. by build; case=> ??; rewrite {1}/ext Later.loeb_unfold beta. Qed.
-
-  Canonical ext_hom (f : A -> B) : AlgHom.type (ITree_alg E A) B.
-  Proof. by esplit; apply: ext_hom_mixin. Defined.
-End ExtLaws.
-
-Section IdHom.
-  Context {E : Thy} {A : Alg.type E}.
-  Definition id_hom_mixin : AlgHom.mixin_of A A id.
-  Proof. by build=> ?; rewrite Action_map_id. Qed.
-
-  Canonical id_hom : AlgHom.type A A.
-  Proof. by esplit; apply: id_hom_mixin. Defined.
-End IdHom.
-
-Section CmpHom.
-  Context {E : Thy} {A B C : Alg.type E} (f : AlgHom.type A B) (g : AlgHom.type B C).
-
-  Definition cmp_hom_mixin : AlgHom.mixin_of A C (fun x => g (f x)).
-  Proof. by build=> ?; rewrite Action_map_cmp -?pres_do_action. Qed.
-
-  Canonical cmp_hom : AlgHom.type A C.
-  Proof. by esplit; apply: cmp_hom_mixin. Defined.
-End CmpHom.
-
-Section Bind.
-  Context {E : Thy}.
-
-  Definition bind {A B : Set} (u : ITree E A) (f : A -> ITree E B) : ITree E B := ext_hom f u.
-
-  Lemma bind_idL {A B : Set} (x : A) (f : A -> ITree E B) : bind (η x) f = f x.
-  Proof. by apply: ext_extends. Qed.
-
-  Lemma bind_idR {A : Set} (u : ITree E A) : bind u (@η _ _) = u.
-    move: u.
-    rewrite /bind.
-    apply: unfunE.
-    congr AlgHom.map.
-    unshelve apply: extends_unique.
-    - by apply: η.
-    - by move=> ?; apply: ext_extends.
-    - by build=> ?; rewrite Action_map_id.
-  Qed.
-
-  Lemma bind_idA {A B C} (u : ITree E A) (g : A -> ITree E B) (h : B -> ITree E C) :
-    bind (bind u g) h = bind u (fun x => bind (g x) h).
-  Proof.
-    move: u; rewrite /bind.
-    apply: unfunE.
-    rewrite (_ :  (fun x : ITree E A => (h) ♯ ((g) ♯ x)) = (cmp_hom (ext_hom g) (ext_hom h))); first by [].
-    congr AlgHom.map.
-    unshelve apply: extends_unique.
-    - move=> x.
-      exact: (h♯ (g x)).
-    - move=> x //=.
-      by rewrite ext_extends.
-    - move=> x //=.
-      by rewrite ext_extends.
-  Qed.
-End Bind.
-
-
-Section Map.
-  Context {E : Thy}.
-
-  Definition map {A B : Set} (f : A -> B) : AlgHom.type (ITree_alg E A) (ITree_alg E B).
-    apply: ext_hom.
-    move=> x.
-    apply: η (f x).
-  Defined.
-
-  Lemma map_id {A : Set} : map (id : A -> A) = id_hom.
-  Proof.
-    apply: AlgHom.ext; apply: funE=> u; rewrite /map.
-    congr AlgHom.map.
-    unshelve apply: extends_unique.
-    - by exact: η.
-    - by move=> ?; apply: ext_extends.
-    - by [].
-  Qed.
-
-  Lemma map_cmp {A B C : Set} (f : A -> B) (g : B -> C) : map (fun x => g (f x)) = cmp_hom (map f) (map g).
-  Proof.
-    apply: AlgHom.ext.
-    apply: funE=> u.
-    congr AlgHom.map.
-    unshelve apply: extends_unique.
-    - move=> a.
-      apply: (ext_hom (@η _ _ \o g)).
-      apply: (ext_hom (@η _ _ \o f)).
-      apply: η.
-      apply: a.
-    - move=> x.
-      by rewrite //= ?ext_extends.
-    - move=> x.
-      by rewrite //= ?ext_extends.
-  Qed.
-End Map.
 
 Module ALG.
   Section ALG.
@@ -320,11 +153,11 @@ Module ALG.
       - move=> X Y Z f g.
         build.
         + by exact: (g \o f).
-        + abstract by build=> α; case: f=> f hf; case: g=> g hg; rewrite Action_map_cmp -?pres_do_action.
+        + abstract by build=> α; case: f=> f hf; case: g=> g hg; rewrite Action.map_cmp -?pres_do_action.
       - move=> X.
         build.
         + by exact: id.
-        + abstract by build=> α; rewrite Action_map_id.
+        + abstract by build=> α; rewrite Action.map_id.
     Defined.
 
     Canonical precat : Precategory.type.
@@ -333,33 +166,227 @@ Module ALG.
     Definition cat_mixin : Category.mixin_of precat.
     Proof. by build; move=>*; apply: AlgHom.ext. Qed.
 
-    Canonical cat : Category.type.
+    Canonical cat : StrictCat.cat.
     Proof. esplit; apply: cat_mixin. Defined.
   End ALG.
 End ALG.
 
-
-(** The forgetful functor from algebras to types is conservative. *)
-Lemma U_conservative {E} (A B : Alg.type E) (f : AlgHom.type A B) :
-  forall g : B -> A,
-      (forall x, f (g x) = x)
-      -> (forall x, g (f x) = x)
-      -> AlgHom.mixin_of _ _ g.
+Lemma pres_do {E} {A B : Alg.type E} {f : AlgHom.type A  B} :
+  forall e (k : bdry e -> ▷ A), f (do e k) = do e (Later.map f \o k).
 Proof.
-  move=> g fg gf.
-  split=> α.
-  have: injective f.
-  - move=> x y h.
-    rewrite -[x]gf -[y]gf /=.
-    by congr g.
-  - move=> finj.
-    rewrite /=; rewrite Action_map_cmp Action_map_cmp.
-    apply: finj.
-    rewrite ? pres_do_action.
-    rewrite fg.
-    congr do_action.
-    rewrite -?Action_map_cmp.
-    rewrite (_ : ((f \o g) \o id) \o id = id).
-    + by apply: funE => ? //=.
-    + by rewrite Action_map_id.
+  move=> e k.
+  rewrite /do.
+  apply: pres_do_action.
 Qed.
+
+Module Forgetful.
+  Section Defs.
+    Context (E : Thy).
+
+    Definition ob (X : ALG.cat E) : Set := X.
+
+    Definition prefunctor_mixin : Prefunctor.mixin_of (ALG.cat E) SET.cat ob.
+    Proof.
+      build.
+      move=> X Y f.
+      by apply: f.
+    Defined.
+
+    Canonical prefunctor : Prefunctor.type (ALG.cat E) SET.cat.
+    Proof. by esplit; apply: prefunctor_mixin. Defined.
+
+    Definition functor_mixin : Functor.mixin_of (ALG.cat E) SET.cat prefunctor.
+    Proof. by build. Qed.
+
+    Canonical functor : (ALG.cat E) ~~> SET.cat.
+    Proof. by esplit; apply: functor_mixin. Defined.
+  End Defs.
+End Forgetful.
+
+Module Free.
+  Section Defs.
+    Context (E : Thy).
+
+    Definition ob_do_action {R : Set} : Action.type E (ITree E R) -> ITree E R.
+    Proof. by move=> α; apply/intro/Do/Action.kont/α. Defined.
+
+    Definition ob_alg_mixin {R : Set} : Alg.mixin_of E (ITree E R).
+    Proof. by build; apply: ob_do_action. Defined.
+
+    Canonical ob (R : Set) : ALG.cat E.
+    Proof. by esplit; apply: ob_alg_mixin. Defined.
+
+    Section Ext.
+      Context {A : Set} {B : ALG.cat E}.
+
+      Definition extends (f : A -> B) (h : ITree E A -> B) : Prop :=
+        forall x, h (η x) = f x.
+
+      Lemma extends_unique (f : A -> B) (h h' : AlgHom.type (ob A) B) : extends f h -> extends f h' -> h = h'.
+      Proof.
+        move=> hext h'ext.
+        apply: AlgHom.ext.
+        apply: funE.
+        apply: push_conn.
+        apply: Later.loeb=>ih.
+        case.
+        - by move=>?; rewrite hext h'ext.
+        - move=> e k.
+          have -> : (intro (Do e k) = do e k) by [].
+          rewrite ? pres_do. congr do.
+          apply: funE=>/=i.
+          congr Later.ap.
+          apply: Later.from_eq.
+          move: ih.
+          apply: Later.map => H'.
+          apply: funE.
+          by apply: push_conn.
+      Qed.
+
+      Definition ext (f : A -> B) : ITree E A -> B.
+      Proof.
+        apply: Later.loeb=>f'.
+        case/elim.
+        - exact: f.
+        - move=> e k.
+          apply: (do e); move/k.
+          move: f'.
+          apply: Later.ap.
+      Defined.
+
+
+      Section ExtLaws.
+        Lemma ext_extends : forall f : A -> B, extends f (ext f).
+        Proof. by move=>??; rewrite /ext Later.loeb_unfold /η beta. Qed.
+
+        Definition ext_hom_mixin (f : A -> B) : AlgHom.mixin_of _ _ (ext f).
+        Proof. by build; case=> ??; rewrite {1}/ext Later.loeb_unfold beta. Qed.
+
+        Canonical ext_hom (f : A -> B) : AlgHom.type (ob A) B.
+        Proof. by esplit; apply: ext_hom_mixin. Defined.
+      End ExtLaws.
+    End Ext.
+
+    Section Map.
+      Context {A B : Set}.
+
+      Definition map (f : A -> B) : ob A ~> ob B.
+      Proof.
+        apply: ext_hom=> x.
+        apply/η/f/x.
+      Defined.
+
+    End Map.
+
+    Definition prefunctor_mixin : Prefunctor.mixin_of SET.cat (ALG.cat E) ob.
+    Proof. by build=> ? ?; apply: map. Defined.
+
+    Canonical prefunctor : Prefunctor.type SET.cat (ALG.cat E).
+    Proof. by esplit; apply: prefunctor_mixin. Defined.
+
+    Definition functor_mixin : Functor.mixin_of _ _ prefunctor.
+    Proof.
+      build.
+      - move=> x.
+        apply: AlgHom.ext; apply: funE => u.
+        congr AlgHom.map.
+        apply: extends_unique.
+        + by move=> ?; apply: ext_extends.
+        + by [].
+      - move=> x y z f g.
+        apply: AlgHom.ext; apply: funE => u.
+        congr AlgHom.map.
+        by apply: extends_unique=> ?; rewrite //= ?ext_extends.
+    Qed.
+
+    Definition functor : Functor.type SET.cat (ALG.cat E).
+    Proof. esplit; apply: functor_mixin. Defined.
+  End Defs.
+End Free.
+
+Module TranspFwd.
+  Section Defs.
+    Context (E : Thy).
+
+    Definition transf_fam : forall U, LeftNerve.functor (Free.functor E) U ~> RightNerve.functor (Forgetful.functor E) U.
+    Proof.
+      move=> [A X] f a.
+      by apply/f/η/a.
+    Defined.
+
+    Lemma transf_mixin : NatTrans.mixin_of _ _ transf_fam.
+    Proof.
+      build; case=> A X; case=> B Y; case=> f g.
+      apply: funE; cbn.
+      move=> h.
+      apply: funE=> b //=.
+      congr (g _).
+      congr (h _).
+      by rewrite Free.ext_extends.
+    Qed.
+
+    Canonical transf : LeftNerve.functor (Free.functor E) ~> RightNerve.functor (Forgetful.functor E).
+    Proof. by esplit; apply: transf_mixin. Defined.
+  End Defs.
+End TranspFwd.
+
+Module TranspBwd.
+  Section Defs.
+    Context (E : Thy).
+
+    Definition transf_fam : forall U, RightNerve.functor (Forgetful.functor E) U ~> LeftNerve.functor (Free.functor E) U.
+    Proof.
+      move=> [A X]; cbn; move=> f.
+      by apply/Free.ext_hom/f.
+    Defined.
+
+    Lemma transf_mixin : NatTrans.mixin_of _ _ transf_fam.
+    Proof.
+      build; case=> A X; case=> B Y; case=> f g.
+      apply: funE; cbn.
+      move=> h.
+      rewrite /transf_fam.
+      apply: Free.extends_unique.
+      - by move=> ?; apply: Free.ext_extends.
+      - move=> b //=.
+        by rewrite ?Free.ext_extends.
+    Qed.
+
+    Canonical transf : RightNerve.functor (Forgetful.functor E) ~> LeftNerve.functor (Free.functor E).
+    Proof. by esplit; apply: transf_mixin. Defined.
+  End Defs.
+End TranspBwd.
+
+Module EilenbergMoore.
+  Section Defs.
+    Context (E : Thy).
+
+    Definition preadjunction : Preadjunction.type (Free.functor E) (Forgetful.functor E).
+    Proof.
+      build.
+      - by apply: TranspFwd.transf.
+      - by apply: TranspBwd.transf.
+    Defined.
+
+    Definition adjunction_mixin : Adjunction.mixin_of (Free.functor E) (Forgetful.functor E) preadjunction.
+    Proof.
+      build.
+      - apply: NatTrans.ext.
+        apply: dfunE; case=> A X //=.
+        apply: funE=> f.
+        apply: Free.extends_unique.
+        + by move=> ?; apply: Free.ext_extends.
+        + by [].
+      - apply: NatTrans.ext.
+        apply: dfunE; case=> A X //=.
+        apply: funE=> f.
+        apply: funE=> a.
+        by apply: Free.ext_extends.
+    Qed.
+
+    Canonical adjunction : Adjunction.type (Free.functor E) (Forgetful.functor E).
+    Proof. by esplit; apply: adjunction_mixin. Defined.
+  End Defs.
+End EilenbergMoore.
+
+Notation "f ♯" := (Free.ext f) (at level 0).

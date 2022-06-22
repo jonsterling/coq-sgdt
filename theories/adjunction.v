@@ -2,6 +2,7 @@ From sgdt Require Import preamble category functor.
 
 Local Open Scope category_scope.
 
+Set Universe Polymorphism.
 Module Product.
   Section Defs.
     Context (𝒞 𝒟 : Category.type).
@@ -37,7 +38,7 @@ End Product.
 
 Module LeftNerve.
   Section Defs.
-    Context {𝒞 𝒟 : Category.type} (F : 𝒞 ~> 𝒟).
+    Context {𝒞 𝒟 : Category.type} (F : 𝒞 ~~> 𝒟).
 
     Definition ob : Product.cat (𝒞^op) 𝒟 -> TYPE.cat.
     Proof.
@@ -72,7 +73,7 @@ End LeftNerve.
 
 Module RightNerve.
   Section Defs.
-    Context {𝒞 𝒟 : Category.type} (G : 𝒟 ~> 𝒞).
+    Context {𝒞 𝒟 : Category.type} (G : 𝒟 ~~> 𝒞).
 
     Definition ob : Product.cat (𝒞^op) 𝒟 -> TYPE.cat.
     Proof.
@@ -107,7 +108,7 @@ End RightNerve.
 
 Module Preadjunction.
   Section Defs.
-    Context {𝒞 𝒟 : Category.type} (F : 𝒞 ~> 𝒟) (U : 𝒟 ~> 𝒞).
+    Context {𝒞 𝒟 : Category.type} (F : 𝒞 ~~> 𝒟) (U : 𝒟 ~~> 𝒞).
 
     Record type :=
       { fwd : LeftNerve.functor F ~> RightNerve.functor U;
@@ -120,7 +121,7 @@ End Preadjunction.
 
 Module Adjunction.
   Section Defs.
-    Context {𝒞 𝒟 : Category.type} (F : 𝒞 ~> 𝒟) (U : 𝒟 ~> 𝒞).
+    Context {𝒞 𝒟 : Category.type} (F : 𝒞 ~~> 𝒟) (U : 𝒟 ~~> 𝒞).
 
     Record mixin_of (T : Preadjunction.type F U) :=
       { bwd_fwd : Preadjunction.fwd T >> Preadjunction.bwd T = idn _;
@@ -135,7 +136,7 @@ End Adjunction.
 
 Section Facts.
 
-  Context {𝒞 𝒟 : Category.type} {F : 𝒞 ~> 𝒟} {U : 𝒟 ~> 𝒞} (T : Adjunction.type F U).
+  Context {𝒞 𝒟 : Category.type} {F : 𝒞 ~~> 𝒟} {U : 𝒟 ~~> 𝒞} (T : Adjunction.type F U).
 
   Definition transpose : LeftNerve.functor F ~> RightNerve.functor U :=
     Preadjunction.fwd (Adjunction.transp _ _ T).
