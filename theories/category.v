@@ -212,28 +212,7 @@ Module TYPE.
 End TYPE.
 
 Module SET.
-  Definition hom_mixin : Hom.mixin_of Set.
-  Proof. constructor=> A B; exact: (A -> B). Defined.
-
-  Canonical hom : Hom.type.
-  Proof. by esplit; apply: hom_mixin. Defined.
-
-  Definition precat_mixin : Precategory.mixin_of hom.
-  Proof.
-    build.
-    - by move=> A B C f g; exact: (g \o f).
-    - by move=> A; exact: id.
-  Defined.
-
-  Canonical precat : Precategory.type.
-  Proof. by esplit; apply: precat_mixin. Defined.
-
-  Definition cat_mixin : Category.mixin_of precat.
-  Proof. by []. Defined.
-
-
-  Canonical cat : Category.type.
-  Proof. by esplit; apply: cat_mixin. Defined.
+  Definition cat := TYPE.cat@{_ Set}.
 End SET.
 
 Module Product.
