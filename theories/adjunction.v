@@ -112,3 +112,5 @@ Section Facts.
     Preadjunction.bwd (Adjunction.transp _ _ T).
 
 End Facts.
+
+Notation "F ⊣ U" := (Adjunction.type F U) (at level 100).

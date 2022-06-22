@@ -198,7 +198,7 @@ Module Forgetful.
     Definition functor_mixin : Functor.mixin_of (ALG.cat E) SET.cat prefunctor.
     Proof. by build. Qed.
 
-    Canonical functor : (ALG.cat E) ~~> SET.cat.
+    Canonical functor : ALG.cat E ~~> SET.cat.
     Proof. by esplit; apply: functor_mixin. Defined.
   End Defs.
 End Forgetful.
@@ -381,7 +381,7 @@ Module EilenbergMoore.
         by apply: Free.ext_extends.
     Qed.
 
-    Canonical adjunction : Adjunction.type (Free.functor E) (Forgetful.functor E).
+    Canonical adjunction : Free.functor E ⊣ Forgetful.functor E.
     Proof. by esplit; apply: adjunction_mixin. Defined.
   End Defs.
 End EilenbergMoore.
