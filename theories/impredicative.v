@@ -286,3 +286,6 @@ Module TypeSetAdjunction.
   Proof. by esplit; apply: adj_mixin. Defined.
 
 End TypeSetAdjunction.
+
+Global Opaque Reflection.unit.
+Global Opaque Reflection.ext.

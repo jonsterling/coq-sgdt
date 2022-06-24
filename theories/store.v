@@ -129,7 +129,7 @@ End PointwiseAlgAdjunction.
 Module Δ.
   Module Psh.
     Section Defs.
-      Context (A : Cat[𝒲, SET.cat]).
+      Context (A : Cat[𝒲^op, SET.cat]).
 
       Definition ob : ℋ -> SET.cat.
       Proof. by move/pi1; apply: A. Defined.
@@ -165,7 +165,7 @@ Module Δ.
     - abstract by build=> h1; apply: eq_ind.
   Defined.
 
-  Canonical prefunctor : Prefunctor.type Cat[𝒲,SET.cat] Cat[ℋ, SET.cat].
+  Canonical prefunctor : Prefunctor.type Cat[𝒲^op,SET.cat] Cat[ℋ, SET.cat].
   Proof. by esplit; apply: prefunctor_mixin. Defined.
 
   Definition functor_mixin : Functor.mixin_of _ _ prefunctor.
@@ -175,7 +175,7 @@ Module Δ.
     - by move=> ? ? ? ? ?; apply: NatTrans.ext.
   Qed.
 
-  Canonical functor : Cat[𝒲, SET.cat] ~~> Cat[ℋ, SET.cat].
+  Canonical functor : Cat[𝒲^op, SET.cat] ~~> Cat[ℋ, SET.cat].
   Proof. by esplit; apply: functor_mixin. Defined.
 End Δ.
 
@@ -243,7 +243,7 @@ Module Σ.
 End Σ.
 
 
-Module Σ_Set.
+Module ΣSet.
   Definition functor : Cat[ℋ, SET.cat] ~~> Cat[𝒲^op, SET.cat].
   Proof.
     apply: Compose.functor.
@@ -252,4 +252,106 @@ Module Σ_Set.
       + by apply: Σ.functor.
       + by apply/PointwiseLifting.functor/TypeToSet.functor.
   Defined.
-End Σ_Set.
+End ΣSet.
+
+Module ΔΣSet.
+  Definition fwd_fam : forall U, LeftNerve.functor ΣSet.functor U ~> RightNerve.functor Δ.functor U.
+  Proof.
+    case=> A X f.
+    build.
+    - move=> h a.
+      apply/f/pack; split.
+      + by exact: idn.
+      + by exact: a.
+    - abstract by
+        [build=> h1; apply: eq_ind;
+         apply: funE=> a; rewrite ?fidn ?seqL ?seqR].
+  Defined.
+
+  Definition bwd_fam_fam (A : Cat[ ℋ, SET.cat] ^op) (X : Cat[ 𝒲 ^op, SET.cat]) (f : RightNerve.functor Δ.functor (A, X)) :   forall w : 𝒲 ^op, ΣSet.functor A w ~> X w.
+  move=> w.
+  apply: Reflection.ext; case=> h [ρ a].
+  by exact: ((X @@ ρ) (f _ a)).
+  Defined.
+
+
+  Definition bwd_fam : forall U, RightNerve.functor Δ.functor U ~> LeftNerve.functor ΣSet.functor U.
+  Proof.
+    case=> A X f.
+    build.
+    - move=> w.
+      apply: Reflection.ext; case=> h [ρ a].
+      by exact: ((X @@ ρ) (f _ a)).
+    - abstract by
+      build=> w1 w2 w12; cbn;
+      apply: Reflection.univ_map_uniq;
+      [ move=> z; simpl;
+        by rewrite Reflection.map_beta Reflection.ext_beta
+      | case=> h [ρ a];
+        by rewrite fseq].
+  Defined.
+
+  Lemma fwd_mixin : NatTrans.mixin_of _ _ fwd_fam.
+  Proof.
+    build; case=> A1 X1; case=> A2 X2; case=> f g.
+    apply: funE=> u.
+    apply: NatTrans.ext.
+    apply: dfunE=> h.
+    apply: funE=> a.
+    by cbn; rewrite Reflection.map_beta.
+  Qed.
+
+  Lemma bwd_mixin : NatTrans.mixin_of _ _ bwd_fam.
+  Proof.
+    build; case=> A1 X1; case=> A2 X2; case=> f g.
+    apply: funE=> u.
+    apply: NatTrans.ext.
+    apply: dfunE=> w.
+    apply: funE.
+    apply: Reflection.ind; case=> h [ρ a].
+    cbn; rewrite Reflection.ext_beta Reflection.map_beta Reflection.ext_beta.
+    move: (u h (f h a)).
+    apply: unfunE.
+    suff: (g (pi1 h) >> X2 @@ ρ) = (X1 @@ ρ) >> g w; first by [].
+    by rewrite naturality.
+  Qed.
+
+  Canonical fwd : LeftNerve.functor ΣSet.functor ~~~> RightNerve.functor Δ.functor.
+  Proof. by esplit; apply: fwd_mixin. Defined.
+
+  Canonical bwd : RightNerve.functor Δ.functor ~~~> LeftNerve.functor ΣSet.functor.
+  Proof. by esplit; apply: bwd_mixin. Defined.
+
+  Definition preadj : Preadjunction.type ΣSet.functor Δ.functor.
+  Proof.
+    build.
+    - by apply: fwd.
+    - by apply: bwd.
+  Defined.
+
+  Definition adj_mixin : Adjunction.mixin_of _ _ preadj.
+  Proof.
+    build.
+    - case=> A B f.
+      apply: NatTrans.ext.
+      apply: dfunE=> w.
+      rewrite /bwd_fam /fwd_fam //=.
+      apply: funE.
+      apply: Reflection.ind; case=> h [ρ a].
+      rewrite Reflection.ext_beta.
+      have Q := unfunE _ _ (naturality f _ _ ρ) (Reflection.unit (h,(idn _,a))).
+      cbn in Q.
+      rewrite Reflection.map_beta in Q.
+      rewrite -Q.
+      congr (f w (Reflection.unit (_,(_,_)))).
+      by apply: seqR.
+    - case=> A B f.
+      apply: NatTrans.ext.
+      apply: dfunE=> h.
+      apply: funE=> x.
+      by rewrite /fwd_fam /bwd_fam //= Reflection.ext_beta fidn.
+  Qed.
+
+  Canonical adj : ΣSet.functor ⊣ Δ.functor.
+  Proof. by esplit; apply: adj_mixin. Defined.
+End ΔΣSet.
