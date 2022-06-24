@@ -1,4 +1,6 @@
-From sgdt Require Import preamble.
+From sgdt Require Import preamble category functor adjunction.
+
+Set Universe Polymorphism.
 
 (** Easier than activating -impredicative-set. *)
 #[bypass_check(universes = yes)]
@@ -176,3 +178,106 @@ Section PackUnpack.
     apply: f.
   Defined.
 End PackUnpack.
+
+
+
+Local Open Scope category_scope.
+
+Module SetToType.
+  Definition prefunctor : Prefunctor.type SET.cat TYPE.cat.
+  Proof.
+    build.
+    - by move=> A; exact: (A : Type).
+    - by build.
+  Defined.
+
+  Definition functor_mixin : Functor.mixin_of _ _ prefunctor.
+  Proof. build. Defined.
+
+  Canonical functor : SET.cat ~~> TYPE.cat.
+  Proof. by esplit; apply: functor_mixin. Defined.
+End SetToType.
+
+Module TypeToSet.
+  Definition prefunctor : Prefunctor.type TYPE.cat SET.cat.
+  Proof.
+    build.
+    - by apply: Reflection.T.
+    - by build=> A B; apply: Reflection.map.
+  Defined.
+
+  Definition functor_mixin : Functor.mixin_of _ _ prefunctor.
+  Proof.
+    build.
+    - move=> A.
+      apply: funE.
+      apply: Reflection.ind=> x.
+      by cbn; rewrite Reflection.map_beta.
+    - move=> A B C f g.
+      apply: funE.
+      apply: Reflection.ind=> x.
+      by cbn; rewrite ?Reflection.map_beta.
+  Qed.
+
+  Canonical functor : TYPE.cat ~~> SET.cat.
+  Proof. by esplit; apply: functor_mixin. Defined.
+End TypeToSet.
+
+Module TypeSetAdjunction.
+
+  Definition transp_fwd_fam : forall U, LeftNerve.functor TypeToSet.functor U ~> RightNerve.functor SetToType.functor U.
+  Proof.
+    case=> A X f a.
+    apply: f.
+    by apply: Reflection.unit a.
+  Defined.
+
+  Definition transp_bwd_fam : forall U, RightNerve.functor SetToType.functor U ~> LeftNerve.functor TypeToSet.functor U.
+  Proof.
+    case=> A X f.
+    by apply: Reflection.ext f.
+  Defined.
+
+  Definition transp_fwd_mixin : NatTrans.mixin_of _ _ transp_fwd_fam.
+  Proof.
+    build; case=> A1 X1; case=> A2 X2; case=> f g.
+    apply: funE=> h //=.
+    apply: funE=> x.
+    by cbn; rewrite Reflection.map_beta.
+  Qed.
+
+  Definition transp_bwd_mixin : NatTrans.mixin_of _ _ transp_bwd_fam.
+  Proof.
+    build; case=> A1 X1; case=> A2 X2; case=> f g.
+    apply: funE=> h //=.
+    by apply: funE; apply: Reflection.ind.
+  Qed.
+
+  Canonical transp_fwd : LeftNerve.functor TypeToSet.functor ~> RightNerve.functor SetToType.functor.
+  Proof. by esplit; apply: transp_fwd_mixin. Defined.
+
+  Canonical transp_bwd : RightNerve.functor SetToType.functor ~> LeftNerve.functor TypeToSet.functor.
+  Proof. by esplit; apply: transp_bwd_mixin. Defined.
+
+  Definition preadj : Preadjunction.type TypeToSet.functor SetToType.functor.
+  Proof.
+    build.
+    - by apply: transp_fwd.
+    - by apply: transp_bwd.
+  Defined.
+
+
+  Definition adj_mixin : Adjunction.mixin_of _ _ preadj.
+  Proof.
+    build.
+    - apply: NatTrans.ext.
+      rewrite /transp_fwd /transp_bwd /transp_fwd_fam /transp_bwd_fam //=.
+      apply: dfunE; case=> A B.
+      apply: funE; cbn=> f.
+      by apply: Reflection.ext_eta.
+    - by apply: NatTrans.ext.
+  Qed.
+
+  Definition adj : TypeToSet.functor ⊣ SetToType.functor.
+  Proof. by esplit; apply: adj_mixin. Defined.
+End TypeSetAdjunction.
