@@ -268,13 +268,6 @@ Module ΔΣSet.
          apply: funE=> a; rewrite ?fidn ?seqL ?seqR].
   Defined.
 
-  Definition bwd_fam_fam (A : Cat[ ℋ, SET.cat] ^op) (X : Cat[ 𝒲 ^op, SET.cat]) (f : RightNerve.functor Δ.functor (A, X)) :   forall w : 𝒲 ^op, ΣSet.functor A w ~> X w.
-  move=> w.
-  apply: Reflection.ext; case=> h [ρ a].
-  by exact: ((X @@ ρ) (f _ a)).
-  Defined.
-
-
   Definition bwd_fam : forall U, RightNerve.functor Δ.functor U ~> LeftNerve.functor ΣSet.functor U.
   Proof.
     case=> A X f.
