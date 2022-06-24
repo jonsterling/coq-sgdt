@@ -28,7 +28,10 @@
 <h1 class="libtitle">sgdt.impredicative</h1>
 
 <div class="code">
-<span class="id" title="keyword">From</span> <span class="id" title="var">sgdt</span> <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <a class="idref" href="sgdt.preamble.html#"><span class="id" title="library">preamble</span></a>.<br/>
+<span class="id" title="keyword">From</span> <span class="id" title="var">sgdt</span> <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <a class="idref" href="sgdt.preamble.html#"><span class="id" title="library">preamble</span></a> <a class="idref" href="sgdt.category.html#"><span class="id" title="library">category</span></a> <a class="idref" href="sgdt.functor.html#"><span class="id" title="library">functor</span></a> <a class="idref" href="sgdt.adjunction.html#"><span class="id" title="library">adjunction</span></a>.<br/>
+
+<br/>
+<span class="id" title="keyword">Set</span> <span class="id" title="var">Universe</span> <span class="id" title="var">Polymorphism</span>.<br/>
 
 <br/>
 </div>
@@ -242,6 +245,123 @@ Easier than activating -impredicative-set.
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">apply</span>: <span class="id" title="var">f</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="keyword">Defined</span>.<br/>
 <span class="id" title="keyword">End</span> <a class="idref" href="sgdt.impredicative.html#PackUnpack"><span class="id" title="section">PackUnpack</span></a>.<br/>
+
+<br/>
+<span class="id" title="keyword">Local Open</span> <span class="id" title="keyword">Scope</span> <span class="id" title="var">category_scope</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Module</span> <a id="SetToType" class="idref" href="#SetToType"><span class="id" title="module">SetToType</span></a>.<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Definition</span> <a id="SetToType.prefunctor" class="idref" href="#SetToType.prefunctor"><span class="id" title="definition">prefunctor</span></a> : <a class="idref" href="sgdt.functor.html#Prefunctor.type"><span class="id" title="record">Prefunctor.type</span></a> <a class="idref" href="sgdt.category.html#SET.cat"><span class="id" title="definition">SET.cat</span></a> <a class="idref" href="sgdt.category.html#TYPE.cat"><span class="id" title="definition">TYPE.cat</span></a>.<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">build</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;- <span class="id" title="tactic">by</span> <span class="id" title="tactic">move</span>=&gt; <span class="id" title="var">A</span>; <span class="id" title="tactic">exact</span>: (<span class="id" title="var">A</span> <a class="idref" href="http://coq.inria.fr/distrib/V8.15.2/stdlib//Coq.ssr.ssreflect.html#::core_scope:x_':'_'Type'"><span class="id" title="notation">:</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.15.2/stdlib//Coq.ssr.ssreflect.html#::core_scope:x_':'_'Type'"><span class="id" title="notation">Type</span></a>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;- <span class="id" title="tactic">by</span> <span class="id" title="var">build</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Defined</span>.<br/>
+
+<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Definition</span> <a id="SetToType.functor_mixin" class="idref" href="#SetToType.functor_mixin"><span class="id" title="definition">functor_mixin</span></a> : <a class="idref" href="sgdt.functor.html#Functor.mixin_of"><span class="id" title="record">Functor.mixin_of</span></a> <span class="id" title="var">_</span> <span class="id" title="var">_</span> <a class="idref" href="sgdt.impredicative.html#SetToType.prefunctor"><span class="id" title="definition">prefunctor</span></a>.<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Proof</span>. <span class="id" title="var">build</span>. <span class="id" title="keyword">Defined</span>.<br/>
+
+<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Canonical</span> <a id="SetToType.functor" class="idref" href="#SetToType.functor"><span class="id" title="definition">functor</span></a> : <a class="idref" href="sgdt.category.html#SET.cat"><span class="id" title="definition">SET.cat</span></a> <a class="idref" href="sgdt.functor.html#d42b7e5021d94038122d55b7f1af92c9"><span class="id" title="notation">~~&gt;</span></a> <a class="idref" href="sgdt.category.html#TYPE.cat"><span class="id" title="definition">TYPE.cat</span></a>.<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Proof</span>. <span class="id" title="tactic">by</span> <span class="id" title="var">esplit</span>; <span class="id" title="tactic">apply</span>: <a class="idref" href="sgdt.impredicative.html#SetToType.functor_mixin"><span class="id" title="definition">functor_mixin</span></a>. <span class="id" title="keyword">Defined</span>.<br/>
+<span class="id" title="keyword">End</span> <a class="idref" href="sgdt.impredicative.html#SetToType"><span class="id" title="module">SetToType</span></a>.<br/>
+
+<br/>
+<span class="id" title="keyword">Module</span> <a id="TypeToSet" class="idref" href="#TypeToSet"><span class="id" title="module">TypeToSet</span></a>.<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Definition</span> <a id="TypeToSet.prefunctor" class="idref" href="#TypeToSet.prefunctor"><span class="id" title="definition">prefunctor</span></a> : <a class="idref" href="sgdt.functor.html#Prefunctor.type"><span class="id" title="record">Prefunctor.type</span></a> <a class="idref" href="sgdt.category.html#TYPE.cat"><span class="id" title="definition">TYPE.cat</span></a> <a class="idref" href="sgdt.category.html#SET.cat"><span class="id" title="definition">SET.cat</span></a>.<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">build</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;- <span class="id" title="tactic">by</span> <span class="id" title="tactic">apply</span>: <a class="idref" href="sgdt.impredicative.html#Reflection.T"><span class="id" title="definition">Reflection.T</span></a>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;- <span class="id" title="tactic">by</span> <span class="id" title="var">build</span>=&gt; <span class="id" title="var">A</span> <span class="id" title="var">B</span>; <span class="id" title="tactic">apply</span>: <a class="idref" href="sgdt.impredicative.html#Reflection.map"><span class="id" title="definition">Reflection.map</span></a>.<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Defined</span>.<br/>
+
+<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Definition</span> <a id="TypeToSet.functor_mixin" class="idref" href="#TypeToSet.functor_mixin"><span class="id" title="definition">functor_mixin</span></a> : <a class="idref" href="sgdt.functor.html#Functor.mixin_of"><span class="id" title="record">Functor.mixin_of</span></a> <span class="id" title="var">_</span> <span class="id" title="var">_</span> <a class="idref" href="sgdt.impredicative.html#TypeToSet.prefunctor"><span class="id" title="definition">prefunctor</span></a>.<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">build</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;- <span class="id" title="tactic">move</span>=&gt; <span class="id" title="var">A</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">apply</span>: <a class="idref" href="sgdt.preamble.html#funE"><span class="id" title="abbreviation">funE</span></a>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">apply</span>: <a class="idref" href="sgdt.impredicative.html#Reflection.ind"><span class="id" title="definition">Reflection.ind</span></a>=&gt; <span class="id" title="var">x</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">by</span> <span class="id" title="var">cbn</span>; <span class="id" title="tactic">rewrite</span> <a class="idref" href="sgdt.impredicative.html#Reflection.map_beta"><span class="id" title="definition">Reflection.map_beta</span></a>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;- <span class="id" title="tactic">move</span>=&gt; <span class="id" title="var">A</span> <span class="id" title="var">B</span> <span class="id" title="var">C</span> <span class="id" title="var">f</span> <span class="id" title="var">g</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">apply</span>: <a class="idref" href="sgdt.preamble.html#funE"><span class="id" title="abbreviation">funE</span></a>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">apply</span>: <a class="idref" href="sgdt.impredicative.html#Reflection.ind"><span class="id" title="definition">Reflection.ind</span></a>=&gt; <span class="id" title="var">x</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">by</span> <span class="id" title="var">cbn</span>; <span class="id" title="tactic">rewrite</span> ?<a class="idref" href="sgdt.impredicative.html#Reflection.map_beta"><span class="id" title="definition">Reflection.map_beta</span></a>.<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Canonical</span> <a id="TypeToSet.functor" class="idref" href="#TypeToSet.functor"><span class="id" title="definition">functor</span></a> : <a class="idref" href="sgdt.category.html#TYPE.cat"><span class="id" title="definition">TYPE.cat</span></a> <a class="idref" href="sgdt.functor.html#d42b7e5021d94038122d55b7f1af92c9"><span class="id" title="notation">~~&gt;</span></a> <a class="idref" href="sgdt.category.html#SET.cat"><span class="id" title="definition">SET.cat</span></a>.<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Proof</span>. <span class="id" title="tactic">by</span> <span class="id" title="var">esplit</span>; <span class="id" title="tactic">apply</span>: <a class="idref" href="sgdt.impredicative.html#TypeToSet.functor_mixin"><span class="id" title="definition">functor_mixin</span></a>. <span class="id" title="keyword">Defined</span>.<br/>
+<span class="id" title="keyword">End</span> <a class="idref" href="sgdt.impredicative.html#TypeToSet"><span class="id" title="module">TypeToSet</span></a>.<br/>
+
+<br/>
+<span class="id" title="keyword">Module</span> <a id="TypeSetAdjunction" class="idref" href="#TypeSetAdjunction"><span class="id" title="module">TypeSetAdjunction</span></a>.<br/>
+
+<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Definition</span> <a id="TypeSetAdjunction.transp_fwd_fam" class="idref" href="#TypeSetAdjunction.transp_fwd_fam"><span class="id" title="definition">transp_fwd_fam</span></a> : <span class="id" title="keyword">forall</span> <a id="U:75" class="idref" href="#U:75"><span class="id" title="binder">U</span></a>, <a class="idref" href="sgdt.adjunction.html#LeftNerve.functor"><span class="id" title="definition">LeftNerve.functor</span></a> <a class="idref" href="sgdt.impredicative.html#TypeToSet.functor"><span class="id" title="definition">TypeToSet.functor</span></a> <a class="idref" href="sgdt.impredicative.html#U:75"><span class="id" title="variable">U</span></a> <a class="idref" href="sgdt.category.html#d5010e8179a6d0a2c50cafa87bc182e1"><span class="id" title="notation">~&gt;</span></a> <a class="idref" href="sgdt.adjunction.html#RightNerve.functor"><span class="id" title="definition">RightNerve.functor</span></a> <a class="idref" href="sgdt.impredicative.html#SetToType.functor"><span class="id" title="definition">SetToType.functor</span></a> <a class="idref" href="sgdt.impredicative.html#U:75"><span class="id" title="variable">U</span></a>.<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">case</span>=&gt; <span class="id" title="var">A</span> <span class="id" title="var">X</span> <span class="id" title="var">f</span> <span class="id" title="var">a</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">apply</span>: <span class="id" title="var">f</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">by</span> <span class="id" title="tactic">apply</span>: <a class="idref" href="sgdt.impredicative.html#Reflection.unit"><span class="id" title="definition">Reflection.unit</span></a> <span class="id" title="var">a</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Defined</span>.<br/>
+
+<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Definition</span> <a id="TypeSetAdjunction.transp_bwd_fam" class="idref" href="#TypeSetAdjunction.transp_bwd_fam"><span class="id" title="definition">transp_bwd_fam</span></a> : <span class="id" title="keyword">forall</span> <a id="U:76" class="idref" href="#U:76"><span class="id" title="binder">U</span></a>, <a class="idref" href="sgdt.adjunction.html#RightNerve.functor"><span class="id" title="definition">RightNerve.functor</span></a> <a class="idref" href="sgdt.impredicative.html#SetToType.functor"><span class="id" title="definition">SetToType.functor</span></a> <a class="idref" href="sgdt.impredicative.html#U:76"><span class="id" title="variable">U</span></a> <a class="idref" href="sgdt.category.html#d5010e8179a6d0a2c50cafa87bc182e1"><span class="id" title="notation">~&gt;</span></a> <a class="idref" href="sgdt.adjunction.html#LeftNerve.functor"><span class="id" title="definition">LeftNerve.functor</span></a> <a class="idref" href="sgdt.impredicative.html#TypeToSet.functor"><span class="id" title="definition">TypeToSet.functor</span></a> <a class="idref" href="sgdt.impredicative.html#U:76"><span class="id" title="variable">U</span></a>.<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">case</span>=&gt; <span class="id" title="var">A</span> <span class="id" title="var">X</span> <span class="id" title="var">f</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">by</span> <span class="id" title="tactic">apply</span>: <a class="idref" href="sgdt.impredicative.html#Reflection.ext"><span class="id" title="definition">Reflection.ext</span></a> <span class="id" title="var">f</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Defined</span>.<br/>
+
+<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Definition</span> <a id="TypeSetAdjunction.transp_fwd_mixin" class="idref" href="#TypeSetAdjunction.transp_fwd_mixin"><span class="id" title="definition">transp_fwd_mixin</span></a> : <a class="idref" href="sgdt.functor.html#NatTrans.mixin_of"><span class="id" title="record">NatTrans.mixin_of</span></a> <span class="id" title="var">_</span> <span class="id" title="var">_</span> <a class="idref" href="sgdt.impredicative.html#TypeSetAdjunction.transp_fwd_fam"><span class="id" title="definition">transp_fwd_fam</span></a>.<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">build</span>; <span class="id" title="tactic">case</span>=&gt; <span class="id" title="var">A1</span> <span class="id" title="var">X1</span>; <span class="id" title="tactic">case</span>=&gt; <span class="id" title="var">A2</span> <span class="id" title="var">X2</span>; <span class="id" title="tactic">case</span>=&gt; <span class="id" title="var">f</span> <span class="id" title="var">g</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">apply</span>: <a class="idref" href="sgdt.preamble.html#funE"><span class="id" title="abbreviation">funE</span></a>=&gt; <span class="id" title="var">h</span> //=.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">apply</span>: <a class="idref" href="sgdt.preamble.html#funE"><span class="id" title="abbreviation">funE</span></a>=&gt; <span class="id" title="var">x</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">by</span> <span class="id" title="var">cbn</span>; <span class="id" title="tactic">rewrite</span> <a class="idref" href="sgdt.impredicative.html#Reflection.map_beta"><span class="id" title="definition">Reflection.map_beta</span></a>.<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Definition</span> <a id="TypeSetAdjunction.transp_bwd_mixin" class="idref" href="#TypeSetAdjunction.transp_bwd_mixin"><span class="id" title="definition">transp_bwd_mixin</span></a> : <a class="idref" href="sgdt.functor.html#NatTrans.mixin_of"><span class="id" title="record">NatTrans.mixin_of</span></a> <span class="id" title="var">_</span> <span class="id" title="var">_</span> <a class="idref" href="sgdt.impredicative.html#TypeSetAdjunction.transp_bwd_fam"><span class="id" title="definition">transp_bwd_fam</span></a>.<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">build</span>; <span class="id" title="tactic">case</span>=&gt; <span class="id" title="var">A1</span> <span class="id" title="var">X1</span>; <span class="id" title="tactic">case</span>=&gt; <span class="id" title="var">A2</span> <span class="id" title="var">X2</span>; <span class="id" title="tactic">case</span>=&gt; <span class="id" title="var">f</span> <span class="id" title="var">g</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">apply</span>: <a class="idref" href="sgdt.preamble.html#funE"><span class="id" title="abbreviation">funE</span></a>=&gt; <span class="id" title="var">h</span> //=.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">by</span> <span class="id" title="tactic">apply</span>: <a class="idref" href="sgdt.preamble.html#funE"><span class="id" title="abbreviation">funE</span></a>; <span class="id" title="tactic">apply</span>: <a class="idref" href="sgdt.impredicative.html#Reflection.ind"><span class="id" title="definition">Reflection.ind</span></a>.<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Canonical</span> <a id="TypeSetAdjunction.transp_fwd" class="idref" href="#TypeSetAdjunction.transp_fwd"><span class="id" title="definition">transp_fwd</span></a> : <a class="idref" href="sgdt.adjunction.html#LeftNerve.functor"><span class="id" title="definition">LeftNerve.functor</span></a> <a class="idref" href="sgdt.impredicative.html#TypeToSet.functor"><span class="id" title="definition">TypeToSet.functor</span></a> <a class="idref" href="sgdt.category.html#d5010e8179a6d0a2c50cafa87bc182e1"><span class="id" title="notation">~&gt;</span></a> <a class="idref" href="sgdt.adjunction.html#RightNerve.functor"><span class="id" title="definition">RightNerve.functor</span></a> <a class="idref" href="sgdt.impredicative.html#SetToType.functor"><span class="id" title="definition">SetToType.functor</span></a>.<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Proof</span>. <span class="id" title="tactic">by</span> <span class="id" title="var">esplit</span>; <span class="id" title="tactic">apply</span>: <a class="idref" href="sgdt.impredicative.html#TypeSetAdjunction.transp_fwd_mixin"><span class="id" title="definition">transp_fwd_mixin</span></a>. <span class="id" title="keyword">Defined</span>.<br/>
+
+<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Canonical</span> <a id="TypeSetAdjunction.transp_bwd" class="idref" href="#TypeSetAdjunction.transp_bwd"><span class="id" title="definition">transp_bwd</span></a> : <a class="idref" href="sgdt.adjunction.html#RightNerve.functor"><span class="id" title="definition">RightNerve.functor</span></a> <a class="idref" href="sgdt.impredicative.html#SetToType.functor"><span class="id" title="definition">SetToType.functor</span></a> <a class="idref" href="sgdt.category.html#d5010e8179a6d0a2c50cafa87bc182e1"><span class="id" title="notation">~&gt;</span></a> <a class="idref" href="sgdt.adjunction.html#LeftNerve.functor"><span class="id" title="definition">LeftNerve.functor</span></a> <a class="idref" href="sgdt.impredicative.html#TypeToSet.functor"><span class="id" title="definition">TypeToSet.functor</span></a>.<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Proof</span>. <span class="id" title="tactic">by</span> <span class="id" title="var">esplit</span>; <span class="id" title="tactic">apply</span>: <a class="idref" href="sgdt.impredicative.html#TypeSetAdjunction.transp_bwd_mixin"><span class="id" title="definition">transp_bwd_mixin</span></a>. <span class="id" title="keyword">Defined</span>.<br/>
+
+<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Definition</span> <a id="TypeSetAdjunction.preadj" class="idref" href="#TypeSetAdjunction.preadj"><span class="id" title="definition">preadj</span></a> : <a class="idref" href="sgdt.adjunction.html#Preadjunction.type"><span class="id" title="record">Preadjunction.type</span></a> <a class="idref" href="sgdt.impredicative.html#TypeToSet.functor"><span class="id" title="definition">TypeToSet.functor</span></a> <a class="idref" href="sgdt.impredicative.html#SetToType.functor"><span class="id" title="definition">SetToType.functor</span></a>.<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">build</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;- <span class="id" title="tactic">by</span> <span class="id" title="tactic">apply</span>: <a class="idref" href="sgdt.impredicative.html#TypeSetAdjunction.transp_fwd"><span class="id" title="definition">transp_fwd</span></a>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;- <span class="id" title="tactic">by</span> <span class="id" title="tactic">apply</span>: <a class="idref" href="sgdt.impredicative.html#TypeSetAdjunction.transp_bwd"><span class="id" title="definition">transp_bwd</span></a>.<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Defined</span>.<br/>
+
+<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Definition</span> <a id="TypeSetAdjunction.adj_mixin" class="idref" href="#TypeSetAdjunction.adj_mixin"><span class="id" title="definition">adj_mixin</span></a> : <a class="idref" href="sgdt.adjunction.html#Adjunction.mixin_of"><span class="id" title="record">Adjunction.mixin_of</span></a> <span class="id" title="var">_</span> <span class="id" title="var">_</span> <a class="idref" href="sgdt.impredicative.html#TypeSetAdjunction.preadj"><span class="id" title="definition">preadj</span></a>.<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">build</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;- <span class="id" title="tactic">apply</span>: <a class="idref" href="sgdt.functor.html#NatTrans.ext"><span class="id" title="definition">NatTrans.ext</span></a>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> /<a class="idref" href="sgdt.impredicative.html#TypeSetAdjunction.transp_fwd"><span class="id" title="definition">transp_fwd</span></a> /<a class="idref" href="sgdt.impredicative.html#TypeSetAdjunction.transp_bwd"><span class="id" title="definition">transp_bwd</span></a> /<a class="idref" href="sgdt.impredicative.html#TypeSetAdjunction.transp_fwd_fam"><span class="id" title="definition">transp_fwd_fam</span></a> /<a class="idref" href="sgdt.impredicative.html#TypeSetAdjunction.transp_bwd_fam"><span class="id" title="definition">transp_bwd_fam</span></a> //=.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">apply</span>: <a class="idref" href="sgdt.preamble.html#dfunE"><span class="id" title="abbreviation">dfunE</span></a>; <span class="id" title="tactic">case</span>=&gt; <span class="id" title="var">A</span> <span class="id" title="var">B</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">apply</span>: <a class="idref" href="sgdt.preamble.html#funE"><span class="id" title="abbreviation">funE</span></a>; <span class="id" title="var">cbn</span>=&gt; <span class="id" title="var">f</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">by</span> <span class="id" title="tactic">apply</span>: <a class="idref" href="sgdt.impredicative.html#Reflection.ext_eta"><span class="id" title="lemma">Reflection.ext_eta</span></a>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;- <span class="id" title="tactic">by</span> <span class="id" title="tactic">apply</span>: <a class="idref" href="sgdt.functor.html#NatTrans.ext"><span class="id" title="definition">NatTrans.ext</span></a>.<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Definition</span> <a id="TypeSetAdjunction.adj" class="idref" href="#TypeSetAdjunction.adj"><span class="id" title="definition">adj</span></a> : <a class="idref" href="sgdt.impredicative.html#TypeToSet.functor"><span class="id" title="definition">TypeToSet.functor</span></a> <a class="idref" href="sgdt.adjunction.html#ff91db3b42ce7c9bbab7c8b7691bb26e"><span class="id" title="notation">⊣</span></a> <a class="idref" href="sgdt.impredicative.html#SetToType.functor"><span class="id" title="definition">SetToType.functor</span></a>.<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Proof</span>. <span class="id" title="tactic">by</span> <span class="id" title="var">esplit</span>; <span class="id" title="tactic">apply</span>: <a class="idref" href="sgdt.impredicative.html#TypeSetAdjunction.adj_mixin"><span class="id" title="definition">adj_mixin</span></a>. <span class="id" title="keyword">Defined</span>.<br/>
+<span class="id" title="keyword">End</span> <a class="idref" href="sgdt.impredicative.html#TypeSetAdjunction"><span class="id" title="module">TypeSetAdjunction</span></a>.<br/>
 </div>
 </div>
 <div id="footer">
