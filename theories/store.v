@@ -463,3 +463,98 @@ Module ΔopΣSet.
   Canonical adj : ΣSet.functor ⊣ Δop.functor.
   Proof. by esplit; apply: adj_mixin. Defined.
 End ΔopΣSet.
+
+Module ΠΔ.
+
+  Definition fwd_fam : forall U, LeftNerve.functor Δ.functor U ~> RightNerve.functor Π.functor U.
+  Proof.
+    case=> A B f.
+    build.
+    - move=> w a h ρ.
+      apply: f.
+      apply: (A @@ ρ).
+      by exact: a.
+    - build=> w1 w2 w12.
+      apply: funE=> a.
+      apply: dfunE=> h.
+      apply: funE=> ρ.
+      congr (f h).
+      move: a.
+      apply: unfunE.
+      by rewrite fseq.
+  Defined.
+
+  Definition bwd_fam : forall U, RightNerve.functor Π.functor U ~> LeftNerve.functor Δ.functor U.
+  Proof.
+    case=> A B f.
+    build.
+    - move=> h u.
+      apply: f.
+      + by apply: u.
+      + by exact: idn.
+    - build=> h1; apply: eq_ind.
+      apply: funE=> u.
+      by cbn; rewrite fidn.
+  Defined.
+
+
+  Definition fwd_mixin : NatTrans.mixin_of _ _ fwd_fam.
+  Proof.
+    build; case=> A1 B1; case=> A2 B2; case=> f g.
+    apply: funE=> u.
+    apply: NatTrans.ext.
+    apply: dfunE=> w.
+    apply: funE=> a.
+    apply: dfunE=> h.
+    apply: funE=> ρ.
+    congr (g h (u h _)).
+    cbn.
+    move: a.
+    apply: unfunE.
+    suff: (f w >> A1 @@ ρ) = (A2 @@ ρ) >> f (pi1 h); first by [].
+    by rewrite naturality.
+  Qed.
+
+  Definition bwd_mixin : NatTrans.mixin_of _ _ bwd_fam.
+  Proof.
+    build; case=> A1 B1; case=> A2 B2; case=> f g.
+    apply: funE=> u.
+    by apply: NatTrans.ext.
+  Qed.
+
+  Canonical fwd : LeftNerve.functor Δ.functor ~~~> RightNerve.functor Π.functor.
+  Proof. by esplit; apply: fwd_mixin. Defined.
+
+  Canonical bwd : RightNerve.functor Π.functor ~~~> LeftNerve.functor Δ.functor.
+  Proof. by esplit; apply: bwd_mixin. Defined.
+
+  Definition preadj : Preadjunction.type Δ.functor Π.functor.
+  Proof.
+    build.
+    - by apply: fwd.
+    - by apply: bwd.
+  Defined.
+
+  Definition adj_mixin : Adjunction.mixin_of _ _ preadj.
+  Proof.
+    build.
+    - case=> A B f.
+      apply: NatTrans.ext.
+      apply: dfunE=> h.
+      apply: funE=> u.
+      by cbn; rewrite fidn.
+    - case=> A B f.
+      apply: NatTrans.ext.
+      apply: dfunE=> w.
+      apply: funE=> a.
+      apply: dfunE=> h.
+      apply: funE=> ρ.
+      cbn.
+      have Q:= unfunE _ _ (naturality f w (pi1 h) ρ) a.
+      cbn in Q; rewrite Q.
+      by rewrite (@seqR 𝒲).
+  Qed.
+
+  Canonical adj : Δ.functor ⊣ Π.functor.
+  Proof. by esplit; apply: adj_mixin. Defined.
+End ΠΔ.
