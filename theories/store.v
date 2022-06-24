@@ -180,7 +180,6 @@ Module Δ.
 End Δ.
 
 Module Π.
-
   Module Psh.
     Section Defs.
       Context (A : Cat[ℋ, SET.cat]).
@@ -370,8 +369,8 @@ Module ΣSet.
   Defined.
 End ΣSet.
 
-Module ΔΣSet.
-  Definition fwd_fam : forall U, LeftNerve.functor ΣSet.functor U ~> RightNerve.functor Δ.functor U.
+Module ΔopΣSet.
+  Definition fwd_fam : forall U, LeftNerve.functor ΣSet.functor U ~> RightNerve.functor Δop.functor U.
   Proof.
     case=> A X f.
     build.
@@ -384,7 +383,7 @@ Module ΔΣSet.
          apply: funE=> a; rewrite ?fidn ?seqL ?seqR].
   Defined.
 
-  Definition bwd_fam : forall U, RightNerve.functor Δ.functor U ~> LeftNerve.functor ΣSet.functor U.
+  Definition bwd_fam : forall U, RightNerve.functor Δop.functor U ~> LeftNerve.functor ΣSet.functor U.
   Proof.
     case=> A X f.
     build.
@@ -425,13 +424,13 @@ Module ΔΣSet.
     by rewrite naturality.
   Qed.
 
-  Canonical fwd : LeftNerve.functor ΣSet.functor ~~~> RightNerve.functor Δ.functor.
+  Canonical fwd : LeftNerve.functor ΣSet.functor ~~~> RightNerve.functor Δop.functor.
   Proof. by esplit; apply: fwd_mixin. Defined.
 
-  Canonical bwd : RightNerve.functor Δ.functor ~~~> LeftNerve.functor ΣSet.functor.
+  Canonical bwd : RightNerve.functor Δop.functor ~~~> LeftNerve.functor ΣSet.functor.
   Proof. by esplit; apply: bwd_mixin. Defined.
 
-  Definition preadj : Preadjunction.type ΣSet.functor Δ.functor.
+  Definition preadj : Preadjunction.type ΣSet.functor Δop.functor.
   Proof.
     build.
     - by apply: fwd.
@@ -461,6 +460,6 @@ Module ΔΣSet.
       by rewrite /fwd_fam /bwd_fam //= Reflection.ext_beta fidn.
   Qed.
 
-  Canonical adj : ΣSet.functor ⊣ Δ.functor.
+  Canonical adj : ΣSet.functor ⊣ Δop.functor.
   Proof. by esplit; apply: adj_mixin. Defined.
-End ΔΣSet.
+End ΔopΣSet.
