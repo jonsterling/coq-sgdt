@@ -134,7 +134,7 @@ Module HorizontalComposition.
         (T2 : F2 ⊣ G2).
 
 
-    Definition transp_fwd_fam U : LeftNerve.functor (F1 >> F2) U ~> RightNerve.functor (G2 >> G1) U.
+    Definition transp_fwd_fam U : LeftNerve.functor (Compose.functor F1 F2) U ~> RightNerve.functor (Compose.functor G2 G1) U.
     Proof.
       case: U=> c e //= f.
       apply: (transpose T1 (c, G2 e)).
@@ -142,7 +142,7 @@ Module HorizontalComposition.
       apply: f.
     Defined.
 
-    Definition transp_bwd_fam U : RightNerve.functor (G2 >> G1) U ~> LeftNerve.functor (F1 >> F2) U.
+    Definition transp_bwd_fam U : RightNerve.functor (Compose.functor G2 G1) U ~> LeftNerve.functor (Compose.functor F1 F2) U.
     Proof.
       case: U => c e //= f.
       apply: (untranspose T2 (F1 c, e)).
@@ -170,13 +170,13 @@ Module HorizontalComposition.
       by cbn; rewrite /transp_bwd_fam Q1 Q2.
     Qed.
 
-    Canonical transp_fwd : LeftNerve.functor (F1 >> F2) ~> RightNerve.functor (G2 >> G1).
+    Canonical transp_fwd : LeftNerve.functor (Compose.functor F1 F2) ~> RightNerve.functor (Compose.functor G2 G1).
     Proof. by esplit; apply: transp_fwd_mixin. Defined.
 
-    Canonical transp_bwd : RightNerve.functor (G2 >> G1) ~> LeftNerve.functor (F1 >> F2).
+    Canonical transp_bwd : RightNerve.functor (Compose.functor G2 G1) ~> LeftNerve.functor (Compose.functor F1 F2).
     Proof. by esplit; apply: transp_bwd_mixin. Defined.
 
-    Canonical preadj : Preadjunction.type (F1 >> F2) (G2 >> G1).
+    Canonical preadj : Preadjunction.type (Compose.functor F1 F2) (Compose.functor G2 G1).
     Proof.
       build.
       - apply: transp_fwd.
@@ -201,7 +201,7 @@ Module HorizontalComposition.
         by rewrite ?transpose_untranspose.
     Qed.
 
-    Canonical adj : (F1 >> F2) ⊣ (G2 >> G1).
+    Canonical adj : (Compose.functor F1 F2) ⊣ (Compose.functor G2 G1).
     Proof. esplit; apply: adj_mixin. Defined.
   End Defs.
 
