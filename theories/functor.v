@@ -130,11 +130,40 @@ Canonical StrictCat.hom.
 Canonical StrictCat.precat.
 Canonical StrictCat.cat.
 
+Module Compose.
+  Section Defs.
+    Context {C D E : Category.type} (F : C ~~> D) (G : D ~~> E).
+
+    Definition ob : C -> E.
+    Proof. by move/F/G. Defined.
+
+    Definition prefunctor_mixin : Prefunctor.mixin_of C E ob.
+    Proof.
+      build=> x y f.
+      by exact: (G @@ (F @@ f)).
+    Defined.
+
+    Canonical prefunctor : Prefunctor.type C E.
+    Proof. by esplit; apply: prefunctor_mixin. Defined.
+
+    Definition functor_mixin : Functor.mixin_of C E prefunctor.
+    Proof.
+      build.
+      - move=> x; cbn.
+        by rewrite ?fidn.
+      - move=> x y z f g; cbn.
+        by rewrite ?fseq.
+    Qed.
+
+    Canonical functor : C ~~> E.
+    Proof. by esplit; apply: functor_mixin. Defined.
+  End Defs.
+End Compose.
 
 
 Module NatTrans.
   Section ClassDef.
-    Context {C D : Category.type} (F G : C ~~> D).
+    Context {C : Category.type} {D : Category.type} (F G : C ~~> D).
 
     Definition natural (η : forall x, F x ~> G x) :=
       forall (x y : C) (f : x ~> y), F @@ f >> η y = η x >> G @@ f.
@@ -171,9 +200,57 @@ Section naturality.
   Proof. by case/NatTrans.class: η. Qed.
 End naturality.
 
+
+Module NatCompose.
+  Section Defs.
+    Context {C : Category.type} {D : Category.type} {F G H : C ~~> D} (f : F ~~~> G) (g : G ~~~> H).
+
+    Definition fam : forall x, F x ~> H x.
+    Proof.
+      move=> x.
+      by exact: (f x >> g x).
+    Defined.
+
+    Definition mixin : NatTrans.mixin_of _ _ fam.
+    Proof.
+      build=> x y xy.
+      rewrite /fam.
+      rewrite seqA.
+      rewrite naturality.
+      rewrite -seqA.
+      rewrite naturality.
+      by rewrite seqA.
+    Qed.
+
+    Canonical transf : F ~~~> H.
+    Proof. by esplit; apply: mixin. Defined.
+  End Defs.
+End NatCompose.
+
+Module NatIdn.
+  Section Defs.
+    Context {C D : Category.type} (F : C ~~> D).
+
+    Definition fam : forall x, F x ~> F x.
+    Proof.
+      move=> x.
+      apply: idn.
+    Defined.
+
+    Definition mixin : NatTrans.mixin_of _ _ fam.
+    Proof.
+      build=> x y xy.
+      by rewrite /fam seqR seqL.
+    Defined.
+
+    Canonical transf : F ~~~> F.
+    Proof. by esplit; apply: mixin. Defined.
+  End Defs.
+End NatIdn.
+
 Module FunctorCategory.
   Section FunctorCategory.
-    Context (C D : Category.type).
+    Context (C : Category.type) (D : Category.type).
 
     Definition hom_mixin : Hom.mixin_of (C ~~> D).
     Proof. by build=> f g; exact (f ~~~> g). Defined.

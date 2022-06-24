@@ -1,5 +1,4 @@
 From sgdt Require Import preamble.
-From HB Require Import structures.
 
 Set Universe Polymorphism.
 

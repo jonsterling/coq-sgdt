@@ -184,29 +184,34 @@ End PackUnpack.
 Local Open Scope category_scope.
 
 Module SetToType.
-  Definition prefunctor : Prefunctor.type SET.cat TYPE.cat.
+  Definition prefunctor@{u v w} : Prefunctor.type SET.cat@{w} TYPE.cat@{u v}.
   Proof.
     build.
     - by move=> A; exact: (A : Type).
     - by build.
   Defined.
 
-  Definition functor_mixin : Functor.mixin_of _ _ prefunctor.
-  Proof. build. Defined.
 
-  Canonical functor : SET.cat ~~> TYPE.cat.
+  Definition functor_mixin@{u v w} : Functor.mixin_of SET.cat@{w} TYPE.cat@{u v} prefunctor@{u v w}.
+  Proof.
+    constructor.
+    - build.
+    - build.
+  Defined.
+
+  Canonical functor@{u v w} : Functor.type SET.cat@{w} TYPE.cat@{u v}.
   Proof. by esplit; apply: functor_mixin. Defined.
 End SetToType.
 
 Module TypeToSet.
-  Definition prefunctor : Prefunctor.type TYPE.cat SET.cat.
+  Definition prefunctor@{u v w} : Prefunctor.type TYPE.cat@{u v} SET.cat@{w}.
   Proof.
     build.
     - by apply: Reflection.T.
     - by build=> A B; apply: Reflection.map.
   Defined.
 
-  Definition functor_mixin : Functor.mixin_of _ _ prefunctor.
+  Definition functor_mixin@{u v w} : Functor.mixin_of TYPE.cat@{u v} SET.cat@{w} prefunctor@{u v w}.
   Proof.
     build.
     - move=> A.
@@ -219,26 +224,27 @@ Module TypeToSet.
       by cbn; rewrite ?Reflection.map_beta.
   Qed.
 
-  Canonical functor : TYPE.cat ~~> SET.cat.
+  Canonical functor@{u v w} : Functor.type TYPE.cat@{u v} SET.cat@{w}.
   Proof. by esplit; apply: functor_mixin. Defined.
 End TypeToSet.
 
+
 Module TypeSetAdjunction.
 
-  Definition transp_fwd_fam : forall U, LeftNerve.functor TypeToSet.functor U ~> RightNerve.functor SetToType.functor U.
+  Definition transp_fwd_fam : forall U, LeftNerve.functor TypeToSet.functor U -> RightNerve.functor SetToType.functor U.
   Proof.
     case=> A X f a.
     apply: f.
     by apply: Reflection.unit a.
   Defined.
 
-  Definition transp_bwd_fam : forall U, RightNerve.functor SetToType.functor U ~> LeftNerve.functor TypeToSet.functor U.
+  Definition transp_bwd_fam : forall U, RightNerve.functor SetToType.functor U -> LeftNerve.functor TypeToSet.functor U.
   Proof.
     case=> A X f.
-    by apply: Reflection.ext f.
+    by cbn in *; apply: Reflection.ext f.
   Defined.
 
-  Definition transp_fwd_mixin : NatTrans.mixin_of _ _ transp_fwd_fam.
+  Definition transp_fwd_mixin : NatTrans.mixin_of (LeftNerve.functor TypeToSet.functor) (RightNerve.functor SetToType.functor) transp_fwd_fam.
   Proof.
     build; case=> A1 X1; case=> A2 X2; case=> f g.
     apply: funE=> h //=.
@@ -246,7 +252,7 @@ Module TypeSetAdjunction.
     by cbn; rewrite Reflection.map_beta.
   Qed.
 
-  Definition transp_bwd_mixin : NatTrans.mixin_of _ _ transp_bwd_fam.
+  Definition transp_bwd_mixin : NatTrans.mixin_of (RightNerve.functor SetToType.functor) (LeftNerve.functor TypeToSet.functor)  transp_bwd_fam.
   Proof.
     build; case=> A1 X1; case=> A2 X2; case=> f g.
     apply: funE=> h //=.
@@ -269,15 +275,14 @@ Module TypeSetAdjunction.
 
   Definition adj_mixin : Adjunction.mixin_of _ _ preadj.
   Proof.
-    build.
-    - apply: NatTrans.ext.
-      rewrite /transp_fwd /transp_bwd /transp_fwd_fam /transp_bwd_fam //=.
-      apply: dfunE; case=> A B.
-      apply: funE; cbn=> f.
-      by apply: Reflection.ext_eta.
-    - by apply: NatTrans.ext.
+    build; case=> A B.
+    rewrite /LeftNerve.ob /TypeToSet.functor //=.
+    move=> f.
+    rewrite /transp_fwd_fam /transp_bwd_fam //=.
+    apply: Reflection.ext_eta.
   Qed.
 
   Definition adj : TypeToSet.functor ⊣ SetToType.functor.
   Proof. by esplit; apply: adj_mixin. Defined.
+
 End TypeSetAdjunction.

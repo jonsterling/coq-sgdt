@@ -1,5 +1,4 @@
 From sgdt Require Import preamble guarded category functor adjunction.
-From HB Require Import structures.
 
 (** Guarded Interaction Trees. *)
 
@@ -358,31 +357,27 @@ Module EilenbergMoore.
   Section Defs.
     Context (E : Thy).
 
-    Definition preadjunction : Preadjunction.type (Free.functor E) (Forgetful.functor E).
+    Definition preadj : Preadjunction.type (Free.functor E) (Forgetful.functor E).
     Proof.
       build.
       - by apply: TranspFwd.transf.
       - by apply: TranspBwd.transf.
     Defined.
 
-    Definition adjunction_mixin : Adjunction.mixin_of (Free.functor E) (Forgetful.functor E) preadjunction.
+    Definition adj_mixin : Adjunction.mixin_of (Free.functor E) (Forgetful.functor E) preadj.
     Proof.
-      build.
-      - apply: NatTrans.ext.
-        apply: dfunE; case=> A X //=.
-        apply: funE=> f.
+      build; case=> A X; rewrite /LeftNerve.ob /RightNerve.ob //= /TranspBwd.transf_fam /TranspFwd.transf_fam; cbn.
+      - move=> f.
         apply: Free.extends_unique.
         + by move=> ?; apply: Free.ext_extends.
         + by [].
-      - apply: NatTrans.ext.
-        apply: dfunE; case=> A X //=.
-        apply: funE=> f.
+      - move=> f.
         apply: funE=> a.
         by apply: Free.ext_extends.
     Qed.
 
-    Canonical adjunction : Free.functor E ⊣ Forgetful.functor E.
-    Proof. by esplit; apply: adjunction_mixin. Defined.
+    Canonical adj : Free.functor E ⊣ Forgetful.functor E.
+    Proof. by esplit; apply: adj_mixin. Defined.
   End Defs.
 End EilenbergMoore.
 

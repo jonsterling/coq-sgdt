@@ -78,21 +78,22 @@ Module Preadjunction.
     Context {𝒞 𝒟 : Category.type} (F : 𝒞 ~~> 𝒟) (U : 𝒟 ~~> 𝒞).
 
     Record type :=
-      { fwd : LeftNerve.functor F ~> RightNerve.functor U;
-        bwd : RightNerve.functor U ~> LeftNerve.functor F }.
+      { fwd : LeftNerve.functor F ~~~> RightNerve.functor U;
+        bwd : RightNerve.functor U ~~~> LeftNerve.functor F }.
   End Defs.
 
   Arguments fwd [𝒞] [𝒟] [F] [U].
   Arguments bwd [𝒞] [𝒟] [F] [U].
 End Preadjunction.
 
+
 Module Adjunction.
   Section Defs.
     Context {𝒞 𝒟 : Category.type} (F : 𝒞 ~~> 𝒟) (U : 𝒟 ~~> 𝒞).
 
     Record mixin_of (T : Preadjunction.type F U) :=
-      { bwd_fwd : Preadjunction.fwd T >> Preadjunction.bwd T = idn _;
-        fwd_bwd : Preadjunction.bwd T >> Preadjunction.fwd T = idn _ }.
+      { bwd_fwd : forall U f, Preadjunction.bwd T U (Preadjunction.fwd T U f) = f;
+        fwd_bwd : forall U f, Preadjunction.fwd T U (Preadjunction.bwd T U f) = f}.
 
     Record type := {transp; class: mixin_of transp}.
   End Defs.
@@ -113,10 +114,10 @@ Section Facts.
   Definition untranspose : RightNerve.functor U ~> LeftNerve.functor F :=
     Preadjunction.bwd (Adjunction.transp _ _ T).
 
-  Definition untranspose_transpose : transpose >> untranspose = idn _ :=
+  Definition untranspose_transpose : forall U f, untranspose U (transpose U f) = f :=
     Adjunction.bwd_fwd _ (Adjunction.class _ _ T).
 
-  Definition transpose_untranspose : untranspose >> transpose = idn _ :=
+  Definition transpose_untranspose : forall U f, transpose U (untranspose U f) = f :=
     Adjunction.fwd_bwd _ (Adjunction.class _ _ T).
 End Facts.
 
@@ -189,36 +190,15 @@ Module HorizontalComposition.
     Proof. by []. Qed.
 
 
-
-    (* Yuck *)
     Definition adj_mixin : Adjunction.mixin_of _ _ preadj.
     Proof.
-      build.
-      - apply: NatTrans.ext.
-        apply: dfunE; case=> c e; cbn.
-        rewrite /transp_fwd_fam /transp_bwd_fam.
-        rewrite [fun f => untranspose T2 _ _]eta_cmp.
-        rewrite [fun f => transpose T1 _ _]eta_cmp.
-        rewrite -cmp_assoc.
-        rewrite [untranspose T1 _ \o _]cmp_assoc.
-        rewrite (_ :  untranspose T1 _ \o transpose T1 _ = (transpose T1 >> untranspose T1) _); first by [].
-        rewrite untranspose_transpose.
-        rewrite (_ : (idn (LeftNerve.functor F1) (c, G2 e) \o transpose T2 (F1 c, e)) = transpose T2 _); first by [].
-        rewrite (_ : untranspose T2 _ \o transpose T2 (F1 c, e) = (transpose T2 >> untranspose T2) _); first by [].
-        by rewrite untranspose_transpose.
-
-      - apply: NatTrans.ext.
-        apply: dfunE; case=> c e; cbn.
-        rewrite /transp_fwd_fam /transp_bwd_fam.
-        rewrite [fun f => untranspose T2 _ _]eta_cmp.
-        rewrite [fun f => transpose T1 _ _]eta_cmp.
-        rewrite -cmp_assoc.
-        rewrite [transpose T2 _ \o _]cmp_assoc.
-        rewrite (_ : transpose T2 (F1 c, e) \o untranspose T2 (F1 c, e) = (untranspose T2 >> transpose T2) _); first by [].
-        rewrite transpose_untranspose.
-        rewrite (_ : idn (RightNerve.functor G2) (F1 c, e) \o untranspose T1 (c, G2 e) = untranspose T1 _); first by [].
-        rewrite (_ : transpose T1 (c, G2 e) \o untranspose T1 (c, G2 e) = (untranspose T1 >> transpose T1) _); first by [].
-        by rewrite transpose_untranspose.
+      build; cbn.
+      - case=> c e; rewrite /LeftNerve.ob //=; move=> f.
+        rewrite /transp_bwd_fam /transp_fwd_fam //=.
+        by rewrite ?untranspose_transpose.
+      - case=> c e; rewrite /RightNerve.ob //=; move=> f.
+        rewrite /transp_bwd_fam /transp_fwd_fam //=.
+        by rewrite ?transpose_untranspose.
     Qed.
 
     Canonical adj : (F1 >> F2) ⊣ (G2 >> G1).
@@ -227,14 +207,17 @@ Module HorizontalComposition.
 
 End HorizontalComposition.
 
+
 Module PointwiseLifting.
   Section Defs.
-    Context (ℐ : Category.type) {𝒞 𝒟 : Category.type} (F : 𝒞 ~~> 𝒟).
+    Context (ℐ : Category.type) {𝒞 : Category.type} {𝒟 : Category.type} (F : 𝒞 ~~> 𝒟).
 
     Definition ob : Cat[ℐ,𝒞] -> Cat[ℐ,𝒟].
     Proof.
       move=> A.
-      by exact: ((A : ℐ ~> 𝒞) >> F).
+      apply: Compose.functor.
+      - exact: A.
+      - exact: F.
     Defined.
 
     Definition prefunctor_mixin : Prefunctor.mixin_of _ _ ob.
@@ -242,7 +225,10 @@ Module PointwiseLifting.
       build=> A B f.
       build.
       - move=> i.
-        by exact: (F @@ f _).
+        rewrite /ob //=.
+        rewrite /Compose.functor.
+        Check F @@ f i.
+        by exact (F @@ f _).
       - build=> i j ij.
         abstract by cbn; rewrite -?fseq naturality.
     Defined.
@@ -263,7 +249,7 @@ Module PointwiseLifting.
         by rewrite fseq.
     Qed.
 
-    Canonical functor : Cat[ℐ,𝒞] ~~> Cat[ℐ,𝒟].
+    Canonical functor : Functor.type Cat[ℐ,𝒞] Cat[ℐ,𝒟].
     Proof. by esplit; apply: functor_mixin. Defined.
   End Defs.
 End PointwiseLifting.
@@ -361,12 +347,16 @@ Module PointwiseLiftingAdjunction.
 
     Definition adj_mixin : Adjunction.mixin_of F' U' preadj.
     Proof.
-      build; apply: NatTrans.ext; apply: dfunE; case=> A X;
-      apply: funE=> f; apply: NatTrans.ext; apply: dfunE=> i;
-      rewrite /transp_fwd /transp_bwd /transp_fwd_fam /transp_bwd_fam /transp_fwd_fam_fam /transp_bwd_fam_fam //=.
-      - suff: ((transpose T >> untranspose T) (A i, X i) (f i) = f i); first by [].
+      build; rewrite /LeftNerve.ob /RightNerve.ob //= /PointwiseLifting.ob.
+      - case=> ? ? ? //=.
+        apply: NatTrans.ext=> //=.
+        rewrite /transp_bwd_fam /transp_fwd_fam /transp_bwd_fam_fam /transp_fwd_fam_fam //=.
+        apply: dfunE=> ?.
         by rewrite untranspose_transpose.
-      - suff: ((untranspose T >> transpose T) (A i, X i) (f i) = f i); first by [].
+      - case=> ? ? ? //=.
+        apply: NatTrans.ext=> //=.
+        rewrite /transp_bwd_fam /transp_fwd_fam /transp_bwd_fam_fam /transp_fwd_fam_fam //=.
+        apply: dfunE=> ?.
         by rewrite transpose_untranspose.
     Qed.
 

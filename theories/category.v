@@ -184,8 +184,6 @@ Canonical FullSubcategory.hom.
 Canonical FullSubcategory.precat.
 Canonical FullSubcategory.cat.
 
-Set Printing Universes.
-
 Module TYPE.
   Definition hom_mixin : Hom.mixin_of Type.
   Proof. constructor=> A B; exact: (A -> B). Defined.
@@ -247,3 +245,38 @@ Module Product.
     Proof. esplit; apply: cat_mixin. Defined.
   End Defs.
 End Product.
+
+Module Discrete.
+  Section Defs.
+    Context (I : Type).
+
+    Definition hom_mixin : Hom.mixin_of I.
+    Proof. by constructor=> i j; exact (i = j). Defined.
+
+    Canonical hom : Hom.type.
+    Proof. by esplit; apply: hom_mixin. Defined.
+
+    Definition precat_mixin : Precategory.mixin_of hom.
+    Proof.
+      build.
+      by move=> i j k -> ->.
+    Defined.
+
+    Canonical precat : Precategory.type.
+    Proof. by esplit; apply: precat_mixin. Defined.
+
+    Definition cat_mixin : Category.mixin_of precat.
+    Proof.
+      build.
+      - move=> //= i j k l ij jk kl.
+        move: j ij jk; apply: eq_ind.
+        move: l kl; apply: eq_ind.
+        by move: k; apply: eq_ind.
+      - by move=> //= i; apply: eq_ind.
+      - by move=> //= i; apply: eq_ind.
+    Qed.
+
+    Canonical cat : Category.type.
+    Proof. by esplit; apply: cat_mixin. Defined.
+  End Defs.
+End Discrete.
