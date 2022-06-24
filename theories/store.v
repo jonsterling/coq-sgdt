@@ -129,6 +129,120 @@ End PointwiseAlgAdjunction.
 Module Δ.
   Module Psh.
     Section Defs.
+      Context (A : Cat[𝒲, SET.cat]).
+
+      Definition ob : ℋ -> SET.cat.
+      Proof. by move/pi1; apply: A. Defined.
+
+      Definition prefunctor_mixin : Prefunctor.mixin_of _ _ ob.
+      Proof.
+        build=> h1 h2 h12 x.
+        by rewrite -h12.
+      Defined.
+
+      Canonical prefunctor : Prefunctor.type ℋ SET.cat.
+      Proof. by esplit; apply: prefunctor_mixin. Defined.
+
+      Definition functor_mixin : Functor.mixin_of _ _ prefunctor.
+      Proof.
+        build=> h1 h2 h3 h12.
+        move: h2 h12.
+        apply: eq_ind.
+        by move: h3; apply: eq_ind.
+      Qed.
+
+      Canonical functor : ℋ ~~> SET.cat.
+      Proof. by esplit; apply: functor_mixin. Defined.
+    End Defs.
+  End Psh.
+
+  Definition prefunctor_mixin : Prefunctor.mixin_of _ _ Psh.functor.
+  Proof.
+    build=> A B.
+    cbn.
+    build.
+    - case=> w h; apply: f.
+    - abstract by build=> h1; apply: eq_ind.
+  Defined.
+
+  Canonical prefunctor : Prefunctor.type Cat[𝒲,SET.cat] Cat[ℋ, SET.cat].
+  Proof. by esplit; apply: prefunctor_mixin. Defined.
+
+  Definition functor_mixin : Functor.mixin_of _ _ prefunctor.
+  Proof.
+    build.
+    - by move=> ?; apply: NatTrans.ext.
+    - by move=> ? ? ? ? ?; apply: NatTrans.ext.
+  Qed.
+
+  Canonical functor : Cat[𝒲, SET.cat] ~~> Cat[ℋ, SET.cat].
+  Proof. by esplit; apply: functor_mixin. Defined.
+End Δ.
+
+Module Π.
+
+  Module Psh.
+    Section Defs.
+      Context (A : Cat[ℋ, SET.cat]).
+
+      Definition ob : 𝒲 -> SET.cat.
+      Proof.
+        move=> w.
+        by exact: (⋀ h : ℋ, @hom 𝒲 w (pi1 h) -> A h).
+      Defined.
+
+      Definition prefunctor_mixin : Prefunctor.mixin_of _ _ ob.
+      Proof.
+        build=> w1 w2 w12 a h ρ.
+        apply: a.
+        exact: (@seq 𝒲 _ _ _ w12 ρ).
+      Defined.
+
+      Canonical prefunctor : Prefunctor.type 𝒲 SET.cat.
+      Proof. by esplit; apply: prefunctor_mixin. Defined.
+
+      Definition functor_mixin : Functor.mixin_of _ _ prefunctor.
+      Proof.
+        build.
+        - move=> w.
+          apply: funE=> a.
+          apply: dfunE=> h.
+          apply: funE=> ρ; cbn.
+          by rewrite (@seqL 𝒲).
+        - move=> w1 w2 w3 w12 w23.
+          apply: funE=> a.
+          apply: dfunE=> h.
+          apply: funE=> ρ; cbn.
+          by rewrite (@seqA 𝒲).
+      Qed.
+
+      Canonical functor : Functor.type 𝒲 SET.cat.
+      Proof. by esplit; apply: functor_mixin. Defined.
+    End Defs.
+  End Psh.
+
+  Definition prefunctor_mixin : Prefunctor.mixin_of _ _ Psh.functor.
+  Proof.
+    build=> A B f.
+    build.
+    - move=> w a h ρ.
+      by apply/f/a.
+    - by build.
+  Defined.
+
+  Canonical prefunctor : Prefunctor.type Cat[ℋ, SET.cat] Cat[𝒲, SET.cat].
+  Proof. by esplit; apply: prefunctor_mixin. Defined.
+
+  Definition functor_mixin : Functor.mixin_of _ _ prefunctor.
+  Proof. by build; move=>?*; apply: NatTrans.ext. Qed.
+
+  Canonical functor : Cat[ℋ, SET.cat] ~~> Cat[𝒲, SET.cat].
+  Proof. by esplit; apply: functor_mixin. Defined.
+End Π.
+
+Module Δop.
+  Module Psh.
+    Section Defs.
       Context (A : Cat[𝒲^op, SET.cat]).
 
       Definition ob : ℋ -> SET.cat.
@@ -177,7 +291,9 @@ Module Δ.
 
   Canonical functor : Cat[𝒲^op, SET.cat] ~~> Cat[ℋ, SET.cat].
   Proof. by esplit; apply: functor_mixin. Defined.
-End Δ.
+End Δop.
+
+
 
 Module Σ.
   Module Psh.
