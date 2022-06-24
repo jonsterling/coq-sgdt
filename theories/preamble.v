@@ -35,10 +35,12 @@ Definition sub (A : Type) (P : A -> Prop) : Type :=
 Set Warnings "-notation-overridden".
 Notation "{ x : A & B }" := (sig A (fun x:A => B)) : type_scope.
 Notation "{ x : A | B }" := (sub A (fun x:A => (B : Prop))) : type_scope.
+Notation "( x , y , .. , z )" := (Sig .. (Sig x y) .. z) : core_scope.
 Set Warnings "default".
 
 Definition prod (A B : Type) := {_:A & B}.
 Infix "×" := prod (at level 60).
+
 
 Definition pair {A B} (a : A) (b : B) : A × B :=
   Sig a b.
