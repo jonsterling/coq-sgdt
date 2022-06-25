@@ -673,6 +673,51 @@
 &nbsp;&nbsp;<span class="id" title="keyword">Canonical</span> <a id="06c9ee01fa3d603bde0b2d57b49f00d7" class="idref" href="#06c9ee01fa3d603bde0b2d57b49f00d7"><span class="id" title="definition">adj</span></a> : <a class="idref" href="sgdt.store.html#165a23c3d1c08769ef5411d43d55081e"><span class="id" title="definition">Δ.functor</span></a> <a class="idref" href="sgdt.adjunction.html#ff91db3b42ce7c9bbab7c8b7691bb26e"><span class="id" title="notation">⊣</span></a> <a class="idref" href="sgdt.store.html#dcffc0af40c6b2b41c336ecc73169c03"><span class="id" title="definition">Π.functor</span></a>.<br/>
 &nbsp;&nbsp;<span class="id" title="keyword">Proof</span>. <span class="id" title="tactic">by</span> <span class="id" title="var">esplit</span>; <span class="id" title="tactic">apply</span>: <a class="idref" href="sgdt.store.html#54bf647eed1954e80a996ef21b10504e"><span class="id" title="definition">adj_mixin</span></a>. <span class="id" title="keyword">Defined</span>.<br/>
 <span class="id" title="keyword">End</span> <a class="idref" href="sgdt.store.html#c221a44906500b9b61e4e26957ee01a1"><span class="id" title="module">ΠΔ</span></a>.<br/>
+
+<br/>
+<span class="id" title="keyword">Module</span> <a id="StateMonad" class="idref" href="#StateMonad"><span class="id" title="module">StateMonad</span></a>.<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Section</span> <a id="StateMonad.Defs" class="idref" href="#StateMonad.Defs"><span class="id" title="section">Defs</span></a>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">Context</span> (<a id="E:36" class="idref" href="#E:36"><span class="id" title="binder">E</span></a> : <a class="idref" href="sgdt.itree.html#Thy"><span class="id" title="record">itree.Thy</span></a>).<br/>
+
+<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">Definition</span> <a id="StateMonad.F" class="idref" href="#StateMonad.F"><span class="id" title="definition">F</span></a> : <a class="idref" href="sgdt.store.html#02f9f3e7c812a6ffd729065d39eade03"><span class="id" title="notation">𝒞+</span></a> <a class="idref" href="sgdt.functor.html#d42b7e5021d94038122d55b7f1af92c9"><span class="id" title="notation">~~&gt;</span></a> <a class="idref" href="sgdt.store.html#32a6e9b28d1eb22c562858ac5117ed95"><span class="id" title="notation">𝒞-[</span></a><a class="idref" href="sgdt.store.html#StateMonad.Defs.E"><span class="id" title="variable">E</span></a><a class="idref" href="sgdt.store.html#32a6e9b28d1eb22c562858ac5117ed95"><span class="id" title="notation">]</span></a>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">apply</span>: <a class="idref" href="sgdt.functor.html#Compose.functor"><span class="id" title="definition">Compose.functor</span></a>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span class="id" title="tactic">by</span> <span class="id" title="tactic">apply</span>: <a class="idref" href="sgdt.store.html#165a23c3d1c08769ef5411d43d55081e"><span class="id" title="definition">Δ.functor</span></a>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span class="id" title="tactic">apply</span>: <a class="idref" href="sgdt.functor.html#Compose.functor"><span class="id" title="definition">Compose.functor</span></a>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="id" title="tactic">by</span> <span class="id" title="tactic">apply</span>: <a class="idref" href="sgdt.store.html#16cb8a303bb56522dc4f5ea7f030b13b"><span class="id" title="definition">ΣSet.functor</span></a>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="id" title="tactic">apply</span>: <a class="idref" href="sgdt.adjunction.html#PointwiseLifting.functor"><span class="id" title="definition">PointwiseLifting.functor</span></a>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">by</span> <span class="id" title="tactic">apply</span>: <a class="idref" href="sgdt.itree.html#Free.functor"><span class="id" title="definition">itree.Free.functor</span></a>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">Defined</span>.<br/>
+
+<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">Definition</span> <a id="StateMonad.U" class="idref" href="#StateMonad.U"><span class="id" title="definition">U</span></a> : <a class="idref" href="sgdt.store.html#32a6e9b28d1eb22c562858ac5117ed95"><span class="id" title="notation">𝒞-[</span></a><a class="idref" href="sgdt.store.html#StateMonad.Defs.E"><span class="id" title="variable">E</span></a><a class="idref" href="sgdt.store.html#32a6e9b28d1eb22c562858ac5117ed95"><span class="id" title="notation">]</span></a> <a class="idref" href="sgdt.functor.html#d42b7e5021d94038122d55b7f1af92c9"><span class="id" title="notation">~~&gt;</span></a> <a class="idref" href="sgdt.store.html#02f9f3e7c812a6ffd729065d39eade03"><span class="id" title="notation">𝒞+</span></a>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">apply</span>: <a class="idref" href="sgdt.functor.html#Compose.functor"><span class="id" title="definition">Compose.functor</span></a>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span class="id" title="tactic">apply</span>: <a class="idref" href="sgdt.functor.html#Compose.functor"><span class="id" title="definition">Compose.functor</span></a>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="id" title="tactic">apply</span>: <a class="idref" href="sgdt.adjunction.html#PointwiseLifting.functor"><span class="id" title="definition">PointwiseLifting.functor</span></a>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">by</span> <span class="id" title="tactic">apply</span>: <a class="idref" href="sgdt.itree.html#Forgetful.functor"><span class="id" title="definition">itree.Forgetful.functor</span></a>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="id" title="tactic">by</span> <span class="id" title="tactic">apply</span>: <a class="idref" href="sgdt.store.html#1a3b9a5c87cd2734f3afc3b12aecb7e5"><span class="id" title="definition">Δop.functor</span></a>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span class="id" title="tactic">by</span> <span class="id" title="tactic">apply</span>: <a class="idref" href="sgdt.store.html#dcffc0af40c6b2b41c336ecc73169c03"><span class="id" title="definition">Π.functor</span></a>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">Defined</span>.<br/>
+
+<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">Definition</span> <a id="StateMonad.adj" class="idref" href="#StateMonad.adj"><span class="id" title="definition">adj</span></a> : <a class="idref" href="sgdt.store.html#StateMonad.F"><span class="id" title="definition">F</span></a> <a class="idref" href="sgdt.adjunction.html#ff91db3b42ce7c9bbab7c8b7691bb26e"><span class="id" title="notation">⊣</span></a> <a class="idref" href="sgdt.store.html#StateMonad.U"><span class="id" title="definition">U</span></a>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">apply</span>: <a class="idref" href="sgdt.adjunction.html#HorizontalComposition.adj"><span class="id" title="definition">adjunction.HorizontalComposition.adj</span></a>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span class="id" title="tactic">by</span> <span class="id" title="tactic">apply</span>: <a class="idref" href="sgdt.store.html#06c9ee01fa3d603bde0b2d57b49f00d7"><span class="id" title="definition">ΠΔ.adj</span></a>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span class="id" title="tactic">apply</span>: <a class="idref" href="sgdt.adjunction.html#HorizontalComposition.adj"><span class="id" title="definition">adjunction.HorizontalComposition.adj</span></a>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="id" title="tactic">by</span> <span class="id" title="tactic">apply</span>: <a class="idref" href="sgdt.store.html#a8aaaaa30b46990e6bac3c95c055a453"><span class="id" title="definition">ΔopΣSet.adj</span></a>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="id" title="tactic">apply</span>: <a class="idref" href="sgdt.adjunction.html#PointwiseLiftingAdjunction.adj"><span class="id" title="definition">PointwiseLiftingAdjunction.adj</span></a>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">by</span> <span class="id" title="tactic">apply</span>: <a class="idref" href="sgdt.itree.html#EilenbergMoore.adj"><span class="id" title="definition">itree.EilenbergMoore.adj</span></a>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">Defined</span>.<br/>
+
+<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">Definition</span> <a id="StateMonad.T" class="idref" href="#StateMonad.T"><span class="id" title="definition">T</span></a> : <a class="idref" href="sgdt.store.html#02f9f3e7c812a6ffd729065d39eade03"><span class="id" title="notation">𝒞+</span></a> <a class="idref" href="sgdt.functor.html#d42b7e5021d94038122d55b7f1af92c9"><span class="id" title="notation">~~&gt;</span></a> <a class="idref" href="sgdt.store.html#02f9f3e7c812a6ffd729065d39eade03"><span class="id" title="notation">𝒞+</span></a> := <a class="idref" href="sgdt.functor.html#Compose.functor"><span class="id" title="definition">Compose.functor</span></a> <a class="idref" href="sgdt.store.html#StateMonad.F"><span class="id" title="definition">F</span></a> <a class="idref" href="sgdt.store.html#StateMonad.U"><span class="id" title="definition">U</span></a>.<br/>
+
+<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">End</span> <a class="idref" href="sgdt.store.html#StateMonad.Defs"><span class="id" title="section">Defs</span></a>.<br/>
+<span class="id" title="keyword">End</span> <a class="idref" href="sgdt.store.html#StateMonad"><span class="id" title="module">StateMonad</span></a>.<br/>
 </div>
 </div>
 <div id="footer">
