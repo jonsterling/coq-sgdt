@@ -8,6 +8,8 @@ Set Universe Polymorphism.
 
 (** This module develops a typed synthetic model of higher-order store with recursively defined semantic worlds. *)
 
+(** * recursively defined semantic worlds *)
+
 (** Category of finite maps. *)
 Module World.
   Definition world (T : Type) : Type := {fmap nat -> T}.
@@ -127,6 +129,8 @@ Module HEAP.
 End HEAP.
 
 Notation ℋ := HEAP.cat.
+
+(** * cbpv decomposition of the store passing monad *)
 
 (** In the remainder of this file, we define several adjunctions that will compose to form the store adjunction. *)
 
@@ -563,8 +567,10 @@ Module ΠΔ.
   Proof. by esplit; apply: adj_mixin. Defined.
 End ΠΔ.
 
-(** Finally we may define the state monad on [𝒞+] as the monad of an adjunction obtained by horizontally composing the adjunctions defined earlier in this module. *)
-Module StateMonad.
+(** * the store passing monad *)
+
+(** Finally we may define the store passing monad on [𝒞+] as the monad of an adjunction obtained by horizontally composing the adjunctions defined earlier in this module. *)
+Module StorePassingMonad.
   Section Defs.
     Context (E : itree.Thy).
 
@@ -601,4 +607,4 @@ Module StateMonad.
     Definition T : 𝒞+ ~~> 𝒞+ := Compose.functor F U.
 
   End Defs.
-End StateMonad.
+End StorePassingMonad.
