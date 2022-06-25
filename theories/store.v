@@ -6,6 +6,9 @@ From sgdt Require itree.
 Set Bullet Behavior "Strict Subproofs".
 Set Universe Polymorphism.
 
+(** This module develops a typed synthetic model of higher-order store with recursively defined semantic worlds. *)
+
+(** Category of finite maps. *)
 Module World.
   Definition world (T : Type) : Type := {fmap nat -> T}.
 
@@ -56,6 +59,7 @@ Local Open Scope category_scope.
 Definition ℱ (T : Type) : Type :=
   World.cat T ~> TYPE.cat@{_ Set}.
 
+(** We solve a guarded domain equation to define the universe of semantic types. *)
 Definition 𝒯 : Type.
 Proof. by apply: Later.loeb=> /dlater; apply: ℱ. Defined.
 
@@ -65,14 +69,18 @@ Proof. by rewrite dlater_next_eq /𝒯 {1} Later.loeb_unfold. Qed.
 Global Instance 𝒯_conn : Connective 𝒯 (ℱ (▷ 𝒯)).
 Proof. by build; rewrite -𝒯_unfold; apply: iso_id. Qed.
 
-Opaque 𝒯_conn.
+Global Opaque 𝒯_conn.
 
-
+(** Worlds are defined as finite maps of (delayed) semantic types. *)
 Notation 𝒲 := (World.cat (▷ 𝒯)).
-Notation "𝒞+" := Cat[𝒲, TYPE.cat@{_ Set}].
+
+(** Positive types are copresheaves valued in the impredicative universe. Note that we have [𝒞+ = 𝒯]. *)
+Notation "𝒞+" := Cat[𝒲, SET.cat].
+
+(** We parameterize the negative types in a container [E] representing the effectful operations they support; negative types are defined as presheaves of effect algebras valued in the impredicative universe. For a certain container [E], this amounts to later-algebras (guarded domains). *)
 Notation "𝒞-[ E ]" := Cat[𝒲^op, itree.ALG.cat E].
 
-
+(** We define general reference types as presheaves. *)
 Module Ref.
   Section Ref.
     Context (A : 𝒞+).
@@ -102,6 +110,7 @@ Module Ref.
   End Ref.
 End Ref.
 
+(** Next we define the discrete category of heaps indexed in worlds. *)
 
 Definition heaplet (w w' : 𝒲) : Set :=
   forall i : nat,
@@ -118,6 +127,8 @@ Module HEAP.
 End HEAP.
 
 Notation ℋ := HEAP.cat.
+
+(** In the remainder of this file, we define several adjunctions that will compose to form the store adjunction. *)
 
 Module Δ.
   Module Psh.
@@ -552,6 +563,7 @@ Module ΠΔ.
   Proof. by esplit; apply: adj_mixin. Defined.
 End ΠΔ.
 
+(** Finally we may define the state monad on [𝒞+] as the monad of an adjunction obtained by horizontally composing the adjunctions defined earlier in this module. *)
 Module StateMonad.
   Section Defs.
     Context (E : itree.Thy).
