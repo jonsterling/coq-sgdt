@@ -370,7 +370,7 @@ Module ΣSet.
 End ΣSet.
 
 Module ΔopΣSet.
-  Definition fwd_fam : forall U, LeftNerve.functor ΣSet.functor U ~> RightNerve.functor Δop.functor U.
+  Definition fwd_fam : forall U, LeftOblique.functor ΣSet.functor U ~> RightOblique.functor Δop.functor U.
   Proof.
     case=> A X f.
     build.
@@ -383,7 +383,7 @@ Module ΔopΣSet.
          apply: funE=> a; rewrite ?fidn ?seqL ?seqR].
   Defined.
 
-  Definition bwd_fam : forall U, RightNerve.functor Δop.functor U ~> LeftNerve.functor ΣSet.functor U.
+  Definition bwd_fam : forall U, RightOblique.functor Δop.functor U ~> LeftOblique.functor ΣSet.functor U.
   Proof.
     case=> A X f.
     build.
@@ -424,10 +424,10 @@ Module ΔopΣSet.
     by rewrite naturality.
   Qed.
 
-  Canonical fwd : LeftNerve.functor ΣSet.functor ~~~> RightNerve.functor Δop.functor.
+  Canonical fwd : LeftOblique.functor ΣSet.functor ~~~> RightOblique.functor Δop.functor.
   Proof. by esplit; apply: fwd_mixin. Defined.
 
-  Canonical bwd : RightNerve.functor Δop.functor ~~~> LeftNerve.functor ΣSet.functor.
+  Canonical bwd : RightOblique.functor Δop.functor ~~~> LeftOblique.functor ΣSet.functor.
   Proof. by esplit; apply: bwd_mixin. Defined.
 
   Definition preadj : Preadjunction.type ΣSet.functor Δop.functor.
@@ -466,7 +466,7 @@ End ΔopΣSet.
 
 Module ΠΔ.
 
-  Definition fwd_fam : forall U, LeftNerve.functor Δ.functor U ~> RightNerve.functor Π.functor U.
+  Definition fwd_fam : forall U, LeftOblique.functor Δ.functor U ~> RightOblique.functor Π.functor U.
   Proof.
     case=> A B f.
     build.
@@ -484,7 +484,7 @@ Module ΠΔ.
       by rewrite fseq.
   Defined.
 
-  Definition bwd_fam : forall U, RightNerve.functor Π.functor U ~> LeftNerve.functor Δ.functor U.
+  Definition bwd_fam : forall U, RightOblique.functor Π.functor U ~> LeftOblique.functor Δ.functor U.
   Proof.
     case=> A B f.
     build.
@@ -522,10 +522,10 @@ Module ΠΔ.
     by apply: NatTrans.ext.
   Qed.
 
-  Canonical fwd : LeftNerve.functor Δ.functor ~~~> RightNerve.functor Π.functor.
+  Canonical fwd : LeftOblique.functor Δ.functor ~~~> RightOblique.functor Π.functor.
   Proof. by esplit; apply: fwd_mixin. Defined.
 
-  Canonical bwd : RightNerve.functor Π.functor ~~~> LeftNerve.functor Δ.functor.
+  Canonical bwd : RightOblique.functor Π.functor ~~~> LeftOblique.functor Δ.functor.
   Proof. by esplit; apply: bwd_mixin. Defined.
 
   Definition preadj : Preadjunction.type Δ.functor Π.functor.

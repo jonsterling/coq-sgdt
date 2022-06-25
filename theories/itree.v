@@ -305,7 +305,7 @@ Module TranspFwd.
   Section Defs.
     Context (E : Thy).
 
-    Definition transf_fam : forall U, LeftNerve.functor (Free.functor E) U ~> RightNerve.functor (Forgetful.functor E) U.
+    Definition transf_fam : forall U, LeftOblique.functor (Free.functor E) U ~> RightOblique.functor (Forgetful.functor E) U.
     Proof.
       move=> [A X] f a.
       by apply/f/η/a.
@@ -322,7 +322,7 @@ Module TranspFwd.
       by rewrite Free.ext_extends.
     Qed.
 
-    Canonical transf : LeftNerve.functor (Free.functor E) ~> RightNerve.functor (Forgetful.functor E).
+    Canonical transf : LeftOblique.functor (Free.functor E) ~> RightOblique.functor (Forgetful.functor E).
     Proof. by esplit; apply: transf_mixin. Defined.
   End Defs.
 End TranspFwd.
@@ -331,7 +331,7 @@ Module TranspBwd.
   Section Defs.
     Context (E : Thy).
 
-    Definition transf_fam : forall U, RightNerve.functor (Forgetful.functor E) U ~> LeftNerve.functor (Free.functor E) U.
+    Definition transf_fam : forall U, RightOblique.functor (Forgetful.functor E) U ~> LeftOblique.functor (Free.functor E) U.
     Proof.
       move=> [A X]; cbn; move=> f.
       by apply/Free.ext_hom/f.
@@ -348,7 +348,7 @@ Module TranspBwd.
         by rewrite ?Free.ext_extends.
     Qed.
 
-    Canonical transf : RightNerve.functor (Forgetful.functor E) ~> LeftNerve.functor (Free.functor E).
+    Canonical transf : RightOblique.functor (Forgetful.functor E) ~> LeftOblique.functor (Free.functor E).
     Proof. by esplit; apply: transf_mixin. Defined.
   End Defs.
 End TranspBwd.
@@ -366,7 +366,7 @@ Module EilenbergMoore.
 
     Definition adj_mixin : Adjunction.mixin_of (Free.functor E) (Forgetful.functor E) preadj.
     Proof.
-      build; case=> A X; rewrite /LeftNerve.ob /RightNerve.ob //= /TranspBwd.transf_fam /TranspFwd.transf_fam; cbn.
+      build; case=> A X; rewrite /LeftOblique.ob /RightOblique.ob //= /TranspBwd.transf_fam /TranspFwd.transf_fam; cbn.
       - move=> f.
         apply: Free.extends_unique.
         + by move=> ?; apply: Free.ext_extends.

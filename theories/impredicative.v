@@ -231,20 +231,20 @@ End TypeToSet.
 
 Module TypeSetAdjunction.
 
-  Definition transp_fwd_fam : forall U, LeftNerve.functor TypeToSet.functor U -> RightNerve.functor SetToType.functor U.
+  Definition transp_fwd_fam : forall U, LeftOblique.functor TypeToSet.functor U -> RightOblique.functor SetToType.functor U.
   Proof.
     case=> A X f a.
     apply: f.
     by apply: Reflection.unit a.
   Defined.
 
-  Definition transp_bwd_fam : forall U, RightNerve.functor SetToType.functor U -> LeftNerve.functor TypeToSet.functor U.
+  Definition transp_bwd_fam : forall U, RightOblique.functor SetToType.functor U -> LeftOblique.functor TypeToSet.functor U.
   Proof.
     case=> A X f.
     by cbn in *; apply: Reflection.ext f.
   Defined.
 
-  Definition transp_fwd_mixin : NatTrans.mixin_of (LeftNerve.functor TypeToSet.functor) (RightNerve.functor SetToType.functor) transp_fwd_fam.
+  Definition transp_fwd_mixin : NatTrans.mixin_of (LeftOblique.functor TypeToSet.functor) (RightOblique.functor SetToType.functor) transp_fwd_fam.
   Proof.
     build; case=> A1 X1; case=> A2 X2; case=> f g.
     apply: funE=> h //=.
@@ -252,17 +252,17 @@ Module TypeSetAdjunction.
     by cbn; rewrite Reflection.map_beta.
   Qed.
 
-  Definition transp_bwd_mixin : NatTrans.mixin_of (RightNerve.functor SetToType.functor) (LeftNerve.functor TypeToSet.functor)  transp_bwd_fam.
+  Definition transp_bwd_mixin : NatTrans.mixin_of (RightOblique.functor SetToType.functor) (LeftOblique.functor TypeToSet.functor)  transp_bwd_fam.
   Proof.
     build; case=> A1 X1; case=> A2 X2; case=> f g.
     apply: funE=> h //=.
     by apply: funE; apply: Reflection.ind.
   Qed.
 
-  Canonical transp_fwd : LeftNerve.functor TypeToSet.functor ~> RightNerve.functor SetToType.functor.
+  Canonical transp_fwd : LeftOblique.functor TypeToSet.functor ~> RightOblique.functor SetToType.functor.
   Proof. by esplit; apply: transp_fwd_mixin. Defined.
 
-  Canonical transp_bwd : RightNerve.functor SetToType.functor ~> LeftNerve.functor TypeToSet.functor.
+  Canonical transp_bwd : RightOblique.functor SetToType.functor ~> LeftOblique.functor TypeToSet.functor.
   Proof. by esplit; apply: transp_bwd_mixin. Defined.
 
   Definition preadj : Preadjunction.type TypeToSet.functor SetToType.functor.
@@ -276,7 +276,7 @@ Module TypeSetAdjunction.
   Definition adj_mixin : Adjunction.mixin_of _ _ preadj.
   Proof.
     build; case=> A B.
-    rewrite /LeftNerve.ob /TypeToSet.functor //=.
+    rewrite /LeftOblique.ob /TypeToSet.functor //=.
     move=> f.
     rewrite /transp_fwd_fam /transp_bwd_fam //=.
     apply: Reflection.ext_eta.

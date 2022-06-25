@@ -3,7 +3,7 @@ From sgdt Require Import preamble category functor.
 Local Open Scope category_scope.
 Set Universe Polymorphism.
 
-Module LeftNerve.
+Module LeftOblique.
   Section Defs.
     Context {𝒞 𝒟 : Category.type} (F : 𝒞 ~~> 𝒟).
 
@@ -36,9 +36,9 @@ Module LeftNerve.
     Canonical functor : Functor.type (Product.cat (𝒞^op) 𝒟) TYPE.cat.
     Proof. by esplit; apply: functor_mixin. Defined.
   End Defs.
-End LeftNerve.
+End LeftOblique.
 
-Module RightNerve.
+Module RightOblique.
   Section Defs.
     Context {𝒞 𝒟 : Category.type} (G : 𝒟 ~~> 𝒞).
 
@@ -71,15 +71,15 @@ Module RightNerve.
     Canonical functor : Functor.type (Product.cat (𝒞^op) 𝒟) TYPE.cat.
     Proof. by esplit; apply: functor_mixin. Defined.
   End Defs.
-End RightNerve.
+End RightOblique.
 
 Module Preadjunction.
   Section Defs.
     Context {𝒞 𝒟 : Category.type} (F : 𝒞 ~~> 𝒟) (U : 𝒟 ~~> 𝒞).
 
     Record type :=
-      { fwd : LeftNerve.functor F ~~~> RightNerve.functor U;
-        bwd : RightNerve.functor U ~~~> LeftNerve.functor F }.
+      { fwd : LeftOblique.functor F ~~~> RightOblique.functor U;
+        bwd : RightOblique.functor U ~~~> LeftOblique.functor F }.
   End Defs.
 
   Arguments fwd [𝒞] [𝒟] [F] [U].
@@ -108,10 +108,10 @@ Section Facts.
 
   Context {𝒞 𝒟 : Category.type} {F : 𝒞 ~~> 𝒟} {U : 𝒟 ~~> 𝒞} (T : F ⊣ U).
 
-  Definition transpose : LeftNerve.functor F ~> RightNerve.functor U :=
+  Definition transpose : LeftOblique.functor F ~> RightOblique.functor U :=
     Preadjunction.fwd (Adjunction.transp _ _ T).
 
-  Definition untranspose : RightNerve.functor U ~> LeftNerve.functor F :=
+  Definition untranspose : RightOblique.functor U ~> LeftOblique.functor F :=
     Preadjunction.bwd (Adjunction.transp _ _ T).
 
   Definition untranspose_transpose : forall U f, untranspose U (transpose U f) = f :=
@@ -134,7 +134,7 @@ Module HorizontalComposition.
         (T2 : F2 ⊣ G2).
 
 
-    Definition transp_fwd_fam U : LeftNerve.functor (Compose.functor F1 F2) U ~> RightNerve.functor (Compose.functor G2 G1) U.
+    Definition transp_fwd_fam U : LeftOblique.functor (Compose.functor F1 F2) U ~> RightOblique.functor (Compose.functor G2 G1) U.
     Proof.
       case: U=> c e //= f.
       apply: (transpose T1 (c, G2 e)).
@@ -142,7 +142,7 @@ Module HorizontalComposition.
       apply: f.
     Defined.
 
-    Definition transp_bwd_fam U : RightNerve.functor (Compose.functor G2 G1) U ~> LeftNerve.functor (Compose.functor F1 F2) U.
+    Definition transp_bwd_fam U : RightOblique.functor (Compose.functor G2 G1) U ~> LeftOblique.functor (Compose.functor F1 F2) U.
     Proof.
       case: U => c e //= f.
       apply: (untranspose T2 (F1 c, e)).
@@ -170,10 +170,10 @@ Module HorizontalComposition.
       by cbn; rewrite /transp_bwd_fam Q1 Q2.
     Qed.
 
-    Canonical transp_fwd : LeftNerve.functor (Compose.functor F1 F2) ~> RightNerve.functor (Compose.functor G2 G1).
+    Canonical transp_fwd : LeftOblique.functor (Compose.functor F1 F2) ~> RightOblique.functor (Compose.functor G2 G1).
     Proof. by esplit; apply: transp_fwd_mixin. Defined.
 
-    Canonical transp_bwd : RightNerve.functor (Compose.functor G2 G1) ~> LeftNerve.functor (Compose.functor F1 F2).
+    Canonical transp_bwd : RightOblique.functor (Compose.functor G2 G1) ~> LeftOblique.functor (Compose.functor F1 F2).
     Proof. by esplit; apply: transp_bwd_mixin. Defined.
 
     Canonical preadj : Preadjunction.type (Compose.functor F1 F2) (Compose.functor G2 G1).
@@ -193,10 +193,10 @@ Module HorizontalComposition.
     Definition adj_mixin : Adjunction.mixin_of _ _ preadj.
     Proof.
       build; cbn.
-      - case=> c e; rewrite /LeftNerve.ob //=; move=> f.
+      - case=> c e; rewrite /LeftOblique.ob //=; move=> f.
         rewrite /transp_bwd_fam /transp_fwd_fam //=.
         by rewrite ?untranspose_transpose.
-      - case=> c e; rewrite /RightNerve.ob //=; move=> f.
+      - case=> c e; rewrite /RightOblique.ob //=; move=> f.
         rewrite /transp_bwd_fam /transp_fwd_fam //=.
         by rewrite ?transpose_untranspose.
     Qed.
@@ -260,7 +260,7 @@ Module PointwiseLiftingAdjunction.
     Local Notation F' := (PointwiseLifting.functor ℐ F).
     Local Notation U' := (PointwiseLifting.functor ℐ U).
 
-    Definition transp_fwd_fam_fam : forall P, LeftNerve.functor F' P ->  forall i : ℐ, pi1 P i ~> U' (pi2 P) i.
+    Definition transp_fwd_fam_fam : forall P, LeftOblique.functor F' P ->  forall i : ℐ, pi1 P i ~> U' (pi2 P) i.
     Proof.
       case=> A X f i.
       rewrite /U'; cbn.
@@ -275,13 +275,13 @@ Module PointwiseLiftingAdjunction.
       rewrite /PointwiseLifting.ob.
       have Qi := unfunE _ _ (naturality (transpose T) (A i, X i) (A i, X j) (idn _, X @@ ij)) (f i).
       have Qj := unfunE _ _ (naturality (transpose T) (A j, X j) (A i, X j) (A @@ ij, idn _)) (f j).
-      rewrite /LeftNerve.ob /LeftNerve.functor /LeftNerve.prefunctor //= in Qi Qj.
+      rewrite /LeftOblique.ob /LeftOblique.functor /LeftOblique.prefunctor //= in Qi Qj.
       cbn in Qi, Qj.
       rewrite ?fidn ?seqL ?seqR in Qi Qj.
       by rewrite -Qi -Qj (naturality f).
     Qed.
 
-    Canonical transp_fwd_fam : forall x, LeftNerve.functor F' x ~> RightNerve.functor U' x.
+    Canonical transp_fwd_fam : forall x, LeftOblique.functor F' x ~> RightOblique.functor U' x.
     Proof. by esplit; apply: transp_fwd_fam_mixin. Defined.
 
     Lemma transp_fwd_mixin : NatTrans.mixin_of _ _ transp_fwd_fam.
@@ -296,10 +296,10 @@ Module PointwiseLiftingAdjunction.
       by rewrite Q.
     Qed.
 
-    Canonical transp_fwd : LeftNerve.functor F' ~> RightNerve.functor U'.
+    Canonical transp_fwd : LeftOblique.functor F' ~> RightOblique.functor U'.
     Proof. by esplit; apply: transp_fwd_mixin. Defined.
 
-    Definition transp_bwd_fam_fam : forall P, RightNerve.functor U' P ->  forall i : ℐ, F' (pi1 P) i ~> (pi2 P) i.
+    Definition transp_bwd_fam_fam : forall P, RightOblique.functor U' P ->  forall i : ℐ, F' (pi1 P) i ~> (pi2 P) i.
     Proof.
       case=> A X f i.
       rewrite /F'; cbn.
@@ -314,13 +314,13 @@ Module PointwiseLiftingAdjunction.
       rewrite /PointwiseLifting.ob.
       have Qi := unfunE _ _ (naturality (untranspose T) (A i, X i) (A i, X j) (idn _, X @@ ij)) (f i).
       have Qj := unfunE _ _ (naturality (untranspose T) (A j, X j) (A i, X j) (A @@ ij, idn _)) (f j).
-      rewrite /RightNerve.ob /RightNerve.functor /RightNerve.prefunctor //= in Qi Qj.
+      rewrite /RightOblique.ob /RightOblique.functor /RightOblique.prefunctor //= in Qi Qj.
       cbn in Qi, Qj.
       rewrite ?fidn ?seqL ?seqR in Qi, Qj.
       by rewrite -Qi -Qj (naturality f).
     Qed.
 
-    Canonical transp_bwd_fam : forall x, RightNerve.functor U' x ~> LeftNerve.functor F' x.
+    Canonical transp_bwd_fam : forall x, RightOblique.functor U' x ~> LeftOblique.functor F' x.
     Proof. by esplit; apply: transp_bwd_fam_mixin. Defined.
 
     Lemma transp_bwd_mixin : NatTrans.mixin_of _ _ transp_bwd_fam.
@@ -335,7 +335,7 @@ Module PointwiseLiftingAdjunction.
       by rewrite Q.
     Qed.
 
-    Canonical transp_bwd : RightNerve.functor U' ~> LeftNerve.functor F'.
+    Canonical transp_bwd : RightOblique.functor U' ~> LeftOblique.functor F'.
     Proof. by esplit; apply: transp_bwd_mixin. Defined.
 
     Definition preadj : Preadjunction.type F' U'.
@@ -347,7 +347,7 @@ Module PointwiseLiftingAdjunction.
 
     Definition adj_mixin : Adjunction.mixin_of F' U' preadj.
     Proof.
-      build; rewrite /LeftNerve.ob /RightNerve.ob //= /PointwiseLifting.ob.
+      build; rewrite /LeftOblique.ob /RightOblique.ob //= /PointwiseLifting.ob.
       - case=> ? ? ? //=.
         apply: NatTrans.ext=> //=.
         rewrite /transp_bwd_fam /transp_fwd_fam /transp_bwd_fam_fam /transp_fwd_fam_fam //=.
