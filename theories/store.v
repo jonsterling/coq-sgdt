@@ -558,3 +558,42 @@ Module ΠΔ.
   Canonical adj : Δ.functor ⊣ Π.functor.
   Proof. by esplit; apply: adj_mixin. Defined.
 End ΠΔ.
+
+Module StateMonad.
+  Section Defs.
+    Context (E : itree.Thy).
+
+    Definition F : 𝒞+ ~~> 𝒞-[E].
+    Proof.
+      apply: Compose.functor.
+      - by apply: Δ.functor.
+      - apply: Compose.functor.
+        + by apply: ΣSet.functor.
+        + apply: PointwiseLifting.functor.
+          by apply: itree.Free.functor.
+    Defined.
+
+    Definition U : 𝒞-[E] ~~> 𝒞+.
+    Proof.
+      apply: Compose.functor.
+      - apply: Compose.functor.
+        + apply: PointwiseLifting.functor.
+          by apply: itree.Forgetful.functor.
+        + by apply: Δop.functor.
+      - by apply: Π.functor.
+    Defined.
+
+    Definition adj : F ⊣ U.
+    Proof.
+      apply: adjunction.HorizontalComposition.adj.
+      - by apply: ΠΔ.adj.
+      - apply: adjunction.HorizontalComposition.adj.
+        + by apply: ΔopΣSet.adj.
+        + apply: PointwiseLiftingAdjunction.adj.
+          by apply: itree.EilenbergMoore.adj.
+    Defined.
+
+    Definition T : 𝒞+ ~~> 𝒞+ := Compose.functor F U.
+
+  End Defs.
+End StateMonad.
