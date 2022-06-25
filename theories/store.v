@@ -119,13 +119,6 @@ End HEAP.
 
 Notation ℋ := HEAP.cat.
 
-Module PointwiseAlgAdjunction.
-  Section Defs.
-    Context (E : itree.Thy).
-    Definition adj := PointwiseLiftingAdjunction.adj (𝒲 ^op) _ _ (itree.EilenbergMoore.adj E).
-  End Defs.
-End PointwiseAlgAdjunction.
-
 Module Δ.
   Module Psh.
     Section Defs.
