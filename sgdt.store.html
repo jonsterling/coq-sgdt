@@ -38,6 +38,15 @@
 <span class="id" title="keyword">Set</span> <span class="id" title="var">Universe</span> <span class="id" title="var">Polymorphism</span>.<br/>
 
 <br/>
+</div>
+
+<div class="doc">
+This module develops a typed synthetic model of higher-order store with recursively defined semantic worlds. 
+<div class="paragraph"> </div>
+
+ Category of finite maps. 
+</div>
+<div class="code">
 <span class="id" title="keyword">Module</span> <a id="World" class="idref" href="#World"><span class="id" title="module">World</span></a>.<br/>
 &nbsp;&nbsp;<span class="id" title="keyword">Definition</span> <a id="World.world" class="idref" href="#World.world"><span class="id" title="definition">world</span></a> (<a id="T:1" class="idref" href="#T:1"><span class="id" title="binder">T</span></a> : <span class="id" title="keyword">Type</span>) : <span class="id" title="keyword">Type</span> := <span class="id" title="notation">{</span><span class="id" title="notation">fmap</span> <a class="idref" href="http://coq.inria.fr/distrib/V8.15.2/stdlib//Coq.Init.Datatypes.html#nat"><span class="id" title="inductive">nat</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.15.2/stdlib//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">-&gt;</span></a> <a class="idref" href="sgdt.store.html#T:1"><span class="id" title="variable">T</span></a><span class="id" title="notation">}</span>.<br/>
 
@@ -101,6 +110,12 @@
 &nbsp;&nbsp;<a class="idref" href="sgdt.store.html#cat"><span class="id" title="definition">World.cat</span></a> <a class="idref" href="sgdt.store.html#T:10"><span class="id" title="variable">T</span></a> <a class="idref" href="sgdt.category.html#d5010e8179a6d0a2c50cafa87bc182e1"><span class="id" title="notation">~&gt;</span></a> <a class="idref" href="sgdt.category.html#TYPE.cat"><span class="id" title="definition">TYPE.cat@</span></a><a class="idref" href="sgdt.category.html#TYPE.cat"><span class="id" title="definition">{</span></a><a class="idref" href="sgdt.category.html#TYPE.cat"><span class="id" title="definition">_</span></a> <a class="idref" href="sgdt.category.html#TYPE.cat"><span class="id" title="definition">Set</span></a><a class="idref" href="sgdt.category.html#TYPE.cat"><span class="id" title="definition">}</span></a>.<br/>
 
 <br/>
+</div>
+
+<div class="doc">
+We solve a guarded domain equation to define the universe of semantic types. 
+</div>
+<div class="code">
 <span class="id" title="keyword">Definition</span> <a id="e2decf06bd5ae566efe71d110837d4a9" class="idref" href="#e2decf06bd5ae566efe71d110837d4a9"><span class="id" title="definition">𝒯</span></a> : <span class="id" title="keyword">Type</span>.<br/>
 <span class="id" title="keyword">Proof</span>. <span class="id" title="tactic">by</span> <span class="id" title="tactic">apply</span>: <a class="idref" href="sgdt.guarded.html#Later.loeb"><span class="id" title="axiom">Later.loeb</span></a>=&gt; /<a class="idref" href="sgdt.guarded.html#dlater"><span class="id" title="axiom">dlater</span></a>; <span class="id" title="tactic">apply</span>: <a class="idref" href="sgdt.store.html#ff086b16fd2f7616589308bcd1322002"><span class="id" title="definition">ℱ</span></a>. <span class="id" title="keyword">Defined</span>.<br/>
 
@@ -113,14 +128,42 @@
 <span class="id" title="keyword">Proof</span>. <span class="id" title="tactic">by</span> <span class="id" title="var">build</span>; <span class="id" title="tactic">rewrite</span> -<a class="idref" href="sgdt.store.html#6298ee6bbdc0de011a31ade50b907d8c"><span class="id" title="lemma">𝒯</span></a><a class="idref" href="sgdt.store.html#6298ee6bbdc0de011a31ade50b907d8c"><span class="id" title="lemma">_unfold</span></a>; <span class="id" title="tactic">apply</span>: <a class="idref" href="sgdt.preamble.html#iso_id"><span class="id" title="definition">iso_id</span></a>. <span class="id" title="keyword">Qed</span>.<br/>
 
 <br/>
-<span class="id" title="keyword">Opaque</span> <a class="idref" href="sgdt.store.html#eb976fa15020316d0d87a93adc36540d"><span class="id" title="instance">𝒯</span></a><a class="idref" href="sgdt.store.html#eb976fa15020316d0d87a93adc36540d"><span class="id" title="instance">_conn</span></a>.<br/>
+<span class="id" title="keyword">Global Opaque</span> <a class="idref" href="sgdt.store.html#eb976fa15020316d0d87a93adc36540d"><span class="id" title="instance">𝒯</span></a><a class="idref" href="sgdt.store.html#eb976fa15020316d0d87a93adc36540d"><span class="id" title="instance">_conn</span></a>.<br/>
 
 <br/>
+</div>
+
+<div class="doc">
+Worlds are defined as finite maps of (delayed) semantic types. 
+</div>
+<div class="code">
 <span class="id" title="keyword">Notation</span> <a id="6308c85cd753ea6bb6c73b84cd511079" class="idref" href="#6308c85cd753ea6bb6c73b84cd511079"><span class="id" title="abbreviation">𝒲</span></a> := (<a class="idref" href="sgdt.store.html#cat"><span class="id" title="definition">World.cat</span></a> (<a class="idref" href="sgdt.guarded.html#e091621b63af03ac2f4b95988bf1c15b"><span class="id" title="notation">▷</span></a> <a class="idref" href="sgdt.store.html#e2decf06bd5ae566efe71d110837d4a9"><span class="id" title="definition">𝒯</span></a>)).<br/>
-<span class="id" title="keyword">Notation</span> <a id="02f9f3e7c812a6ffd729065d39eade03" class="idref" href="#02f9f3e7c812a6ffd729065d39eade03"><span class="id" title="notation">&quot;</span></a>𝒞+" := <a class="idref" href="sgdt.functor.html#066cdf9a45c30767634ff45c8de4cd83"><span class="id" title="notation">Cat</span></a><a class="idref" href="sgdt.functor.html#066cdf9a45c30767634ff45c8de4cd83"><span class="id" title="notation">[</span></a><a class="idref" href="sgdt.store.html#6308c85cd753ea6bb6c73b84cd511079"><span class="id" title="abbreviation">𝒲</span></a><a class="idref" href="sgdt.functor.html#066cdf9a45c30767634ff45c8de4cd83"><span class="id" title="notation">,</span></a> <a class="idref" href="sgdt.category.html#TYPE.cat"><span class="id" title="definition">TYPE.cat@</span></a><a class="idref" href="sgdt.category.html#TYPE.cat"><span class="id" title="definition">{</span></a><a class="idref" href="sgdt.category.html#TYPE.cat"><span class="id" title="definition">_</span></a> <a class="idref" href="sgdt.category.html#TYPE.cat"><span class="id" title="definition">Set</span></a><a class="idref" href="sgdt.category.html#TYPE.cat"><span class="id" title="definition">}</span></a><a class="idref" href="sgdt.functor.html#066cdf9a45c30767634ff45c8de4cd83"><span class="id" title="notation">]</span></a>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Positive types are copresheaves valued in the impredicative universe. Note that we have <span class="inlinecode">𝒞+</span> <span class="inlinecode">=</span> <span class="inlinecode">𝒯</span>. 
+</div>
+<div class="code">
+<span class="id" title="keyword">Notation</span> <a id="02f9f3e7c812a6ffd729065d39eade03" class="idref" href="#02f9f3e7c812a6ffd729065d39eade03"><span class="id" title="notation">&quot;</span></a>𝒞+" := <a class="idref" href="sgdt.functor.html#066cdf9a45c30767634ff45c8de4cd83"><span class="id" title="notation">Cat</span></a><a class="idref" href="sgdt.functor.html#066cdf9a45c30767634ff45c8de4cd83"><span class="id" title="notation">[</span></a><a class="idref" href="sgdt.store.html#6308c85cd753ea6bb6c73b84cd511079"><span class="id" title="abbreviation">𝒲</span></a><a class="idref" href="sgdt.functor.html#066cdf9a45c30767634ff45c8de4cd83"><span class="id" title="notation">,</span></a> <a class="idref" href="sgdt.category.html#SET.cat"><span class="id" title="definition">SET.cat</span></a><a class="idref" href="sgdt.functor.html#066cdf9a45c30767634ff45c8de4cd83"><span class="id" title="notation">]</span></a>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+We parameterize the negative types in a container <span class="inlinecode"><span class="id" title="var">E</span></span> representing the effectful operations they support; negative types are defined as presheaves of effect algebras valued in the impredicative universe. For a certain container <span class="inlinecode"><span class="id" title="var">E</span></span>, this amounts to later-algebras (guarded domains). 
+</div>
+<div class="code">
 <span class="id" title="keyword">Notation</span> <a id="32a6e9b28d1eb22c562858ac5117ed95" class="idref" href="#32a6e9b28d1eb22c562858ac5117ed95"><span class="id" title="notation">&quot;</span></a>𝒞-[ E ]" := <a class="idref" href="sgdt.functor.html#066cdf9a45c30767634ff45c8de4cd83"><span class="id" title="notation">Cat</span></a><a class="idref" href="sgdt.functor.html#066cdf9a45c30767634ff45c8de4cd83"><span class="id" title="notation">[</span></a><a class="idref" href="sgdt.store.html#6308c85cd753ea6bb6c73b84cd511079"><span class="id" title="abbreviation">𝒲</span></a><a class="idref" href="sgdt.category.html#1c23e10d88b15918cec426e719fea0fe"><span class="id" title="notation">^</span></a><a class="idref" href="sgdt.category.html#1c23e10d88b15918cec426e719fea0fe"><span class="id" title="notation">op</span></a><a class="idref" href="sgdt.functor.html#066cdf9a45c30767634ff45c8de4cd83"><span class="id" title="notation">,</span></a> <a class="idref" href="sgdt.itree.html#ALG.cat"><span class="id" title="definition">itree.ALG.cat</span></a> <span class="id" title="var">E</span><a class="idref" href="sgdt.functor.html#066cdf9a45c30767634ff45c8de4cd83"><span class="id" title="notation">]</span></a>.<br/>
 
 <br/>
+</div>
+
+<div class="doc">
+We define general reference types as presheaves. 
+</div>
+<div class="code">
 <span class="id" title="keyword">Module</span> <a id="Ref" class="idref" href="#Ref"><span class="id" title="module">Ref</span></a>.<br/>
 &nbsp;&nbsp;<span class="id" title="keyword">Section</span> <a id="Ref.Ref" class="idref" href="#Ref.Ref"><span class="id" title="section">Ref</span></a>.<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">Context</span> (<a id="A:11" class="idref" href="#A:11"><span class="id" title="binder">A</span></a> : <a class="idref" href="sgdt.store.html#02f9f3e7c812a6ffd729065d39eade03"><span class="id" title="notation">𝒞+</span></a>).<br/>
@@ -158,6 +201,14 @@
 <span class="id" title="keyword">End</span> <a class="idref" href="sgdt.store.html#Ref"><span class="id" title="module">Ref</span></a>.<br/>
 
 <br/>
+</div>
+
+<div class="doc">
+Next we define the discrete category of heaps indexed in worlds. 
+</div>
+<div class="code">
+
+<br/>
 <span class="id" title="keyword">Definition</span> <a id="heaplet" class="idref" href="#heaplet"><span class="id" title="definition">heaplet</span></a> (<a id="w:17" class="idref" href="#w:17"><span class="id" title="binder">w</span></a> <a id="w':18" class="idref" href="#w':18"><span class="id" title="binder">w'</span></a> : <a class="idref" href="sgdt.store.html#6308c85cd753ea6bb6c73b84cd511079"><span class="id" title="abbreviation">𝒲</span></a>) : <span class="id" title="keyword">Set</span> :=<br/>
 &nbsp;&nbsp;<span class="id" title="keyword">forall</span> <a id="i:19" class="idref" href="#i:19"><span class="id" title="binder">i</span></a> : <a class="idref" href="http://coq.inria.fr/distrib/V8.15.2/stdlib//Coq.Init.Datatypes.html#nat"><span class="id" title="inductive">nat</span></a>,<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">match</span> <a class="idref" href="sgdt.store.html#w:17"><span class="id" title="variable">w</span></a> <a class="idref" href="sgdt.store.html#i:19"><span class="id" title="variable">i</span></a> <span class="id" title="keyword">with</span><br/>
@@ -176,6 +227,14 @@
 
 <br/>
 <span class="id" title="keyword">Notation</span> <a id="895465a389fd2690eb8a87b86873b1d2" class="idref" href="#895465a389fd2690eb8a87b86873b1d2"><span class="id" title="abbreviation">ℋ</span></a> := <a class="idref" href="sgdt.store.html#cat"><span class="id" title="definition">HEAP.cat</span></a>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+In the remainder of this file, we define several adjunctions that will compose to form the store adjunction. 
+</div>
+<div class="code">
 
 <br/>
 <span class="id" title="keyword">Module</span> <a id="d44f383ce45b5283439ea630afb544d5" class="idref" href="#d44f383ce45b5283439ea630afb544d5"><span class="id" title="module">Δ</span></a>.<br/>
@@ -667,6 +726,12 @@
 <span class="id" title="keyword">End</span> <a class="idref" href="sgdt.store.html#c221a44906500b9b61e4e26957ee01a1"><span class="id" title="module">ΠΔ</span></a>.<br/>
 
 <br/>
+</div>
+
+<div class="doc">
+Finally we may define the state monad on <span class="inlinecode">𝒞+</span> as the monad of an adjunction obtained by horizontally composing the adjunctions defined earlier in this module. 
+</div>
+<div class="code">
 <span class="id" title="keyword">Module</span> <a id="StateMonad" class="idref" href="#StateMonad"><span class="id" title="module">StateMonad</span></a>.<br/>
 &nbsp;&nbsp;<span class="id" title="keyword">Section</span> <a id="StateMonad.Defs" class="idref" href="#StateMonad.Defs"><span class="id" title="section">Defs</span></a>.<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">Context</span> (<a id="E:35" class="idref" href="#E:35"><span class="id" title="binder">E</span></a> : <a class="idref" href="sgdt.itree.html#Thy"><span class="id" title="record">itree.Thy</span></a>).<br/>
