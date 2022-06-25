@@ -44,6 +44,10 @@
 This module develops a typed synthetic model of higher-order store with recursively defined semantic worlds. 
 <div class="paragraph"> </div>
 
+<a id="lab1"></a><h1 class="section">recursively defined semantic worlds</h1>
+
+<div class="paragraph"> </div>
+
  Category of finite maps. 
 </div>
 <div class="code">
@@ -232,7 +236,11 @@ Next we define the discrete category of heaps indexed in worlds.
 </div>
 
 <div class="doc">
-In the remainder of this file, we define several adjunctions that will compose to form the store adjunction. 
+<a id="lab2"></a><h1 class="section">cbpv decomposition of the store passing monad</h1>
+
+<div class="paragraph"> </div>
+
+ In the remainder of this file, we define several adjunctions that will compose to form the store adjunction. 
 </div>
 <div class="code">
 
@@ -729,15 +737,19 @@ In the remainder of this file, we define several adjunctions that will compose t
 </div>
 
 <div class="doc">
-Finally we may define the state monad on <span class="inlinecode">𝒞+</span> as the monad of an adjunction obtained by horizontally composing the adjunctions defined earlier in this module. 
+<a id="lab3"></a><h1 class="section">the store passing monad</h1>
+
+<div class="paragraph"> </div>
+
+ Finally we may define the store passing monad on <span class="inlinecode">𝒞+</span> as the monad of an adjunction obtained by horizontally composing the adjunctions defined earlier in this module. 
 </div>
 <div class="code">
-<span class="id" title="keyword">Module</span> <a id="StateMonad" class="idref" href="#StateMonad"><span class="id" title="module">StateMonad</span></a>.<br/>
-&nbsp;&nbsp;<span class="id" title="keyword">Section</span> <a id="StateMonad.Defs" class="idref" href="#StateMonad.Defs"><span class="id" title="section">Defs</span></a>.<br/>
+<span class="id" title="keyword">Module</span> <a id="StorePassingMonad" class="idref" href="#StorePassingMonad"><span class="id" title="module">StorePassingMonad</span></a>.<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Section</span> <a id="StorePassingMonad.Defs" class="idref" href="#StorePassingMonad.Defs"><span class="id" title="section">Defs</span></a>.<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">Context</span> (<a id="E:35" class="idref" href="#E:35"><span class="id" title="binder">E</span></a> : <a class="idref" href="sgdt.itree.html#Thy"><span class="id" title="record">itree.Thy</span></a>).<br/>
 
 <br/>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">Definition</span> <a id="StateMonad.F" class="idref" href="#StateMonad.F"><span class="id" title="definition">F</span></a> : <a class="idref" href="sgdt.store.html#02f9f3e7c812a6ffd729065d39eade03"><span class="id" title="notation">𝒞+</span></a> <a class="idref" href="sgdt.functor.html#d42b7e5021d94038122d55b7f1af92c9"><span class="id" title="notation">~~&gt;</span></a> <a class="idref" href="sgdt.store.html#32a6e9b28d1eb22c562858ac5117ed95"><span class="id" title="notation">𝒞-[</span></a><a class="idref" href="sgdt.store.html#StateMonad.Defs.E"><span class="id" title="variable">E</span></a><a class="idref" href="sgdt.store.html#32a6e9b28d1eb22c562858ac5117ed95"><span class="id" title="notation">]</span></a>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">Definition</span> <a id="StorePassingMonad.F" class="idref" href="#StorePassingMonad.F"><span class="id" title="definition">F</span></a> : <a class="idref" href="sgdt.store.html#02f9f3e7c812a6ffd729065d39eade03"><span class="id" title="notation">𝒞+</span></a> <a class="idref" href="sgdt.functor.html#d42b7e5021d94038122d55b7f1af92c9"><span class="id" title="notation">~~&gt;</span></a> <a class="idref" href="sgdt.store.html#32a6e9b28d1eb22c562858ac5117ed95"><span class="id" title="notation">𝒞-[</span></a><a class="idref" href="sgdt.store.html#StorePassingMonad.Defs.E"><span class="id" title="variable">E</span></a><a class="idref" href="sgdt.store.html#32a6e9b28d1eb22c562858ac5117ed95"><span class="id" title="notation">]</span></a>.<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">Proof</span>.<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">apply</span>: <a class="idref" href="sgdt.functor.html#Compose.functor"><span class="id" title="definition">Compose.functor</span></a>.<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span class="id" title="tactic">by</span> <span class="id" title="tactic">apply</span>: <a class="idref" href="sgdt.store.html#165a23c3d1c08769ef5411d43d55081e"><span class="id" title="definition">Δ.functor</span></a>.<br/>
@@ -748,7 +760,7 @@ Finally we may define the state monad on <span class="inlinecode">𝒞+</span> a
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">Defined</span>.<br/>
 
 <br/>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">Definition</span> <a id="StateMonad.U" class="idref" href="#StateMonad.U"><span class="id" title="definition">U</span></a> : <a class="idref" href="sgdt.store.html#32a6e9b28d1eb22c562858ac5117ed95"><span class="id" title="notation">𝒞-[</span></a><a class="idref" href="sgdt.store.html#StateMonad.Defs.E"><span class="id" title="variable">E</span></a><a class="idref" href="sgdt.store.html#32a6e9b28d1eb22c562858ac5117ed95"><span class="id" title="notation">]</span></a> <a class="idref" href="sgdt.functor.html#d42b7e5021d94038122d55b7f1af92c9"><span class="id" title="notation">~~&gt;</span></a> <a class="idref" href="sgdt.store.html#02f9f3e7c812a6ffd729065d39eade03"><span class="id" title="notation">𝒞+</span></a>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">Definition</span> <a id="StorePassingMonad.U" class="idref" href="#StorePassingMonad.U"><span class="id" title="definition">U</span></a> : <a class="idref" href="sgdt.store.html#32a6e9b28d1eb22c562858ac5117ed95"><span class="id" title="notation">𝒞-[</span></a><a class="idref" href="sgdt.store.html#StorePassingMonad.Defs.E"><span class="id" title="variable">E</span></a><a class="idref" href="sgdt.store.html#32a6e9b28d1eb22c562858ac5117ed95"><span class="id" title="notation">]</span></a> <a class="idref" href="sgdt.functor.html#d42b7e5021d94038122d55b7f1af92c9"><span class="id" title="notation">~~&gt;</span></a> <a class="idref" href="sgdt.store.html#02f9f3e7c812a6ffd729065d39eade03"><span class="id" title="notation">𝒞+</span></a>.<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">Proof</span>.<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">apply</span>: <a class="idref" href="sgdt.functor.html#Compose.functor"><span class="id" title="definition">Compose.functor</span></a>.<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span class="id" title="tactic">apply</span>: <a class="idref" href="sgdt.functor.html#Compose.functor"><span class="id" title="definition">Compose.functor</span></a>.<br/>
@@ -759,7 +771,7 @@ Finally we may define the state monad on <span class="inlinecode">𝒞+</span> a
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">Defined</span>.<br/>
 
 <br/>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">Definition</span> <a id="StateMonad.adj" class="idref" href="#StateMonad.adj"><span class="id" title="definition">adj</span></a> : <a class="idref" href="sgdt.store.html#StateMonad.F"><span class="id" title="definition">F</span></a> <a class="idref" href="sgdt.adjunction.html#ff91db3b42ce7c9bbab7c8b7691bb26e"><span class="id" title="notation">⊣</span></a> <a class="idref" href="sgdt.store.html#StateMonad.U"><span class="id" title="definition">U</span></a>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">Definition</span> <a id="StorePassingMonad.adj" class="idref" href="#StorePassingMonad.adj"><span class="id" title="definition">adj</span></a> : <a class="idref" href="sgdt.store.html#StorePassingMonad.F"><span class="id" title="definition">F</span></a> <a class="idref" href="sgdt.adjunction.html#ff91db3b42ce7c9bbab7c8b7691bb26e"><span class="id" title="notation">⊣</span></a> <a class="idref" href="sgdt.store.html#StorePassingMonad.U"><span class="id" title="definition">U</span></a>.<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">Proof</span>.<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">apply</span>: <a class="idref" href="sgdt.adjunction.html#HorizontalComposition.adj"><span class="id" title="definition">adjunction.HorizontalComposition.adj</span></a>.<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span class="id" title="tactic">by</span> <span class="id" title="tactic">apply</span>: <a class="idref" href="sgdt.store.html#06c9ee01fa3d603bde0b2d57b49f00d7"><span class="id" title="definition">ΠΔ.adj</span></a>.<br/>
@@ -770,11 +782,11 @@ Finally we may define the state monad on <span class="inlinecode">𝒞+</span> a
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">Defined</span>.<br/>
 
 <br/>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">Definition</span> <a id="StateMonad.T" class="idref" href="#StateMonad.T"><span class="id" title="definition">T</span></a> : <a class="idref" href="sgdt.store.html#02f9f3e7c812a6ffd729065d39eade03"><span class="id" title="notation">𝒞+</span></a> <a class="idref" href="sgdt.functor.html#d42b7e5021d94038122d55b7f1af92c9"><span class="id" title="notation">~~&gt;</span></a> <a class="idref" href="sgdt.store.html#02f9f3e7c812a6ffd729065d39eade03"><span class="id" title="notation">𝒞+</span></a> := <a class="idref" href="sgdt.functor.html#Compose.functor"><span class="id" title="definition">Compose.functor</span></a> <a class="idref" href="sgdt.store.html#StateMonad.F"><span class="id" title="definition">F</span></a> <a class="idref" href="sgdt.store.html#StateMonad.U"><span class="id" title="definition">U</span></a>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">Definition</span> <a id="StorePassingMonad.T" class="idref" href="#StorePassingMonad.T"><span class="id" title="definition">T</span></a> : <a class="idref" href="sgdt.store.html#02f9f3e7c812a6ffd729065d39eade03"><span class="id" title="notation">𝒞+</span></a> <a class="idref" href="sgdt.functor.html#d42b7e5021d94038122d55b7f1af92c9"><span class="id" title="notation">~~&gt;</span></a> <a class="idref" href="sgdt.store.html#02f9f3e7c812a6ffd729065d39eade03"><span class="id" title="notation">𝒞+</span></a> := <a class="idref" href="sgdt.functor.html#Compose.functor"><span class="id" title="definition">Compose.functor</span></a> <a class="idref" href="sgdt.store.html#StorePassingMonad.F"><span class="id" title="definition">F</span></a> <a class="idref" href="sgdt.store.html#StorePassingMonad.U"><span class="id" title="definition">U</span></a>.<br/>
 
 <br/>
-&nbsp;&nbsp;<span class="id" title="keyword">End</span> <a class="idref" href="sgdt.store.html#StateMonad.Defs"><span class="id" title="section">Defs</span></a>.<br/>
-<span class="id" title="keyword">End</span> <a class="idref" href="sgdt.store.html#StateMonad"><span class="id" title="module">StateMonad</span></a>.<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">End</span> <a class="idref" href="sgdt.store.html#StorePassingMonad.Defs"><span class="id" title="section">Defs</span></a>.<br/>
+<span class="id" title="keyword">End</span> <a class="idref" href="sgdt.store.html#StorePassingMonad"><span class="id" title="module">StorePassingMonad</span></a>.<br/>
 </div>
 </div>
 <div id="footer">
