@@ -601,7 +601,7 @@ Module StorePassingMonad.
       - apply: adjunction.HorizontalComposition.adj.
         + by apply: ΔopΣSet.adj.
         + apply: PointwiseLiftingAdjunction.adj.
-          by apply: itree.EilenbergMoore.adj.
+          by apply: itree.FreeForgetful.adj.
     Defined.
 
     Definition T : 𝒞+ ~~> 𝒞+ := Compose.functor F U.

@@ -353,7 +353,7 @@ Module TranspBwd.
   End Defs.
 End TranspBwd.
 
-Module EilenbergMoore.
+Module FreeForgetful.
   Section Defs.
     Context (E : Thy).
 
@@ -379,6 +379,6 @@ Module EilenbergMoore.
     Canonical adj : Free.functor E ⊣ Forgetful.functor E.
     Proof. by esplit; apply: adj_mixin. Defined.
   End Defs.
-End EilenbergMoore.
+End FreeForgetful.
 
 Notation "f ♯" := (Free.ext f) (at level 0).
